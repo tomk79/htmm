@@ -26,7 +26,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      htmm: path.resolve(__dirname, 'src'),
+      '@tomk79/htmm': path.resolve(__dirname, 'src'),
     },
   },
 })

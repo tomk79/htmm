@@ -27,16 +27,16 @@ htmm の利用方法は次の2通りです。
 Vite や webpack などバンドラーを使う場合は、npm でインストールして `import` で利用します。
 
 ```bash
-npm install htmm
+npm install @tomk79/htmm
 # または
-yarn add htmm
+yarn add @tomk79/htmm
 # または
-pnpm add htmm
+pnpm add @tomk79/htmm
 ```
 
 ### B. ビルド済みスクリプトで利用
 
-バンドラーを使わない場合は、`dist/htmm.js` または `dist/htmm.min.js` を 1 本の `<script>` で読み込んで利用できます。リポジトリの `dist/` や、npm パッケージの `node_modules/htmm/dist/`、CDN からファイルを用意してください。React などの別読み込みは不要で、スタイルも JS 内で注入されます。
+バンドラーを使わない場合は、`dist/htmm.js` または `dist/htmm.min.js` を 1 本の `<script>` で読み込んで利用できます。リポジトリの `dist/` や、npm パッケージの `node_modules/@tomk79/htmm/dist/`、CDN からファイルを用意してください。React などの別読み込みは不要で、スタイルも JS 内で注入されます。
 
 ```html
 <div id="root"></div>
@@ -55,7 +55,7 @@ pnpm add htmm
 ### 基本的な使い方（パッケージ利用時）
 
 ```tsx
-import { FreeMindMap, useFreeMindStore } from 'htmm';
+import { FreeMindMap, useFreeMindStore } from '@tomk79/htmm';
 import { useEffect } from 'react';
 
 function App() {
@@ -85,8 +85,8 @@ function App() {
 ### .mmファイルの読み込み
 
 ```tsx
-import { loadMindMapFile } from 'htmm';
-import { useFreeMindStore } from 'htmm';
+import { loadMindMapFile } from '@tomk79/htmm';
+import { useFreeMindStore } from '@tomk79/htmm';
 
 function FileLoader() {
   const { loadMap } = useFreeMindStore();
@@ -106,8 +106,8 @@ function FileLoader() {
 ### .mmファイルの保存
 
 ```tsx
-import { saveMindMapFile } from 'htmm';
-import { useFreeMindStore } from 'htmm';
+import { saveMindMapFile } from '@tomk79/htmm';
+import { useFreeMindStore } from '@tomk79/htmm';
 
 function SaveButton() {
   const { mapData } = useFreeMindStore();
@@ -211,7 +211,7 @@ import {
   cloneNode,
   getNodePath,
   hasChildren,
-} from 'htmm';
+} from '@tomk79/htmm';
 
 const node = createNode('My Node');
 const root = createRootNode('Root');

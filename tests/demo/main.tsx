@@ -5,8 +5,8 @@
 
 import React, { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import { FreeMindMap, useFreeMindStore, saveMindMapFile, loadMindMapFile } from 'htmm';
-import 'htmm/styles/print.css';
+import { FreeMindMap, useFreeMindStore, saveMindMapFile, loadMindMapFile } from '@tomk79/htmm';
+import '@tomk79/htmm/styles/print.css';
 import './demo.css';
 
 const DemoApp: React.FC = () => {

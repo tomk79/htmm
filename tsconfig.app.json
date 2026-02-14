@@ -4,8 +4,8 @@
     "target": "ES2022",
     "baseUrl": ".",
     "paths": {
-      "htmm": ["./src/index.ts"],
-      "htmm/*": ["./src/*"]
+      "@tomk79/htmm": ["./src/index.ts"],
+      "@tomk79/htmm/*": ["./src/*"]
     },
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
