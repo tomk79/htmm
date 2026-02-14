@@ -1,0 +1,33 @@
+# ソース・ビルド設定（公開は dist のみ想定）
+src/
+vite.config.ts
+vite.lib.config.ts
+tsconfig.json
+tsconfig.app.json
+tsconfig.node.json
+
+# テスト・デモ
+tests/
+vitest.config.ts
+playwright.config.ts
+playwright-report/
+test-results/
+coverage/
+
+# ESLint（開発時のみ）
+eslint.config.js
+.eslintrc*
+
+# 開発用アセット
+public/
+
+# エディタ・OS
+.vscode/
+.idea/
+.DS_Store
+*.local
+
+# その他
+*.log
+.git/
+.github/
