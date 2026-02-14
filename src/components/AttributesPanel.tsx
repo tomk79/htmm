@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import type { AttributeInfo } from '../types/mindmap';
-import './AttributesPanel.css';
 
 export interface AttributesPanelProps {
   attributes: AttributeInfo[];

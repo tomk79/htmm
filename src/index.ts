@@ -3,6 +3,10 @@
  * Exports all public APIs
  */
 
+import { injectStyles } from './inject-styles'
+
+injectStyles()
+
 // Components
 export { FreeMindMap } from './components/FreeMindMap';
 export { NodeView } from './components/NodeView';

@@ -20,7 +20,11 @@ FreeMindのJavaアプリケーションをウェブに移植した、軽量で�
 
 ## クイックスタート
 
-### インストール
+htmm の利用方法は次の2通りです。
+
+### A. パッケージとして利用（動的リンク）
+
+Vite や webpack などバンドラーを使う場合は、npm でインストールして `import` で利用します。
 
 ```bash
 npm install htmm
@@ -30,7 +34,25 @@ yarn add htmm
 pnpm add htmm
 ```
 
-### 基本的な使い方
+### B. ビルド済みスクリプトで利用
+
+バンドラーを使わない場合は、`dist/htmm.js` または `dist/htmm.min.js` を 1 本の `<script>` で読み込んで利用できます。リポジトリの `dist/` や、npm パッケージの `node_modules/htmm/dist/`、CDN からファイルを用意してください。React などの別読み込みは不要で、スタイルも JS 内で注入されます。
+
+```html
+<div id="root"></div>
+<script src="path/to/htmm.min.js"></script>
+<script>
+  const { createRoot } = window.ReactDOM;
+  const { FreeMindMap, useFreeMindStore } = window.htmm;
+  const root = createRoot(document.getElementById('root'));
+  // 使用前に newMap などで初期化してから FreeMindMap を描画
+  root.render(/* あなたのアプリ */);
+</script>
+```
+
+グローバル変数 `window.htmm` からコンポーネントやフックを取得できます。React / ReactDOM はバンドルに含まれるため、`window.React` と `window.ReactDOM` も利用可能です。
+
+### 基本的な使い方（パッケージ利用時）
 
 ```tsx
 import { FreeMindMap, useFreeMindStore } from 'htmm';
@@ -248,8 +270,11 @@ npm install
 # 開発サーバー起動
 npm run dev
 
-# ビルド
+# ビルド（デモ用 SPA と配布用 dist/htmm.js・htmm.min.js の両方を生成）
 npm run build
+
+# ライブラリのみビルドする場合
+npm run build:lib
 
 # プレビュー
 npm run preview
@@ -278,6 +303,8 @@ htmm/
 │   │   └── public/
 │   └── e2e/              # E2Eテスト
 └── dist/                 # ビルド出力（npm run build で生成）
+    ├── htmm.js           # 配布用ライブラリ（非圧縮）
+    └── htmm.min.js       # 配布用ライブラリ（圧縮）
 ```
 
 ## ドキュメント

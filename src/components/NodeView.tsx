@@ -10,7 +10,6 @@ import { hasChildren } from '../models/MindMapNode';
 import { getIconEmoji } from '../utils/icons';
 import { RichContentEditor } from './RichContentEditor';
 import { sanitizeHtml } from '../utils/sanitize';
-import './NodeView.css';
 
 interface NodeViewProps {
   node: LayoutNode;

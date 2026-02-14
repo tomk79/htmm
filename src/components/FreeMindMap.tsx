@@ -23,7 +23,6 @@ import {
   getNodeIndex,
   collectAllArrowLinks
 } from '../models/MindMapNode';
-import './FreeMindMap.css';
 
 interface FreeMindMapProps {
   width?: number | string;
