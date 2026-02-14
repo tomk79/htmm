@@ -3,18 +3,18 @@
  * Demonstrates FreeMind Web library usage
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import { FreeMindMap } from './components/FreeMindMap';
-import { useFreeMindStore } from './store/freemind-store';
-import { saveMindMapFile } from './io/generator';
-import './demo/demo.css';
-import './styles/print.css';
+import { FreeMindMap, useFreeMindStore, saveMindMapFile, loadMindMapFile } from 'htmm';
+import 'htmm/styles/print.css';
+import './demo.css';
 
 const DemoApp: React.FC = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const {
     mapData,
     newMap,
+    loadMap,
     addChild,
     addSibling,
     deleteNode,
@@ -68,6 +68,23 @@ const DemoApp: React.FC = () => {
   const handleSave = () => {
     if (mapData) {
       saveMindMapFile(mapData, 'demo-mindmap.mm');
+    }
+  };
+
+  const handleLoadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const data = await loadMindMapFile(file);
+        loadMap(data);
+      } catch (err) {
+        console.error('Failed to load .mm file', err);
+      }
+      e.target.value = '';
     }
   };
   
@@ -165,9 +182,19 @@ const DemoApp: React.FC = () => {
         <p>A modern React library for FreeMind-compatible mind maps</p>
       </header>
       
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".mm"
+        onChange={handleFileChange}
+        className="demo-file-input"
+        aria-label="Load .mm file"
+        data-testid="file-input"
+      />
       <div className="demo-toolbar">
         <div className="toolbar-group">
           <button onClick={() => newMap('New Mind Map')}>New</button>
+          <button onClick={handleLoadClick}>Load (.mm)</button>
           <button onClick={handleSave}>Save (.mm)</button>
         </div>
         
