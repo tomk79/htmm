@@ -261,7 +261,7 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 
 ## 更新履歴
 
-### @tomk79/htmm v0.0.1 (リリース日未定)
+### @tomk79/htmm v0.0.1 (2026年2月15日)
 
 - Initial Release.
 
