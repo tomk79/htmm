@@ -309,7 +309,7 @@ npm run test:coverage # カバレッジレポート
 ## プロジェクト構造
 
 ```
-freemind-web/
+htmm/
 ├── src/
 │   ├── components/    # Reactコンポーネント
 │   │   ├── FreeMindMap.tsx
@@ -398,7 +398,7 @@ freemind-web/
 
 ## まとめ
 
-freemind-webライブラリは、**約85%の実装完了度**です。
+htmmライブラリは、**約85%の実装完了度**です。
 
 **完了:**
 - ✅ コアライブラリ（XML I/O、状態管理、レイアウト）

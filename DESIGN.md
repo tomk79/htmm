@@ -31,7 +31,7 @@ FreeMind Web は、Java製マインドマッピングツール「FreeMind」の�
 ### ディレクトリ構造
 
 ```
-freemind-web/
+htmm/
 ├── src/
 │   ├── types/          # TypeScript型定義
 │   │   ├── mindmap.ts  # マインドマップデータ型
@@ -447,7 +447,7 @@ npm run build  # ライブラリビルド (ES + UMD)
 ```
 
 ### 配布
-- npm パッケージ: `freemind-web`
+- npm パッケージ: `htmm`
 - CDN: unpkg, jsdelivr
 
 ## ライセンス

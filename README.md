@@ -29,17 +29,17 @@ FreeMindのJavaアプリケーションをウェブに移植した、軽量で�
 ### インストール
 
 ```bash
-npm install freemind-web
+npm install htmm
 # または
-yarn add freemind-web
+yarn add htmm
 # または
-pnpm add freemind-web
+pnpm add htmm
 ```
 
 ### 基本的な使い方
 
 ```tsx
-import { FreeMindMap, useFreeMindStore } from 'freemind-web';
+import { FreeMindMap, useFreeMindStore } from 'htmm';
 import { useEffect } from 'react';
 
 function App() {
@@ -69,8 +69,8 @@ function App() {
 ### .mmファイルの読み込み
 
 ```tsx
-import { loadMindMapFile } from 'freemind-web';
-import { useFreeMindStore } from 'freemind-web';
+import { loadMindMapFile } from 'htmm';
+import { useFreeMindStore } from 'htmm';
 
 function FileLoader() {
   const { loadMap } = useFreeMindStore();
@@ -90,8 +90,8 @@ function FileLoader() {
 ### .mmファイルの保存
 
 ```tsx
-import { saveMindMapFile } from 'freemind-web';
-import { useFreeMindStore } from 'freemind-web';
+import { saveMindMapFile } from 'htmm';
+import { useFreeMindStore } from 'htmm';
 
 function SaveButton() {
   const { mapData } = useFreeMindStore();
@@ -195,7 +195,7 @@ import {
   cloneNode,
   getNodePath,
   hasChildren,
-} from 'freemind-web';
+} from 'htmm';
 
 const node = createNode('My Node');
 const root = createRootNode('Root');
@@ -264,7 +264,7 @@ npm run preview
 ### ディレクトリ構造
 
 ```
-freemind-web/
+htmm/
 ├── src/
 │   ├── components/     # Reactコンポーネント
 │   ├── store/          # 状態管理 (Zustand)
@@ -299,7 +299,7 @@ GNU GPL v2 - FreeMindと同じライセンス
 
 ## 📧 お問い合わせ
 
-質問やフィードバックは [GitHub Issues](https://github.com/your-repo/freemind-web/issues) までお願いします。
+質問やフィードバックは [GitHub Issues](https://github.com/your-repo/htmm/issues) までお願いします。
 
 ---
 
