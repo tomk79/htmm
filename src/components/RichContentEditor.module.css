@@ -1,0 +1,126 @@
+.rich-content-editor {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.rich-content-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f5f5f5;
+  flex-wrap: wrap;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 2px;
+}
+
+.toolbar-divider {
+  width: 1px;
+  background: #d0d0d0;
+  margin: 0 4px;
+}
+
+.toolbar-button {
+  padding: 6px 10px;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.2s;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar-button:hover:not(:disabled) {
+  background: #e8e8e8;
+  border-color: #b0b0b0;
+}
+
+.toolbar-button:active:not(:disabled) {
+  background: #d8d8d8;
+}
+
+.toolbar-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.rich-content-editable {
+  padding: 12px;
+  min-height: 100px;
+  max-height: 400px;
+  overflow-y: auto;
+  outline: none;
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+.rich-content-editable:focus {
+  background: #fafafa;
+}
+
+.rich-content-editable:empty::before {
+  content: attr(data-placeholder);
+  color: #999;
+  pointer-events: none;
+}
+
+/* Rich content formatting */
+.rich-content-editable b,
+.rich-content-editable strong {
+  font-weight: bold;
+}
+
+.rich-content-editable i,
+.rich-content-editable em {
+  font-style: italic;
+}
+
+.rich-content-editable u {
+  text-decoration: underline;
+}
+
+.rich-content-editable strike,
+.rich-content-editable del {
+  text-decoration: line-through;
+}
+
+.rich-content-editable ul,
+.rich-content-editable ol {
+  margin: 8px 0;
+  padding-left: 24px;
+}
+
+.rich-content-editable li {
+  margin: 4px 0;
+}
+
+.rich-content-editable a {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.rich-content-editable a:hover {
+  color: #0052a3;
+}
+
+.rich-content-editable img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 8px 0;
+}

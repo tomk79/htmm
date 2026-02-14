@@ -1,0 +1,167 @@
+.attributes-panel {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.attributes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.attributes-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.btn-add-attribute {
+  padding: 4px 12px;
+  border: 1px solid #0066cc;
+  border-radius: 3px;
+  background: #0066cc;
+  color: #fff;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-add-attribute:hover:not(:disabled) {
+  background: #0052a3;
+}
+
+.btn-add-attribute:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.attributes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attributes-empty {
+  padding: 16px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+.attribute-item {
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  padding: 8px;
+  background: #fafafa;
+}
+
+.attribute-display {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.attribute-edit {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.attribute-key {
+  font-weight: 600;
+  color: #555;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attribute-value {
+  color: #333;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attribute-key-input,
+.attribute-value-input {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 13px;
+  outline: none;
+}
+
+.attribute-key-input:focus,
+.attribute-value-input:focus {
+  border-color: #0066cc;
+  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+
+.attribute-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-edit,
+.btn-delete,
+.btn-save,
+.btn-cancel {
+  padding: 4px 8px;
+  border: 1px solid #d0d0d0;
+  border-radius: 3px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-edit:hover,
+.btn-delete:hover,
+.btn-save:hover,
+.btn-cancel:hover {
+  background: #f0f0f0;
+  border-color: #b0b0b0;
+}
+
+.btn-delete:hover {
+  background: #fee;
+  border-color: #fcc;
+}
+
+.btn-save {
+  color: #0a0;
+  border-color: #0a0;
+}
+
+.btn-save:hover {
+  background: #efe;
+  border-color: #0a0;
+}
+
+.btn-cancel {
+  color: #c00;
+  border-color: #c00;
+}
+
+.btn-cancel:hover {
+  background: #fee;
+  border-color: #c00;
+}

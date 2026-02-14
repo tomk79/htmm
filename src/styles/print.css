@@ -1,0 +1,122 @@
+/**
+ * Print-specific styles
+ * Applied when printing or print preview
+ */
+
+@media print {
+  /* Reset page margins */
+  @page {
+    margin: 1cm;
+    size: A4 landscape;
+  }
+
+  /* Hide UI elements */
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Hide non-printable elements */
+  .no-print,
+  .toolbar,
+  .sidebar,
+  button,
+  input,
+  select,
+  textarea,
+  .attributes-panel,
+  .rich-content-toolbar {
+    display: none !important;
+  }
+
+  /* Ensure mind map is visible */
+  .freemind-map {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    page-break-inside: avoid;
+  }
+
+  /* Node styling for print */
+  .node-view {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Ensure text is readable */
+  .node-text {
+    color: #000 !important;
+    background: transparent !important;
+  }
+
+  /* Remove interactive states */
+  .node-view.selected {
+    border-color: #999 !important;
+    border-width: 1px !important;
+    box-shadow: none !important;
+  }
+
+  .node-view:hover {
+    box-shadow: none !important;
+  }
+
+  /* Simplify edges for print */
+  .edge-path {
+    stroke: #666 !important;
+  }
+
+  /* Hide fold symbols in print */
+  .fold-symbol {
+    display: none !important;
+  }
+
+  /* Ensure links are visible */
+  .node-link-indicator {
+    display: inline-block !important;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  /* Cloud borders */
+  .node-cloud {
+    border: 2px solid #999 !important;
+  }
+
+  /* Rich content */
+  .node-rich-content {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Icons */
+  .node-icons,
+  .node-icon {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Preserve colors */
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+/* Print preview mode */
+.print-preview {
+  background: #eee;
+  padding: 20px;
+}
+
+.print-preview .freemind-map {
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  margin: 0 auto;
+  max-width: 297mm; /* A4 landscape width */
+  min-height: 210mm; /* A4 landscape height */
+}
