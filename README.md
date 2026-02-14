@@ -1,30 +1,24 @@
 # htmm
 
-<div align="center">
-
-**モダンなReactベースのマインドマップライブラリ**
-
 FreeMindのJavaアプリケーションをウェブに移植した、軽量で埋め込み可能なマインドマップUIコンポーネント
 
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
 
-</div>
-
 ---
 
 ## ✨ 特徴
 
-- 📖 **FreeMind互換** - `.mm` ファイルの完全な読み書き
-- ⚛️ **React製** - モダンなフロントエンド技術
-- ⌨️ **キーボードショートカット** - FreeMind互換の操作性
-- 🎨 **豊富なスタイリング** - 色、フォント、アイコン、クラウド対応
-- 🔗 **リンク・ノート** - 外部リンクやリッチコンテンツ
-- 📱 **レスポンシブ** - デスクトップ・モバイル対応
-- 🌐 **埋め込み可能** - 任意のウェブサイトに統合
+- **FreeMind互換:** `.mm` ファイルの完全な読み書き
+- **React製:** モダンなフロントエンド技術
+- **キーボードショートカット:** FreeMind互換の操作性
+- **豊富なスタイリング:** 色、フォント、アイコン、クラウド対応
+- **リンク・ノート:** 外部リンクやリッチコンテンツ
+- **レスポンシブ:** デスクトップ・モバイル対応
+- **埋め込み可能:** 任意のウェブサイトに統合
 
-## 🚀 クイックスタート
+## クイックスタート
 
 ### インストール
 
@@ -106,7 +100,7 @@ function SaveButton() {
 }
 ```
 
-## 📘 主要API
+## 主要API
 
 ### コンポーネント
 
@@ -204,7 +198,7 @@ const parent = findParentNode(root, 'ID_123');
 const cloned = cloneNode(node, true);
 ```
 
-## ⌨️ キーボードショートカット
+## キーボードショートカット
 
 | ショートカット | アクション |
 |--------------|----------|
@@ -220,7 +214,7 @@ const cloned = cloneNode(node, true);
 | `Ctrl+V` / `Cmd+V` | ペースト |
 | Double Click | ノードを編集 |
 
-## 🎨 スタイリング例
+## スタイリング例
 
 ```tsx
 const { setNodeColor, setNodeBackgroundColor, setFont, setNodeStyle } = useFreeMindStore();
@@ -243,7 +237,7 @@ setFont(nodeId, {
 setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 ```
 
-## 🏗️ 開発
+## 開発
 
 ### セットアップ
 
@@ -265,67 +259,44 @@ npm run preview
 
 ```
 htmm/
-├── src/
-│   ├── components/     # Reactコンポーネント
-│   ├── store/          # 状態管理 (Zustand)
-│   ├── io/             # ファイルI/O
-│   ├── layout/         # レイアウトエンジン
-│   ├── models/         # ビジネスロジック
-│   ├── types/          # TypeScript型定義
-│   └── demo/           # デモアプリ
-└── public/             # 静的ファイル
+├── src/                  # パッケージ本体（公開用）
+│   ├── components/       # Reactコンポーネント
+│   ├── store/            # 状態管理 (Zustand)
+│   ├── io/               # ファイルI/O
+│   ├── layout/           # レイアウトエンジン
+│   ├── models/           # ビジネスロジック
+│   ├── types/            # TypeScript型定義
+│   ├── utils/            # ユーティリティ
+│   ├── hooks/            # Reactフック
+│   ├── styles/           # スタイル（例: 印刷用CSS）
+│   └── collab/           # 協調編集
+├── tests/
+│   ├── demo/             # ローカル開発用デモアプリ（dev/preview のルート）
+│   │   ├── index.html
+│   │   ├── main.tsx
+│   │   ├── demo.css
+│   │   └── public/
+│   └── e2e/              # E2Eテスト
+└── dist/                 # ビルド出力（npm run build で生成）
 ```
 
-## 📄 ドキュメント
+## ドキュメント
 
 詳細な設計書・要件定義書は [DESIGN.md](./DESIGN.md) をご覧ください。
 
-## 🤝 貢献
+## 貢献
 
 貢献を歓迎します！ Issue や Pull Request をお気軽にお送りください。
 
-## 📝 ライセンス
+## ライセンス
 
 GNU GPL v2 - FreeMindと同じライセンス
 
 本プロジェクトは [FreeMind](http://freemind.sourceforge.net/) をベースにしています。
 
-## 🙏 謝辞
+## 謝辞
 
 - [FreeMind](http://freemind.sourceforge.net/) - Christian Foltin氏と貢献者の皆様
 - [Zustand](https://github.com/pmndrs/zustand) - 状態管理ライブラリ
 - [Vite](https://vitejs.dev/) - 高速ビルドツール
 - [React](https://react.dev/) - UIフレームワーク
-
-## 📧 お問い合わせ
-
-質問やフィードバックは [GitHub Issues](https://github.com/your-repo/htmm/issues) までお願いします。
-
----
-
-<div align="center">
-Made with ❤️ for the FreeMind community
-</div>
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
