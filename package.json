@@ -52,7 +52,9 @@
     "vitest": "^4.0.18"
   },
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
   "keywords": [],
   "author": "",
   "license": "ISC"
