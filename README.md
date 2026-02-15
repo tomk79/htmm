@@ -261,6 +261,10 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 
 ## 更新履歴
 
+### @tomk79/htmm v0.0.2 (リリース日未定)
+
+- 公開ファイルリストの不備を修正。
+
 ### @tomk79/htmm v0.0.1 (2026年2月15日)
 
 - Initial Release.
@@ -313,10 +317,6 @@ htmm/
     ├── htmm.js           # 配布用ライブラリ（非圧縮）
     └── htmm.min.js       # 配布用ライブラリ（圧縮）
 ```
-
-## ドキュメント
-
-詳細な設計書・要件定義書は [DESIGN.md](./DESIGN.md) をご覧ください。
 
 ## 貢献
 
