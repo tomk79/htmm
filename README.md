@@ -122,6 +122,32 @@ function SaveButton() {
 }
 ```
 
+### 1ページに複数マップを配置する
+
+同一ページに、異なる .mm データを持つマップを複数表示する場合は、各 `<FreeMindMap />` に **`initialMapData`** を渡してください。各インスタンスが内部で専用のストアを持ち、データ・ズーム・パンなどが独立します。既存の単一マップのコード（`loadMap()` のあと `<FreeMindMap />` を 1 つだけマウントする使い方）は変更不要です。
+
+```tsx
+import { useState, useEffect } from 'react';
+import { FreeMindMap, loadMindMapURL } from '@tomk79/htmm';
+
+function MultiMapPage() {
+  const [mapData1, setMapData1] = useState(null);
+  const [mapData2, setMapData2] = useState(null);
+
+  useEffect(() => {
+    loadMindMapURL('/map1.mm').then(setMapData1);
+    loadMindMapURL('/map2.mm').then(setMapData2);
+  }, []);
+
+  return (
+    <div>
+      {mapData1 && <FreeMindMap initialMapData={mapData1} width="100%" height="400px" />}
+      {mapData2 && <FreeMindMap initialMapData={mapData2} width="100%" height="400px" />}
+    </div>
+  );
+}
+```
+
 ## 主要API
 
 ### コンポーネント
@@ -133,6 +159,7 @@ function SaveButton() {
   width="100%" 
   height="600px" 
   className="custom-class"
+  initialMapData={mapData}  // 省略可。指定するとこのインスタンス専用のストアで複数マップ対応
 />
 ```
 
@@ -265,6 +292,7 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 
 - npm のエントリーポイントを修正。
 - 公開ファイルリストの不備を修正。
+- 複数のマインドマップを配置できるようになった。
 
 ### @tomk79/htmm v0.0.1 (2026年2月15日)
 

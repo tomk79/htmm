@@ -3,14 +3,19 @@
  * Central state management using Zustand + Immer
  */
 
-import { create } from 'zustand';
+import { createContext, useContext } from 'react';
+import { create, useStore } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
+import type { StoreApi } from 'zustand';
 import { enableMapSet } from 'immer';
 import type { MindMapData, MindMapNode, FontInfo, NodeStyle } from '../types/mindmap';
 import { createRootNode, findNodeById, findParentNode, cloneNode, generateNodeId } from '../models/MindMapNode';
 
 // Enable Immer MapSet plugin for Set support
 enableMapSet();
+
+/** Internal type for the store instance (Context and multi-instance) */
+export type FreeMindStoreApi = StoreApi<FreeMindState & FreeMindActions>;
 
 /**
  * Store state interface
@@ -107,11 +112,15 @@ export interface FreeMindActions {
   setEditable: (editable: boolean) => void;
 }
 
+/** Immer middleware: set accepts a producer (state) => void or partial state */
+type SetStateInternal = (partial: Partial<FreeMindState & FreeMindActions> | ((s: FreeMindState & FreeMindActions) => void)) => void;
+type GetStateInternal = () => FreeMindState & FreeMindActions;
+
 /**
- * Create the FreeMind store
+ * Store slice creator - shared by default store and createFreeMindStore()
  */
-export const useFreeMindStore = create<FreeMindState & FreeMindActions>()(
-  immer((set, get) => ({
+function createFreeMindStoreSlice(set: SetStateInternal, get: GetStateInternal): FreeMindState & FreeMindActions {
+  return {
     // Initial state
     mapData: null,
     selectedNodeIds: new Set(),
@@ -633,5 +642,33 @@ export const useFreeMindStore = create<FreeMindState & FreeMindActions>()(
     setEditable: (editable) => set((state) => {
       state.editable = editable;
     }),
-  }))
-);
+  };
+}
+
+/** Default store for single-map usage (no Provider / no initialMapData). Exported for FreeMindMap internal use. */
+export const defaultStore = create<FreeMindState & FreeMindActions>()(immer(createFreeMindStoreSlice));
+
+/**
+ * Create a new store instance (internal use only; for multi-instance, use FreeMindMap with initialMapData).
+ * Exported for FreeMindMap.tsx but not re-exported from index.ts.
+ */
+export function createFreeMindStore(): FreeMindStoreApi {
+  return create<FreeMindState & FreeMindActions>()(immer(createFreeMindStoreSlice)) as unknown as FreeMindStoreApi;
+}
+
+/** Context for injecting a store so descendants use it instead of defaultStore */
+export const FreeMindStoreContext = createContext<FreeMindStoreApi | null>(null);
+
+/**
+ * Hook to use the FreeMind store. Uses store from Context when inside a Provider (e.g. FreeMindMap with initialMapData), otherwise the default store.
+ */
+function useFreeMindStoreHook<T = FreeMindState & FreeMindActions>(
+  selector?: (state: FreeMindState & FreeMindActions) => T
+): T {
+  const store = useContext(FreeMindStoreContext) ?? defaultStore;
+  return useStore(store as FreeMindStoreApi, (selector ?? (s => s)) as (state: FreeMindState & FreeMindActions) => T);
+}
+
+export const useFreeMindStore = Object.assign(useFreeMindStoreHook, {
+  getState: () => defaultStore.getState(),
+});

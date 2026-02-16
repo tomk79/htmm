@@ -3342,8 +3342,8 @@
     return arrowLinks;
   }
   enableMapSet();
-  const useFreeMindStore = create$1()(
-    immer((set2, get2) => ({
+  function createFreeMindStoreSlice(set2, get2) {
+    return {
       // Initial state
       mapData: null,
       selectedNodeIds: /* @__PURE__ */ new Set(),
@@ -3722,8 +3722,20 @@
       setEditable: (editable) => set2((state) => {
         state.editable = editable;
       })
-    }))
-  );
+    };
+  }
+  const defaultStore = create$1()(immer(createFreeMindStoreSlice));
+  function createFreeMindStore() {
+    return create$1()(immer(createFreeMindStoreSlice));
+  }
+  const FreeMindStoreContext = reactExports.createContext(null);
+  function useFreeMindStoreHook(selector) {
+    const store = reactExports.useContext(FreeMindStoreContext) ?? defaultStore;
+    return useStore(store, selector ?? ((s2) => s2));
+  }
+  const useFreeMindStore = Object.assign(useFreeMindStoreHook, {
+    getState: () => defaultStore.getState()
+  });
   const LAYOUT_CONSTANTS = {
     DEFAULT_HGAP: 20,
     // Horizontal gap from parent
@@ -6097,11 +6109,13 @@ Ctrl+Click to open`,
       handlers
     };
   }
-  const FreeMindMap = ({
+  const FreeMindMapInner = ({
     width = "100%",
     height = "600px",
     className = ""
   }) => {
+    const contextStore = reactExports.useContext(FreeMindStoreContext);
+    const store = contextStore ?? defaultStore;
     const {
       mapData,
       selectedNodeIds,
@@ -6186,7 +6200,7 @@ Ctrl+Click to open`,
       minScale: 0.25,
       maxScale: 4,
       onPan: (deltaX, deltaY) => {
-        const state = useFreeMindStore.getState();
+        const state = store.getState();
         state.setPan(state.panX + deltaX, state.panY + deltaY);
       },
       onPinch: (scale) => {
@@ -6205,7 +6219,7 @@ Ctrl+Click to open`,
       if (!el) return;
       const onWheel = (e2) => {
         e2.preventDefault();
-        const state = useFreeMindStore.getState();
+        const state = store.getState();
         state.setPan(state.panX - e2.deltaX, state.panY - e2.deltaY);
       };
       el.addEventListener("wheel", onWheel, { passive: false });
@@ -6213,20 +6227,21 @@ Ctrl+Click to open`,
     }, [mapData]);
     const handleCanvasMouseDown = reactExports.useCallback((e2) => {
       if (e2.button !== 0 || e2.target !== e2.currentTarget) return;
+      const state = store.getState();
       panStartRef.current = {
-        panX: useFreeMindStore.getState().panX,
-        panY: useFreeMindStore.getState().panY,
+        panX: state.panX,
+        panY: state.panY,
         clientX: e2.clientX,
         clientY: e2.clientY
       };
-    }, []);
+    }, [store]);
     reactExports.useEffect(() => {
       const onMouseMove = (e2) => {
         const start = panStartRef.current;
         if (!start) return;
         e2.preventDefault();
         document.body.style.cursor = "grabbing";
-        useFreeMindStore.getState().setPan(
+        store.getState().setPan(
           start.panX + (e2.clientX - start.clientX),
           start.panY + (e2.clientY - start.clientY)
         );
@@ -6242,7 +6257,7 @@ Ctrl+Click to open`,
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("mouseup", onMouseUp);
       };
-    }, []);
+    }, [store]);
     const nodesToRender = enableCulling ? visibleNodes : layoutNodes;
     const handleStartEdit = reactExports.useCallback((nodeId) => {
       setEditingNodeId(nodeId);
@@ -6475,7 +6490,7 @@ Ctrl+Click to open`,
       const contentWidth = el.clientWidth;
       const contentHeight = el.clientHeight;
       if (contentWidth <= 0 || contentHeight <= 0) return;
-      const state = useFreeMindStore.getState();
+      const state = store.getState();
       const { panX: currentPanX, panY: currentPanY, zoom: currentZoom } = state;
       const cx = contentWidth / 2;
       const cy = contentHeight / 2;
@@ -6625,6 +6640,28 @@ Ctrl+Click to open`,
         ]
       }
     );
+  };
+  const FreeMindMap = ({
+    width = "100%",
+    height = "600px",
+    className = "",
+    initialMapData
+  }) => {
+    const storeRef = reactExports.useRef(null);
+    if (initialMapData != null && storeRef.current === null) {
+      storeRef.current = createFreeMindStore();
+    }
+    const internalStore = storeRef.current;
+    reactExports.useEffect(() => {
+      if (initialMapData != null && internalStore != null) {
+        internalStore.getState().loadMap(initialMapData);
+      }
+    }, [initialMapData, internalStore]);
+    const inner = /* @__PURE__ */ jsxRuntimeExports.jsx(FreeMindMapInner, { width, height, className });
+    if (initialMapData != null && internalStore != null) {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(FreeMindStoreContext.Provider, { value: internalStore, children: inner });
+    }
+    return inner;
   };
   function parseFreeMindXML(xmlString) {
     const parser = new DOMParser();

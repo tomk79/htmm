@@ -3,8 +3,8 @@
  * Main component for rendering mind maps
  */
 
-import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { useFreeMindStore } from '../store/freemind-store';
+import React, { useEffect, useState, useCallback, useRef, useContext } from 'react';
+import { useFreeMindStore, FreeMindStoreContext, createFreeMindStore, defaultStore } from '../store/freemind-store';
 import { calculateLayout } from '../layout/layout-engine';
 import { NodeView } from './NodeView';
 import { EdgeView } from './EdgeView';
@@ -12,7 +12,7 @@ import { ArrowLinkView } from './ArrowLinkView';
 import { useDragAndDrop } from '../hooks/useDragAndDrop';
 import { useViewportCulling, shouldEnableViewportCulling } from '../hooks/useViewportCulling';
 import { useTouchGestures } from '../hooks/useTouchGestures';
-import type { LayoutNode } from '../types/mindmap';
+import type { LayoutNode, MindMapData } from '../types/mindmap';
 import { 
   findParentNode, 
   findNodeById,
@@ -24,17 +24,20 @@ import {
   collectAllArrowLinks
 } from '../models/MindMapNode';
 
-interface FreeMindMapProps {
+interface FreeMindMapInnerProps {
   width?: number | string;
   height?: number | string;
   className?: string;
 }
 
-export const FreeMindMap: React.FC<FreeMindMapProps> = ({
+const FreeMindMapInner: React.FC<FreeMindMapInnerProps> = ({
   width = '100%',
   height = '600px',
   className = '',
 }) => {
+  const contextStore = useContext(FreeMindStoreContext);
+  const store = contextStore ?? defaultStore;
+
   const {
     mapData,
     selectedNodeIds,
@@ -139,7 +142,7 @@ export const FreeMindMap: React.FC<FreeMindMapProps> = ({
     minScale: 0.25,
     maxScale: 4,
     onPan: (deltaX, deltaY) => {
-      const state = useFreeMindStore.getState();
+      const state = store.getState();
       state.setPan(state.panX + deltaX, state.panY + deltaY);
     },
     onPinch: (scale) => {
@@ -162,7 +165,7 @@ export const FreeMindMap: React.FC<FreeMindMapProps> = ({
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
       e.preventDefault();
-      const state = useFreeMindStore.getState();
+      const state = store.getState();
       state.setPan(state.panX - e.deltaX, state.panY - e.deltaY);
     };
     el.addEventListener('wheel', onWheel, { passive: false });
@@ -172,13 +175,14 @@ export const FreeMindMap: React.FC<FreeMindMapProps> = ({
   // Mouse drag to pan (when dragging on canvas background, not on a node)
   const handleCanvasMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0 || e.target !== e.currentTarget) return;
+    const state = store.getState();
     panStartRef.current = {
-      panX: useFreeMindStore.getState().panX,
-      panY: useFreeMindStore.getState().panY,
+      panX: state.panX,
+      panY: state.panY,
       clientX: e.clientX,
       clientY: e.clientY,
     };
-  }, []);
+  }, [store]);
 
   // Window-level mouse move/up for pan drag (so pan continues when cursor leaves the map)
   useEffect(() => {
@@ -187,7 +191,7 @@ export const FreeMindMap: React.FC<FreeMindMapProps> = ({
       if (!start) return;
       e.preventDefault();
       document.body.style.cursor = 'grabbing';
-      useFreeMindStore.getState().setPan(
+      store.getState().setPan(
         start.panX + (e.clientX - start.clientX),
         start.panY + (e.clientY - start.clientY)
       );
@@ -203,7 +207,7 @@ export const FreeMindMap: React.FC<FreeMindMapProps> = ({
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
-  }, []);
+  }, [store]);
   
   // Use visible nodes only if culling is enabled, otherwise use all nodes
   const nodesToRender = enableCulling ? visibleNodes : layoutNodes;
@@ -523,7 +527,7 @@ export const FreeMindMap: React.FC<FreeMindMapProps> = ({
     const contentWidth = el.clientWidth;
     const contentHeight = el.clientHeight;
     if (contentWidth <= 0 || contentHeight <= 0) return;
-    const state = useFreeMindStore.getState();
+    const state = store.getState();
     const { panX: currentPanX, panY: currentPanY, zoom: currentZoom } = state;
     const cx = contentWidth / 2;
     const cy = contentHeight / 2;
@@ -684,4 +688,42 @@ export const FreeMindMap: React.FC<FreeMindMapProps> = ({
       </div>
     </div>
   );
+};
+
+interface FreeMindMapProps {
+  width?: number | string;
+  height?: number | string;
+  className?: string;
+  /** When provided, this instance uses its own internal store (for multiple maps on one page). */
+  initialMapData?: MindMapData;
+}
+
+export const FreeMindMap: React.FC<FreeMindMapProps> = ({
+  width = '100%',
+  height = '600px',
+  className = '',
+  initialMapData,
+}) => {
+  const storeRef = useRef<ReturnType<typeof createFreeMindStore> | null>(null);
+  if (initialMapData != null && storeRef.current === null) {
+    storeRef.current = createFreeMindStore();
+  }
+  const internalStore = storeRef.current;
+
+  useEffect(() => {
+    if (initialMapData != null && internalStore != null) {
+      internalStore.getState().loadMap(initialMapData);
+    }
+  }, [initialMapData, internalStore]);
+
+  const inner = <FreeMindMapInner width={width} height={height} className={className} />;
+
+  if (initialMapData != null && internalStore != null) {
+    return (
+      <FreeMindStoreContext.Provider value={internalStore}>
+        {inner}
+      </FreeMindStoreContext.Provider>
+    );
+  }
+  return inner;
 };
