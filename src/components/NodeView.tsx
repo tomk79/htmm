@@ -46,7 +46,7 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
   onDragEnd,
   dragState,
 }) => {
-  const { selectNode, toggleFolded, editable } = useHtmmStore();
+  const { selectNode, toggleFolded, editable, readOnly } = useHtmmStore();
   const inputRef = useRef<HTMLDivElement>(null);
   const cancelledRef = useRef<boolean>(false);
   const originalTextRef = useRef<string>('');
@@ -89,7 +89,7 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
   
   const handleDoubleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (editable) {
+    if (editable && !readOnly) {
       // If node has rich content, enable rich content editing
       if (hasRichContent) {
         setEditingRichContent(true);
@@ -113,7 +113,7 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
       
       if (timeDiff < 300 && distX < 20 && distY < 20) {
         // Double tap detected - start editing
-        if (editable) {
+        if (editable && !readOnly) {
           if (hasRichContent) {
             setEditingRichContent(true);
           }
@@ -212,7 +212,7 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
   const hasFoldableChildren = hasChildren(node);
   
   // Determine if this node can be dragged (not root node)
-  const isDraggable = node.depth > 0 && editable;
+  const isDraggable = node.depth > 0 && editable && !readOnly;
   
   return (
     <div

@@ -60,6 +60,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     setZoom,
     setPan,
     resetView,
+    readOnly,
   } = useHtmmStore();
   const [layoutNodes, setLayoutNodes] = useState<LayoutNode[]>([]);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
@@ -325,7 +326,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     
     // Handle Ctrl/Cmd + arrow keys for moving nodes
     if (isMod && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-      if (!selectedId || selectedId === mapData.root.id) return;
+      if (readOnly || !selectedId || selectedId === mapData.root.id) return;
       
       e.preventDefault();
       
@@ -417,34 +418,38 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     
     // Handle shortcuts
     if (e.key === 'Tab') {
-      e.preventDefault();
-      // Save the currently selected node before adding a new node
-      previousSelectedNodeIdRef.current = selectedId || mapData.root.id;
-      const newNodeId = selectedId ? addChild(selectedId, '') : addChild(mapData.root.id, '');
-      // Start editing the new node
-      if (newNodeId) {
-        newlyAddedNodeIdRef.current = newNodeId;
-        setEditingNodeId(newNodeId);
-      }
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (isMod) {
-        // Ctrl/Cmd + Enter: Start editing selected node
-        if (selectedId) {
-          setEditingNodeId(selectedId);
-        }
-      } else if (selectedId && selectedId !== mapData.root.id) {
+      if (!readOnly) {
+        e.preventDefault();
         // Save the currently selected node before adding a new node
-        previousSelectedNodeIdRef.current = selectedId;
-        const newNodeId = addSibling(selectedId, e.shiftKey);
+        previousSelectedNodeIdRef.current = selectedId || mapData.root.id;
+        const newNodeId = selectedId ? addChild(selectedId, '') : addChild(mapData.root.id, '');
         // Start editing the new node
         if (newNodeId) {
           newlyAddedNodeIdRef.current = newNodeId;
           setEditingNodeId(newNodeId);
         }
       }
+    } else if (e.key === 'Enter') {
+      if (!readOnly) {
+        e.preventDefault();
+        if (isMod) {
+          // Ctrl/Cmd + Enter: Start editing selected node
+          if (selectedId) {
+            setEditingNodeId(selectedId);
+          }
+        } else if (selectedId && selectedId !== mapData.root.id) {
+          // Save the currently selected node before adding a new node
+          previousSelectedNodeIdRef.current = selectedId;
+          const newNodeId = addSibling(selectedId, e.shiftKey);
+          // Start editing the new node
+          if (newNodeId) {
+            newlyAddedNodeIdRef.current = newNodeId;
+            setEditingNodeId(newNodeId);
+          }
+        }
+      }
     } else if (e.key === 'Delete' || e.key === 'Backspace') {
-      if (selectedId && selectedId !== mapData.root.id) {
+      if (!readOnly && selectedId && selectedId !== mapData.root.id) {
         e.preventDefault();
         deleteNode(selectedId);
       }
@@ -454,46 +459,58 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
         toggleFolded(selectedId);
       }
     } else if (isMod && e.key === 'z') {
-      e.preventDefault();
-      undo();
+      if (!readOnly) {
+        e.preventDefault();
+        undo();
+      }
     } else if (isMod && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) {
-      e.preventDefault();
-      redo();
+      if (!readOnly) {
+        e.preventDefault();
+        redo();
+      }
     } else if (isMod && e.key === 'c') {
       e.preventDefault();
       if (selectedId) {
         copyNode(selectedId);
       }
     } else if (isMod && e.key === 'x') {
-      e.preventDefault();
-      if (selectedId && selectedId !== mapData.root.id) {
-        cutNode(selectedId);
+      if (!readOnly) {
+        e.preventDefault();
+        if (selectedId && selectedId !== mapData.root.id) {
+          cutNode(selectedId);
+        }
       }
     } else if (isMod && e.key === 'v') {
-      e.preventDefault();
-      if (selectedId) {
-        pasteNode(selectedId);
+      if (!readOnly) {
+        e.preventDefault();
+        if (selectedId) {
+          pasteNode(selectedId);
+        }
       }
     } else if (isMod && e.key === 'b') {
-      e.preventDefault();
-      if (selectedId) {
-        const node = findNodeById(mapData.root, selectedId);
-        if (node) {
-          const currentBold = node.font?.bold || false;
-          setFont(selectedId, { bold: !currentBold });
+      if (!readOnly) {
+        e.preventDefault();
+        if (selectedId) {
+          const node = findNodeById(mapData.root, selectedId);
+          if (node) {
+            const currentBold = node.font?.bold || false;
+            setFont(selectedId, { bold: !currentBold });
+          }
         }
       }
     } else if (isMod && e.key === 'i') {
-      e.preventDefault();
-      if (selectedId) {
-        const node = findNodeById(mapData.root, selectedId);
-        if (node) {
-          const currentItalic = node.font?.italic || false;
-          setFont(selectedId, { italic: !currentItalic });
+      if (!readOnly) {
+        e.preventDefault();
+        if (selectedId) {
+          const node = findNodeById(mapData.root, selectedId);
+          if (node) {
+            const currentItalic = node.font?.italic || false;
+            setFont(selectedId, { italic: !currentItalic });
+          }
         }
       }
     }
-  }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont]);
+  }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont, readOnly]);
   
   // Setup keyboard event listener
   useEffect(() => {
@@ -696,6 +713,8 @@ interface HtmmMapProps {
   className?: string;
   /** When provided, this instance uses its own internal store (for multiple maps on one page). */
   initialMapData?: MindMapData;
+  /** When true, node edit operations (add/change/delete/reorder/paste) are disabled; folding is allowed. */
+  readOnly?: boolean;
 }
 
 export const HtmmMap: React.FC<HtmmMapProps> = ({
@@ -703,10 +722,11 @@ export const HtmmMap: React.FC<HtmmMapProps> = ({
   height = '600px',
   className = '',
   initialMapData,
+  readOnly = false,
 }) => {
   const storeRef = useRef<ReturnType<typeof createHtmmStore> | null>(null);
   if (initialMapData != null && storeRef.current === null) {
-    storeRef.current = createHtmmStore();
+    storeRef.current = createHtmmStore({ readOnly });
   }
   const internalStore = storeRef.current;
 
@@ -715,6 +735,12 @@ export const HtmmMap: React.FC<HtmmMapProps> = ({
       internalStore.getState().loadMap(initialMapData);
     }
   }, [initialMapData, internalStore]);
+
+  useEffect(() => {
+    if (initialMapData == null && readOnly !== undefined) {
+      defaultStore.getState().setReadOnly(readOnly);
+    }
+  }, [initialMapData, readOnly]);
 
   const inner = <HtmmMapInner width={width} height={height} className={className} />;
 

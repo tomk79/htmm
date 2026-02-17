@@ -3342,12 +3342,14 @@
     return arrowLinks;
   }
   enableMapSet();
-  function createHtmmStoreSlice(set2, get2) {
+  function createHtmmStoreSlice(set2, get2, initialOverrides) {
+    const readOnlyInitial = initialOverrides?.readOnly ?? false;
     return {
       // Initial state
       mapData: null,
       selectedNodeIds: /* @__PURE__ */ new Set(),
       editable: true,
+      readOnly: readOnlyInitial,
       history: [],
       historyIndex: -1,
       maxHistorySize: 50,
@@ -3356,26 +3358,33 @@
       panY: 0,
       clipboard: null,
       // Map operations
-      loadMap: (data) => set2((state) => {
-        const copy = JSON.parse(JSON.stringify(data));
-        state.mapData = copy;
-        state.selectedNodeIds.clear();
-        state.history = [JSON.parse(JSON.stringify(copy))];
-        state.historyIndex = 0;
-      }),
-      newMap: (rootText = "New Mind Map") => set2((state) => {
-        const data = {
-          version: "1.0.1",
-          root: createRootNode(rootText)
-        };
-        const copy = JSON.parse(JSON.stringify(data));
-        state.mapData = copy;
-        state.selectedNodeIds.clear();
-        state.history = [JSON.parse(JSON.stringify(copy))];
-        state.historyIndex = 0;
-      }),
+      loadMap: (data) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          const copy = JSON.parse(JSON.stringify(data));
+          state.mapData = copy;
+          state.selectedNodeIds.clear();
+          state.history = [JSON.parse(JSON.stringify(copy))];
+          state.historyIndex = 0;
+        });
+      },
+      newMap: (rootText = "New Mind Map") => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          const data = {
+            version: "1.0.1",
+            root: createRootNode(rootText)
+          };
+          const copy = JSON.parse(JSON.stringify(data));
+          state.mapData = copy;
+          state.selectedNodeIds.clear();
+          state.history = [JSON.parse(JSON.stringify(copy))];
+          state.historyIndex = 0;
+        });
+      },
       // Node operations
       addChild: (parentId, text2 = "") => {
+        if (get2().readOnly) return void 0;
         let newNodeId;
         set2((state) => {
           if (!state.mapData) return;
@@ -3405,6 +3414,7 @@
         return newNodeId;
       },
       addSibling: (siblingId, before = false) => {
+        if (get2().readOnly) return void 0;
         let newNodeId;
         set2((state) => {
           if (!state.mapData) return;
@@ -3431,51 +3441,60 @@
         });
         return newNodeId;
       },
-      deleteNode: (nodeId) => set2((state) => {
-        if (!state.mapData || state.mapData.root.id === nodeId) return;
-        const parent = findParentNode(state.mapData.root, nodeId);
-        if (!parent || !parent.children) return;
-        const nodeIndex = parent.children.findIndex((c2) => c2.id === nodeId);
-        if (nodeIndex === -1) return;
-        let newSelectedNodeId = null;
-        if (parent.children.length > nodeIndex + 1) {
-          newSelectedNodeId = parent.children[nodeIndex + 1].id;
-        } else if (nodeIndex > 0) {
-          newSelectedNodeId = parent.children[nodeIndex - 1].id;
-        } else {
-          newSelectedNodeId = parent.id;
-        }
-        parent.children = parent.children.filter((c2) => c2.id !== nodeId);
-        state.selectedNodeIds.delete(nodeId);
-        if (newSelectedNodeId) {
-          state.selectedNodeIds.clear();
-          state.selectedNodeIds.add(newSelectedNodeId);
-        }
-        get2().pushHistory();
-      }),
-      editNode: (nodeId, text2) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        node2.text = text2;
-        node2.modified = Date.now();
-        get2().pushHistory();
-      }),
-      moveNode: (nodeId, newParentId, index2) => set2((state) => {
-        if (!state.mapData || nodeId === state.mapData.root.id) return;
-        const oldParent = findParentNode(state.mapData.root, nodeId);
-        const newParent = findNodeById(state.mapData.root, newParentId);
-        if (!oldParent || !newParent || !oldParent.children) return;
-        const nodeIndex = oldParent.children.findIndex((c2) => c2.id === nodeId);
-        if (nodeIndex === -1) return;
-        const [node2] = oldParent.children.splice(nodeIndex, 1);
-        if (!newParent.children) {
-          newParent.children = [];
-        }
-        const insertIndex = index2 !== void 0 ? index2 : newParent.children.length;
-        newParent.children.splice(insertIndex, 0, node2);
-        get2().pushHistory();
-      }),
+      deleteNode: (nodeId) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData || state.mapData.root.id === nodeId) return;
+          const parent = findParentNode(state.mapData.root, nodeId);
+          if (!parent || !parent.children) return;
+          const nodeIndex = parent.children.findIndex((c2) => c2.id === nodeId);
+          if (nodeIndex === -1) return;
+          let newSelectedNodeId = null;
+          if (parent.children.length > nodeIndex + 1) {
+            newSelectedNodeId = parent.children[nodeIndex + 1].id;
+          } else if (nodeIndex > 0) {
+            newSelectedNodeId = parent.children[nodeIndex - 1].id;
+          } else {
+            newSelectedNodeId = parent.id;
+          }
+          parent.children = parent.children.filter((c2) => c2.id !== nodeId);
+          state.selectedNodeIds.delete(nodeId);
+          if (newSelectedNodeId) {
+            state.selectedNodeIds.clear();
+            state.selectedNodeIds.add(newSelectedNodeId);
+          }
+          get2().pushHistory();
+        });
+      },
+      editNode: (nodeId, text2) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          node2.text = text2;
+          node2.modified = Date.now();
+          get2().pushHistory();
+        });
+      },
+      moveNode: (nodeId, newParentId, index2) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData || nodeId === state.mapData.root.id) return;
+          const oldParent = findParentNode(state.mapData.root, nodeId);
+          const newParent = findNodeById(state.mapData.root, newParentId);
+          if (!oldParent || !newParent || !oldParent.children) return;
+          const nodeIndex = oldParent.children.findIndex((c2) => c2.id === nodeId);
+          if (nodeIndex === -1) return;
+          const [node2] = oldParent.children.splice(nodeIndex, 1);
+          if (!newParent.children) {
+            newParent.children = [];
+          }
+          const insertIndex = index2 !== void 0 ? index2 : newParent.children.length;
+          newParent.children.splice(insertIndex, 0, node2);
+          get2().pushHistory();
+        });
+      },
       // Folding
       toggleFolded: (nodeId) => set2((state) => {
         if (!state.mapData) return;
@@ -3511,142 +3530,184 @@
         unfoldRecursive(state.mapData.root);
       }),
       // Styling
-      setNodeColor: (nodeId, color2) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        node2.color = color2;
-        get2().pushHistory();
-      }),
-      setNodeBackgroundColor: (nodeId, color2) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        node2.backgroundColor = color2;
-        get2().pushHistory();
-      }),
-      setFont: (nodeId, font) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        if (!node2.font) {
-          node2.font = {};
-        }
-        Object.assign(node2.font, font);
-        get2().pushHistory();
-      }),
-      setNodeStyle: (nodeId, style) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        node2.style = style;
-        get2().pushHistory();
-      }),
+      setNodeColor: (nodeId, color2) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          node2.color = color2;
+          get2().pushHistory();
+        });
+      },
+      setNodeBackgroundColor: (nodeId, color2) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          node2.backgroundColor = color2;
+          get2().pushHistory();
+        });
+      },
+      setFont: (nodeId, font) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          if (!node2.font) {
+            node2.font = {};
+          }
+          Object.assign(node2.font, font);
+          get2().pushHistory();
+        });
+      },
+      setNodeStyle: (nodeId, style) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          node2.style = style;
+          get2().pushHistory();
+        });
+      },
       // Icons
-      addIcon: (nodeId, iconName) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        if (!node2.icons) {
-          node2.icons = [];
-        }
-        if (!node2.icons.some((icon) => icon.builtin === iconName)) {
-          node2.icons.push({ builtin: iconName });
-        }
-        get2().pushHistory();
-      }),
-      removeIcon: (nodeId, iconName) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2 || !node2.icons) return;
-        node2.icons = node2.icons.filter((icon) => icon.builtin !== iconName);
-        if (node2.icons.length === 0) {
+      addIcon: (nodeId, iconName) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          if (!node2.icons) {
+            node2.icons = [];
+          }
+          if (!node2.icons.some((icon) => icon.builtin === iconName)) {
+            node2.icons.push({ builtin: iconName });
+          }
+          get2().pushHistory();
+        });
+      },
+      removeIcon: (nodeId, iconName) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2 || !node2.icons) return;
+          node2.icons = node2.icons.filter((icon) => icon.builtin !== iconName);
+          if (node2.icons.length === 0) {
+            delete node2.icons;
+          }
+          get2().pushHistory();
+        });
+      },
+      clearIcons: (nodeId) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
           delete node2.icons;
-        }
-        get2().pushHistory();
-      }),
-      clearIcons: (nodeId) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        delete node2.icons;
-        get2().pushHistory();
-      }),
+          get2().pushHistory();
+        });
+      },
       // Links
-      setLink: (nodeId, url) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        node2.link = url;
-        get2().pushHistory();
-      }),
-      removeLink: (nodeId) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        delete node2.link;
-        get2().pushHistory();
-      }),
+      setLink: (nodeId, url) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          node2.link = url;
+          get2().pushHistory();
+        });
+      },
+      removeLink: (nodeId) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          delete node2.link;
+          get2().pushHistory();
+        });
+      },
       // Arrow Links
-      addArrowLink: (sourceId, targetId, arrowLink) => set2((state) => {
-        if (!state.mapData) return;
-        const sourceNode = findNodeById(state.mapData.root, sourceId);
-        if (!sourceNode) return;
-        const targetNode = findNodeById(state.mapData.root, targetId);
-        if (!targetNode) return;
-        if (!sourceNode.arrowLinks) {
-          sourceNode.arrowLinks = [];
-        }
-        const newArrowLink = {
-          destination: targetId,
-          color: arrowLink?.color || "#ff0000",
-          startArrow: arrowLink?.startArrow || "None",
-          endArrow: arrowLink?.endArrow || "Default",
-          startInclination: arrowLink?.startInclination,
-          endInclination: arrowLink?.endInclination
-        };
-        sourceNode.arrowLinks.push(newArrowLink);
-        get2().pushHistory();
-      }),
-      removeArrowLink: (sourceId, targetId) => set2((state) => {
-        if (!state.mapData) return;
-        const sourceNode = findNodeById(state.mapData.root, sourceId);
-        if (!sourceNode || !sourceNode.arrowLinks) return;
-        const index2 = sourceNode.arrowLinks.findIndex((link) => link.destination === targetId);
-        if (index2 >= 0) {
-          sourceNode.arrowLinks.splice(index2, 1);
+      addArrowLink: (sourceId, targetId, arrowLink) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const sourceNode = findNodeById(state.mapData.root, sourceId);
+          if (!sourceNode) return;
+          const targetNode = findNodeById(state.mapData.root, targetId);
+          if (!targetNode) return;
+          if (!sourceNode.arrowLinks) {
+            sourceNode.arrowLinks = [];
+          }
+          const newArrowLink = {
+            destination: targetId,
+            color: arrowLink?.color || "#ff0000",
+            startArrow: arrowLink?.startArrow || "None",
+            endArrow: arrowLink?.endArrow || "Default",
+            startInclination: arrowLink?.startInclination,
+            endInclination: arrowLink?.endInclination
+          };
+          sourceNode.arrowLinks.push(newArrowLink);
           get2().pushHistory();
-        }
-      }),
-      updateArrowLink: (sourceId, targetId, arrowLink) => set2((state) => {
-        if (!state.mapData) return;
-        const sourceNode = findNodeById(state.mapData.root, sourceId);
-        if (!sourceNode || !sourceNode.arrowLinks) return;
-        const link = sourceNode.arrowLinks.find((link2) => link2.destination === targetId);
-        if (link) {
-          if (arrowLink.color !== void 0) link.color = arrowLink.color;
-          if (arrowLink.startArrow !== void 0) link.startArrow = arrowLink.startArrow;
-          if (arrowLink.endArrow !== void 0) link.endArrow = arrowLink.endArrow;
-          if (arrowLink.startInclination !== void 0) link.startInclination = arrowLink.startInclination;
-          if (arrowLink.endInclination !== void 0) link.endInclination = arrowLink.endInclination;
-          get2().pushHistory();
-        }
-      }),
+        });
+      },
+      removeArrowLink: (sourceId, targetId) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const sourceNode = findNodeById(state.mapData.root, sourceId);
+          if (!sourceNode || !sourceNode.arrowLinks) return;
+          const index2 = sourceNode.arrowLinks.findIndex((link) => link.destination === targetId);
+          if (index2 >= 0) {
+            sourceNode.arrowLinks.splice(index2, 1);
+            get2().pushHistory();
+          }
+        });
+      },
+      updateArrowLink: (sourceId, targetId, arrowLink) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const sourceNode = findNodeById(state.mapData.root, sourceId);
+          if (!sourceNode || !sourceNode.arrowLinks) return;
+          const link = sourceNode.arrowLinks.find((link2) => link2.destination === targetId);
+          if (link) {
+            if (arrowLink.color !== void 0) link.color = arrowLink.color;
+            if (arrowLink.startArrow !== void 0) link.startArrow = arrowLink.startArrow;
+            if (arrowLink.endArrow !== void 0) link.endArrow = arrowLink.endArrow;
+            if (arrowLink.startInclination !== void 0) link.startInclination = arrowLink.startInclination;
+            if (arrowLink.endInclination !== void 0) link.endInclination = arrowLink.endInclination;
+            get2().pushHistory();
+          }
+        });
+      },
       // Cloud
-      setCloud: (nodeId, color2) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        node2.cloud = color2 ? { color: color2 } : {};
-        get2().pushHistory();
-      }),
-      removeCloud: (nodeId) => set2((state) => {
-        if (!state.mapData) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        delete node2.cloud;
-        get2().pushHistory();
-      }),
+      setCloud: (nodeId, color2) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          node2.cloud = color2 ? { color: color2 } : {};
+          get2().pushHistory();
+        });
+      },
+      removeCloud: (nodeId) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          delete node2.cloud;
+          get2().pushHistory();
+        });
+      },
       // Selection
       selectNode: (nodeId, addToSelection = false) => set2((state) => {
         if (!addToSelection) {
@@ -3658,53 +3719,68 @@
         state.selectedNodeIds.clear();
       }),
       // Clipboard
-      cutNode: (nodeId) => set2((state) => {
-        if (!state.mapData || state.mapData.root.id === nodeId) return;
-        const node2 = findNodeById(state.mapData.root, nodeId);
-        if (!node2) return;
-        state.clipboard = cloneNode(node2, true);
-        get2().deleteNode(nodeId);
-      }),
+      cutNode: (nodeId) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData || state.mapData.root.id === nodeId) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          state.clipboard = cloneNode(node2, true);
+          get2().deleteNode(nodeId);
+        });
+      },
       copyNode: (nodeId) => set2((state) => {
         if (!state.mapData) return;
         const node2 = findNodeById(state.mapData.root, nodeId);
         if (!node2) return;
         state.clipboard = cloneNode(node2, true);
       }),
-      pasteNode: (parentId) => set2((state) => {
-        if (!state.mapData || !state.clipboard) return;
-        const parent = findNodeById(state.mapData.root, parentId);
-        if (!parent) return;
-        if (!parent.children) {
-          parent.children = [];
-        }
-        const cloned = cloneNode(state.clipboard, true);
-        parent.children.push(cloned);
-        get2().pushHistory();
-      }),
+      pasteNode: (parentId) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData || !state.clipboard) return;
+          const parent = findNodeById(state.mapData.root, parentId);
+          if (!parent) return;
+          if (!parent.children) {
+            parent.children = [];
+          }
+          const cloned = cloneNode(state.clipboard, true);
+          parent.children.push(cloned);
+          get2().pushHistory();
+        });
+      },
       // History
-      undo: () => set2((state) => {
-        if (state.historyIndex > 0) {
-          state.historyIndex--;
-          state.mapData = JSON.parse(JSON.stringify(state.history[state.historyIndex]));
-        }
-      }),
-      redo: () => set2((state) => {
-        if (state.historyIndex < state.history.length - 1) {
-          state.historyIndex++;
-          state.mapData = JSON.parse(JSON.stringify(state.history[state.historyIndex]));
-        }
-      }),
-      pushHistory: () => set2((state) => {
-        if (!state.mapData) return;
-        state.history = state.history.slice(0, state.historyIndex + 1);
-        state.history.push(JSON.parse(JSON.stringify(state.mapData)));
-        if (state.history.length > state.maxHistorySize) {
-          state.history.shift();
-        } else {
-          state.historyIndex++;
-        }
-      }),
+      undo: () => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (state.historyIndex > 0) {
+            state.historyIndex--;
+            state.mapData = JSON.parse(JSON.stringify(state.history[state.historyIndex]));
+          }
+        });
+      },
+      redo: () => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (state.historyIndex < state.history.length - 1) {
+            state.historyIndex++;
+            state.mapData = JSON.parse(JSON.stringify(state.history[state.historyIndex]));
+          }
+        });
+      },
+      pushHistory: () => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData) return;
+          state.history = state.history.slice(0, state.historyIndex + 1);
+          state.history.push(JSON.parse(JSON.stringify(state.mapData)));
+          if (state.history.length > state.maxHistorySize) {
+            state.history.shift();
+          } else {
+            state.historyIndex++;
+          }
+        });
+      },
       // View
       setZoom: (zoom) => set2((state) => {
         state.zoom = Math.max(0.1, Math.min(5, zoom));
@@ -3721,12 +3797,15 @@
       // Config
       setEditable: (editable) => set2((state) => {
         state.editable = editable;
+      }),
+      setReadOnly: (readOnly) => set2((state) => {
+        state.readOnly = readOnly;
       })
     };
   }
-  const defaultStore = create$1()(immer(createHtmmStoreSlice));
-  function createHtmmStore() {
-    return create$1()(immer(createHtmmStoreSlice));
+  const defaultStore = create$1()(immer((set2, get2) => createHtmmStoreSlice(set2, get2)));
+  function createHtmmStore(options) {
+    return create$1()(immer((set2, get2) => createHtmmStoreSlice(set2, get2, options)));
   }
   const HtmmStoreContext = reactExports.createContext(null);
   function useHtmmStoreHook(selector) {
@@ -5394,7 +5473,7 @@
     onDragEnd,
     dragState
   }) => {
-    const { selectNode, toggleFolded, editable } = useHtmmStore();
+    const { selectNode, toggleFolded, editable, readOnly } = useHtmmStore();
     const inputRef = reactExports.useRef(null);
     const cancelledRef = reactExports.useRef(false);
     const originalTextRef = reactExports.useRef("");
@@ -5426,7 +5505,7 @@
     };
     const handleDoubleClick = (e2) => {
       e2.stopPropagation();
-      if (editable) {
+      if (editable && !readOnly) {
         if (hasRichContent) {
           setEditingRichContent(true);
         }
@@ -5442,7 +5521,7 @@
         const distX = Math.abs(touch.clientX - lastTouchRef.current.x);
         const distY = Math.abs(touch.clientY - lastTouchRef.current.y);
         if (timeDiff < 300 && distX < 20 && distY < 20) {
-          if (editable) {
+          if (editable && !readOnly) {
             if (hasRichContent) {
               setEditingRichContent(true);
             }
@@ -5521,7 +5600,7 @@
     ${dragState?.dropTargetNodeId === node2.id ? `drop-target drop-${dragState.dropPosition}` : ""}
   `.trim();
     const hasFoldableChildren = hasChildren(node2);
-    const isDraggable = node2.depth > 0 && editable;
+    const isDraggable = node2.depth > 0 && editable && !readOnly;
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
@@ -6137,7 +6216,8 @@ Ctrl+Click to open`,
       panY,
       setZoom,
       setPan,
-      resetView
+      resetView,
+      readOnly
     } = useHtmmStore();
     const [layoutNodes, setLayoutNodes] = reactExports.useState([]);
     const [editingNodeId, setEditingNodeId] = reactExports.useState(null);
@@ -6330,7 +6410,7 @@ Ctrl+Click to open`,
         return;
       }
       if (isMod && (e2.key === "ArrowUp" || e2.key === "ArrowDown" || e2.key === "ArrowLeft" || e2.key === "ArrowRight")) {
-        if (!selectedId || selectedId === mapData.root.id) return;
+        if (readOnly || !selectedId || selectedId === mapData.root.id) return;
         e2.preventDefault();
         if (e2.key === "ArrowUp") {
           const parent = findParentNode(mapData.root, selectedId);
@@ -6394,29 +6474,33 @@ Ctrl+Click to open`,
         return;
       }
       if (e2.key === "Tab") {
-        e2.preventDefault();
-        previousSelectedNodeIdRef.current = selectedId || mapData.root.id;
-        const newNodeId = selectedId ? addChild(selectedId, "") : addChild(mapData.root.id, "");
-        if (newNodeId) {
-          newlyAddedNodeIdRef.current = newNodeId;
-          setEditingNodeId(newNodeId);
-        }
-      } else if (e2.key === "Enter") {
-        e2.preventDefault();
-        if (isMod) {
-          if (selectedId) {
-            setEditingNodeId(selectedId);
-          }
-        } else if (selectedId && selectedId !== mapData.root.id) {
-          previousSelectedNodeIdRef.current = selectedId;
-          const newNodeId = addSibling(selectedId, e2.shiftKey);
+        if (!readOnly) {
+          e2.preventDefault();
+          previousSelectedNodeIdRef.current = selectedId || mapData.root.id;
+          const newNodeId = selectedId ? addChild(selectedId, "") : addChild(mapData.root.id, "");
           if (newNodeId) {
             newlyAddedNodeIdRef.current = newNodeId;
             setEditingNodeId(newNodeId);
           }
         }
+      } else if (e2.key === "Enter") {
+        if (!readOnly) {
+          e2.preventDefault();
+          if (isMod) {
+            if (selectedId) {
+              setEditingNodeId(selectedId);
+            }
+          } else if (selectedId && selectedId !== mapData.root.id) {
+            previousSelectedNodeIdRef.current = selectedId;
+            const newNodeId = addSibling(selectedId, e2.shiftKey);
+            if (newNodeId) {
+              newlyAddedNodeIdRef.current = newNodeId;
+              setEditingNodeId(newNodeId);
+            }
+          }
+        }
       } else if (e2.key === "Delete" || e2.key === "Backspace") {
-        if (selectedId && selectedId !== mapData.root.id) {
+        if (!readOnly && selectedId && selectedId !== mapData.root.id) {
           e2.preventDefault();
           deleteNode(selectedId);
         }
@@ -6426,46 +6510,58 @@ Ctrl+Click to open`,
           toggleFolded(selectedId);
         }
       } else if (isMod && e2.key === "z") {
-        e2.preventDefault();
-        undo();
+        if (!readOnly) {
+          e2.preventDefault();
+          undo();
+        }
       } else if (isMod && (e2.key === "y" || e2.shiftKey && e2.key === "z")) {
-        e2.preventDefault();
-        redo();
+        if (!readOnly) {
+          e2.preventDefault();
+          redo();
+        }
       } else if (isMod && e2.key === "c") {
         e2.preventDefault();
         if (selectedId) {
           copyNode(selectedId);
         }
       } else if (isMod && e2.key === "x") {
-        e2.preventDefault();
-        if (selectedId && selectedId !== mapData.root.id) {
-          cutNode(selectedId);
+        if (!readOnly) {
+          e2.preventDefault();
+          if (selectedId && selectedId !== mapData.root.id) {
+            cutNode(selectedId);
+          }
         }
       } else if (isMod && e2.key === "v") {
-        e2.preventDefault();
-        if (selectedId) {
-          pasteNode(selectedId);
+        if (!readOnly) {
+          e2.preventDefault();
+          if (selectedId) {
+            pasteNode(selectedId);
+          }
         }
       } else if (isMod && e2.key === "b") {
-        e2.preventDefault();
-        if (selectedId) {
-          const node2 = findNodeById(mapData.root, selectedId);
-          if (node2) {
-            const currentBold = node2.font?.bold || false;
-            setFont(selectedId, { bold: !currentBold });
+        if (!readOnly) {
+          e2.preventDefault();
+          if (selectedId) {
+            const node2 = findNodeById(mapData.root, selectedId);
+            if (node2) {
+              const currentBold = node2.font?.bold || false;
+              setFont(selectedId, { bold: !currentBold });
+            }
           }
         }
       } else if (isMod && e2.key === "i") {
-        e2.preventDefault();
-        if (selectedId) {
-          const node2 = findNodeById(mapData.root, selectedId);
-          if (node2) {
-            const currentItalic = node2.font?.italic || false;
-            setFont(selectedId, { italic: !currentItalic });
+        if (!readOnly) {
+          e2.preventDefault();
+          if (selectedId) {
+            const node2 = findNodeById(mapData.root, selectedId);
+            if (node2) {
+              const currentItalic = node2.font?.italic || false;
+              setFont(selectedId, { italic: !currentItalic });
+            }
           }
         }
       }
-    }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont]);
+    }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont, readOnly]);
     reactExports.useEffect(() => {
       const container = containerRef.current;
       if (!container) return;
@@ -6645,11 +6741,12 @@ Ctrl+Click to open`,
     width = "100%",
     height = "600px",
     className = "",
-    initialMapData
+    initialMapData,
+    readOnly = false
   }) => {
     const storeRef = reactExports.useRef(null);
     if (initialMapData != null && storeRef.current === null) {
-      storeRef.current = createHtmmStore();
+      storeRef.current = createHtmmStore({ readOnly });
     }
     const internalStore = storeRef.current;
     reactExports.useEffect(() => {
@@ -6657,6 +6754,11 @@ Ctrl+Click to open`,
         internalStore.getState().loadMap(initialMapData);
       }
     }, [initialMapData, internalStore]);
+    reactExports.useEffect(() => {
+      if (initialMapData == null && readOnly !== void 0) {
+        defaultStore.getState().setReadOnly(readOnly);
+      }
+    }, [initialMapData, readOnly]);
     const inner = /* @__PURE__ */ jsxRuntimeExports.jsx(HtmmMapInner, { width, height, className });
     if (initialMapData != null && internalStore != null) {
       return /* @__PURE__ */ jsxRuntimeExports.jsx(HtmmStoreContext.Provider, { value: internalStore, children: inner });

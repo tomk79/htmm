@@ -8,7 +8,7 @@ FreeMind互換の .mm 形式を扱う、軽量で埋め込み可能なマイン�
 
 ---
 
-## ✨ 特徴
+## 特徴
 
 - **FreeMind互換:** `.mm` ファイルの完全な読み書き
 - **React製:** モダンなフロントエンド技術
@@ -17,6 +17,7 @@ FreeMind互換の .mm 形式を扱う、軽量で埋め込み可能なマイン�
 - **リンク・ノート:** 外部リンクやリッチコンテンツ
 - **レスポンシブ:** デスクトップ・モバイル対応
 - **埋め込み可能:** 任意のウェブサイトに統合
+- **読み込み専用モード:** 表示のみにしたい場合に編集操作を無効化可能
 
 ## クイックスタート
 
@@ -148,6 +149,27 @@ function MultiMapPage() {
 }
 ```
 
+### 読み込み専用（ReadOnly）モード
+
+表示専用で編集を禁止したい場合は、**`readOnly`** プロパティを指定してください。読み込み専用モードでは次の操作はできません。
+
+- **できないこと:** ノードの追加・変更・削除、並び替え（ドラッグ＆ドロップ）、カット・ペースト、スタイル変更、Undo/Redo など
+- **できること:** ノードの選択、ノードの開閉（折りたたみ）、ズーム・パン、コピー
+
+初期化時にオプションで指定するか、`initialMapData` と組み合わせて利用できます。
+
+```tsx
+// 単一マップで読み込み専用
+<HtmmMap readOnly width="100%" height="600px" />
+
+// 複数マップのうち1つだけ読み込み専用で表示
+{mapData && (
+  <HtmmMap initialMapData={mapData} readOnly width="100%" height="400px" />
+)}
+```
+
+ストアを直接扱う場合は `createHtmmStore({ readOnly: true })` で読み込み専用のストアを作成するか、`useHtmmStore.getState().setReadOnly(true)` で切り替えられます。`HtmmState` / `HtmmActions` の型には `readOnly` と `setReadOnly` が含まれます。
+
 ## 主要API
 
 ### コンポーネント
@@ -160,6 +182,7 @@ function MultiMapPage() {
   height="600px" 
   className="custom-class"
   initialMapData={mapData}  // 省略可。指定するとこのインスタンス専用のストアで複数マップ対応
+  readOnly={false}         // 省略可。true にすると編集不可（選択・開閉・ズーム・コピーは可能）
 />
 ```
 
@@ -173,6 +196,7 @@ const {
   mapData,
   selectedNodeIds,
   editable,
+  readOnly,
   
   // マップ操作
   newMap,
@@ -208,6 +232,10 @@ const {
   cutNode,
   copyNode,
   pasteNode,
+  
+  // 設定
+  setEditable,
+  setReadOnly,
 } = useHtmmStore();
 ```
 
@@ -263,6 +291,8 @@ const cloned = cloneNode(node, true);
 | `Ctrl+V` / `Cmd+V` | ペースト |
 | Double Click | ノードを編集 |
 
+※ 読み込み専用モード（`readOnly={true}`）のときは、上記のうち編集系（追加・削除・変更・並び替え・ペースト・Undo/Redo など）は無効になります。矢印キーでの移動と `Space` による折りたたみ、`Ctrl+C` によるコピーは利用できます。
+
 ## スタイリング例
 
 ```tsx
@@ -294,6 +324,7 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 - 公開ファイルリストの不備を修正。
 - 複数のマインドマップを配置できるようになった。
 - オブジェクト名称の変更。
+- 読み込み専用（ReadOnly）モードを追加。`<HtmmMap readOnly />` または `createHtmmStore({ readOnly: true })` で、ノードの追加・変更・削除・並び替え・ペーストなどを無効にしつつ、選択・開閉・ズーム・コピーは利用可能。
 
 ### @tomk79/htmm v0.0.1 (2026年2月15日)
 

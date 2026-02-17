@@ -14,7 +14,7 @@ export { EdgeView } from './components/EdgeView';
 
 // Store
 export { useHtmmStore } from './store/htmm-store';
-export type { HtmmState, HtmmActions } from './store/htmm-store';
+export type { HtmmState, HtmmActions, HtmmStoreInitialOptions } from './store/htmm-store';
 
 // IO
 export { parseMindMapXML, loadMindMapFile, loadMindMapURL } from './io/parser';

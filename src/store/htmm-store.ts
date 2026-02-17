@@ -30,6 +30,9 @@ export interface HtmmState {
   // Edit mode
   editable: boolean;
   
+  // Read-only mode: when true, node edit operations (add/change/delete/reorder/paste) are disabled; folding is allowed
+  readOnly: boolean;
+  
   // History
   history: MindMapData[];
   historyIndex: number;
@@ -110,21 +113,29 @@ export interface HtmmActions {
   
   // Config
   setEditable: (editable: boolean) => void;
+  setReadOnly: (readOnly: boolean) => void;
 }
 
 /** Immer middleware: set accepts a producer (state) => void or partial state */
 type SetStateInternal = (partial: Partial<HtmmState & HtmmActions> | ((s: HtmmState & HtmmActions) => void)) => void;
 type GetStateInternal = () => HtmmState & HtmmActions;
 
+/** Optional initial state overrides when creating a store (e.g. readOnly) */
+export interface HtmmStoreInitialOptions {
+  readOnly?: boolean;
+}
+
 /**
  * Store slice creator - shared by default store and createHtmmStore()
  */
-function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): HtmmState & HtmmActions {
+function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, initialOverrides?: HtmmStoreInitialOptions): HtmmState & HtmmActions {
+  const readOnlyInitial = initialOverrides?.readOnly ?? false;
   return {
     // Initial state
     mapData: null,
     selectedNodeIds: new Set(),
     editable: true,
+    readOnly: readOnlyInitial,
     history: [],
     historyIndex: -1,
     maxHistorySize: 50,
@@ -134,15 +145,20 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
     clipboard: null,
     
     // Map operations
-    loadMap: (data) => set((state) => {
+    loadMap: (data) => {
+      if (get().readOnly) return;
+      set((state) => {
       const copy = JSON.parse(JSON.stringify(data)) as MindMapData;
       state.mapData = copy;
       state.selectedNodeIds.clear();
       state.history = [JSON.parse(JSON.stringify(copy)) as MindMapData];
       state.historyIndex = 0;
-    }),
+    });
+    },
     
-    newMap: (rootText = 'New Mind Map') => set((state) => {
+    newMap: (rootText = 'New Mind Map') => {
+      if (get().readOnly) return;
+      set((state) => {
       const data: MindMapData = {
         version: '1.0.1',
         root: createRootNode(rootText),
@@ -152,10 +168,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       state.selectedNodeIds.clear();
       state.history = [JSON.parse(JSON.stringify(copy)) as MindMapData];
       state.historyIndex = 0;
-    }),
+    });
+    },
     
     // Node operations
     addChild: (parentId, text = '') => {
+      if (get().readOnly) return undefined;
       let newNodeId: string | undefined;
       set((state) => {
         if (!state.mapData) return;
@@ -194,6 +212,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
     },
     
     addSibling: (siblingId, before = false) => {
+      if (get().readOnly) return undefined;
       let newNodeId: string | undefined;
       set((state) => {
         if (!state.mapData) return;
@@ -226,7 +245,9 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       return newNodeId;
     },
     
-    deleteNode: (nodeId) => set((state) => {
+    deleteNode: (nodeId) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData || state.mapData.root.id === nodeId) return; // Can't delete root
       
       const parent = findParentNode(state.mapData.root, nodeId);
@@ -263,9 +284,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       }
       
       get().pushHistory();
-    }),
+    });
+    },
     
-    editNode: (nodeId, text) => set((state) => {
+    editNode: (nodeId, text) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -275,9 +299,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       node.modified = Date.now();
       
       get().pushHistory();
-    }),
+    });
+    },
     
-    moveNode: (nodeId, newParentId, index) => set((state) => {
+    moveNode: (nodeId, newParentId, index) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData || nodeId === state.mapData.root.id) return;
       
       const oldParent = findParentNode(state.mapData.root, nodeId);
@@ -300,7 +327,8 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       newParent.children.splice(insertIndex, 0, node);
       
       get().pushHistory();
-    }),
+    });
+    },
     
     // Folding
     toggleFolded: (nodeId) => set((state) => {
@@ -349,7 +377,9 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
     }),
     
     // Styling
-    setNodeColor: (nodeId, color) => set((state) => {
+    setNodeColor: (nodeId, color) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -357,9 +387,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       node.color = color;
       get().pushHistory();
-    }),
+    });
+    },
     
-    setNodeBackgroundColor: (nodeId, color) => set((state) => {
+    setNodeBackgroundColor: (nodeId, color) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -367,9 +400,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       node.backgroundColor = color;
       get().pushHistory();
-    }),
+    });
+    },
     
-    setFont: (nodeId, font) => set((state) => {
+    setFont: (nodeId, font) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -381,9 +417,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       Object.assign(node.font, font);
       get().pushHistory();
-    }),
+    });
+    },
     
-    setNodeStyle: (nodeId, style) => set((state) => {
+    setNodeStyle: (nodeId, style) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -391,10 +430,13 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       node.style = style;
       get().pushHistory();
-    }),
+    });
+    },
     
     // Icons
-    addIcon: (nodeId, iconName) => set((state) => {
+    addIcon: (nodeId, iconName) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -410,9 +452,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       }
       
       get().pushHistory();
-    }),
+    });
+    },
     
-    removeIcon: (nodeId, iconName) => set((state) => {
+    removeIcon: (nodeId, iconName) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -426,9 +471,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       }
       
       get().pushHistory();
-    }),
+    });
+    },
     
-    clearIcons: (nodeId) => set((state) => {
+    clearIcons: (nodeId) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -436,10 +484,13 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       delete node.icons;
       get().pushHistory();
-    }),
+    });
+    },
     
     // Links
-    setLink: (nodeId, url) => set((state) => {
+    setLink: (nodeId, url) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -447,9 +498,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       node.link = url;
       get().pushHistory();
-    }),
+    });
+    },
     
-    removeLink: (nodeId) => set((state) => {
+    removeLink: (nodeId) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -457,10 +511,13 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       delete node.link;
       get().pushHistory();
-    }),
+    });
+    },
     
     // Arrow Links
-    addArrowLink: (sourceId, targetId, arrowLink) => set((state) => {
+    addArrowLink: (sourceId, targetId, arrowLink) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const sourceNode = findNodeById(state.mapData.root, sourceId);
@@ -487,9 +544,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       sourceNode.arrowLinks.push(newArrowLink);
       get().pushHistory();
-    }),
+    });
+    },
     
-    removeArrowLink: (sourceId, targetId) => set((state) => {
+    removeArrowLink: (sourceId, targetId) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const sourceNode = findNodeById(state.mapData.root, sourceId);
@@ -501,9 +561,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
         sourceNode.arrowLinks.splice(index, 1);
         get().pushHistory();
       }
-    }),
+    });
+    },
     
-    updateArrowLink: (sourceId, targetId, arrowLink) => set((state) => {
+    updateArrowLink: (sourceId, targetId, arrowLink) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const sourceNode = findNodeById(state.mapData.root, sourceId);
@@ -519,10 +582,13 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
         if (arrowLink.endInclination !== undefined) link.endInclination = arrowLink.endInclination;
         get().pushHistory();
       }
-    }),
+    });
+    },
     
     // Cloud
-    setCloud: (nodeId, color) => set((state) => {
+    setCloud: (nodeId, color) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -530,9 +596,12 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       node.cloud = color ? { color } : {};
       get().pushHistory();
-    }),
+    });
+    },
     
-    removeCloud: (nodeId) => set((state) => {
+    removeCloud: (nodeId) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -540,7 +609,8 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       delete node.cloud;
       get().pushHistory();
-    }),
+    });
+    },
     
     // Selection
     selectNode: (nodeId, addToSelection = false) => set((state) => {
@@ -555,7 +625,9 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
     }),
     
     // Clipboard
-    cutNode: (nodeId) => set((state) => {
+    cutNode: (nodeId) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData || state.mapData.root.id === nodeId) return;
       
       const node = findNodeById(state.mapData.root, nodeId);
@@ -563,7 +635,8 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       
       state.clipboard = cloneNode(node, true);
       get().deleteNode(nodeId);
-    }),
+    });
+    },
     
     copyNode: (nodeId) => set((state) => {
       if (!state.mapData) return;
@@ -574,7 +647,9 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       state.clipboard = cloneNode(node, true);
     }),
     
-    pasteNode: (parentId) => set((state) => {
+    pasteNode: (parentId) => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData || !state.clipboard) return;
       
       const parent = findNodeById(state.mapData.root, parentId);
@@ -588,24 +663,33 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       parent.children.push(cloned);
       
       get().pushHistory();
-    }),
+    });
+    },
     
     // History
-    undo: () => set((state) => {
+    undo: () => {
+      if (get().readOnly) return;
+      set((state) => {
       if (state.historyIndex > 0) {
         state.historyIndex--;
         state.mapData = JSON.parse(JSON.stringify(state.history[state.historyIndex]));
       }
-    }),
+    });
+    },
     
-    redo: () => set((state) => {
+    redo: () => {
+      if (get().readOnly) return;
+      set((state) => {
       if (state.historyIndex < state.history.length - 1) {
         state.historyIndex++;
         state.mapData = JSON.parse(JSON.stringify(state.history[state.historyIndex]));
       }
-    }),
+    });
+    },
     
-    pushHistory: () => set((state) => {
+    pushHistory: () => {
+      if (get().readOnly) return;
+      set((state) => {
       if (!state.mapData) return;
       
       // Remove any history after current index
@@ -620,7 +704,8 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
       } else {
         state.historyIndex++;
       }
-    }),
+    });
+    },
     
     // View
     setZoom: (zoom) => set((state) => {
@@ -642,18 +727,21 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): Htm
     setEditable: (editable) => set((state) => {
       state.editable = editable;
     }),
+    setReadOnly: (readOnly) => set((state) => {
+      state.readOnly = readOnly;
+    }),
   };
 }
 
 /** Default store for single-map usage (no Provider / no initialMapData). Exported for HtmmMap internal use. */
-export const defaultStore = create<HtmmState & HtmmActions>()(immer(createHtmmStoreSlice));
+export const defaultStore = create<HtmmState & HtmmActions>()(immer((set, get) => createHtmmStoreSlice(set, get)));
 
 /**
  * Create a new store instance (internal use only; for multi-instance, use HtmmMap with initialMapData).
  * Exported for HtmmMap.tsx but not re-exported from index.ts.
  */
-export function createHtmmStore(): HtmmStoreApi {
-  return create<HtmmState & HtmmActions>()(immer(createHtmmStoreSlice)) as unknown as HtmmStoreApi;
+export function createHtmmStore(options?: HtmmStoreInitialOptions): HtmmStoreApi {
+  return create<HtmmState & HtmmActions>()(immer((set, get) => createHtmmStoreSlice(set, get, options))) as unknown as HtmmStoreApi;
 }
 
 /** Context for injecting a store so descendants use it instead of defaultStore */

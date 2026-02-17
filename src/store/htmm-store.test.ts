@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useHtmmStore } from './htmm-store';
+import { useHtmmStore, createHtmmStore } from './htmm-store';
 import { createRootNode } from '../models/MindMapNode';
 import type { MindMapData } from '../types/mindmap';
 
@@ -196,6 +196,75 @@ describe('Htmm Store', () => {
       expect(getState().mapData!.root.font?.size).toBe(16);
       expect(getState().mapData!.root.font?.bold).toBe(true);
       expect(getState().mapData!.root.style).toBe('bubble');
+    });
+  });
+
+  describe('ReadOnly mode', () => {
+    it('addChild returns undefined and does not add node when readOnly', () => {
+      const store = createHtmmStore();
+      store.getState().newMap('Test');
+      store.getState().addChild(store.getState().mapData!.root.id, 'Child');
+      store.getState().setReadOnly(true);
+      const rootId = store.getState().mapData!.root.id;
+      const id = store.getState().addChild(rootId, 'New');
+      expect(id).toBeUndefined();
+      expect(store.getState().mapData!.root.children).toHaveLength(1);
+      expect(store.getState().mapData!.root.children![0].text).toBe('Child');
+    });
+
+    it('deleteNode is no-op when readOnly', () => {
+      const store = createHtmmStore();
+      store.getState().newMap('Test');
+      store.getState().addChild(store.getState().mapData!.root.id, 'Child');
+      store.getState().setReadOnly(true);
+      const childId = store.getState().mapData!.root.children![0].id;
+      store.getState().deleteNode(childId);
+      expect(store.getState().mapData!.root.children).toHaveLength(1);
+    });
+
+    it('editNode is no-op when readOnly', () => {
+      const store = createHtmmStore();
+      store.getState().newMap('Test');
+      store.getState().addChild(store.getState().mapData!.root.id, 'Child');
+      store.getState().setReadOnly(true);
+      const childId = store.getState().mapData!.root.children![0].id;
+      store.getState().editNode(childId, 'Changed');
+      expect(store.getState().mapData!.root.children![0].text).toBe('Child');
+    });
+
+    it('pasteNode is no-op when readOnly', () => {
+      const store = createHtmmStore();
+      store.getState().newMap('Test');
+      store.getState().addChild(store.getState().mapData!.root.id, 'Child');
+      store.getState().setReadOnly(true);
+      const rootId = store.getState().mapData!.root.id;
+      const childId = store.getState().mapData!.root.children![0].id;
+      store.getState().copyNode(childId);
+      store.getState().pasteNode(rootId);
+      expect(store.getState().mapData!.root.children).toHaveLength(1);
+    });
+
+    it('toggleFolded works when readOnly', () => {
+      const store = createHtmmStore();
+      store.getState().newMap('Test');
+      store.getState().addChild(store.getState().mapData!.root.id, 'Child');
+      store.getState().setReadOnly(true);
+      const childId = store.getState().mapData!.root.children![0].id;
+      expect(store.getState().mapData!.root.children![0].folded).toBeFalsy();
+      store.getState().toggleFolded(childId);
+      expect(store.getState().mapData!.root.children![0].folded).toBe(true);
+      store.getState().toggleFolded(childId);
+      expect(store.getState().mapData!.root.children![0].folded).toBe(false);
+    });
+
+    it('createHtmmStore({ readOnly: true }) creates store that rejects edits', () => {
+      const store = createHtmmStore({ readOnly: true });
+      store.getState().setReadOnly(false);
+      store.getState().newMap('RO');
+      const rootId = store.getState().mapData!.root.id;
+      store.getState().setReadOnly(true);
+      expect(store.getState().addChild(rootId, 'X')).toBeUndefined();
+      expect(store.getState().mapData!.root.children).toHaveLength(0);
     });
   });
 
