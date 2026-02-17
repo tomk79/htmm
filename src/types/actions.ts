@@ -1,5 +1,5 @@
 /**
- * FreeMind Web - Action Types
+ * htmm - Action Types
  * Based on FreeMind's action system (MindMapController actions)
  */
 

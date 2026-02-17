@@ -1,13 +1,13 @@
 /**
  * Mind Map Layout Engine
- * Based on FreeMind's NodeViewLayout algorithm
+ * Based on FreeMind NodeViewLayout algorithm (for .mm compatibility)
  */
 
 import type { MindMapNode, LayoutNode } from '../types/mindmap';
 import { isFolded } from '../models/MindMapNode';
 
 /**
- * Layout constants (matching FreeMind defaults)
+ * Layout constants (matching .mm / FreeMind defaults)
  */
 export const LAYOUT_CONSTANTS = {
   DEFAULT_HGAP: 20,      // Horizontal gap from parent

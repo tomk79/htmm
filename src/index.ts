@@ -8,17 +8,17 @@ import { injectStyles } from './inject-styles'
 injectStyles()
 
 // Components
-export { FreeMindMap } from './components/FreeMindMap';
+export { HtmmMap } from './components/HtmmMap';
 export { NodeView } from './components/NodeView';
 export { EdgeView } from './components/EdgeView';
 
 // Store
-export { useFreeMindStore } from './store/freemind-store';
-export type { FreeMindState, FreeMindActions } from './store/freemind-store';
+export { useHtmmStore } from './store/htmm-store';
+export type { HtmmState, HtmmActions } from './store/htmm-store';
 
 // IO
-export { parseFreeMindXML, loadMindMapFile, loadMindMapURL } from './io/parser';
-export { generateFreeMindXML, saveMindMapFile, getMindMapBlob } from './io/generator';
+export { parseMindMapXML, loadMindMapFile, loadMindMapURL } from './io/parser';
+export { generateMindMapXML, saveMindMapFile, getMindMapBlob } from './io/generator';
 
 // Models
 export {

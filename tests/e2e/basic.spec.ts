@@ -3,17 +3,17 @@ import { test, expect } from '@playwright/test';
 
 const FIXTURE_MM = path.join(process.cwd(), 'tests', 'e2e', 'fixtures', 'sample.mm');
 
-test.describe('FreeMind Web - Basic Functionality', () => {
+test.describe('htmm - Basic Functionality', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
   test('should load the application', async ({ page }) => {
-    await expect(page).toHaveTitle(/FreeMind Web/);
+    await expect(page).toHaveTitle(/htmm/);
   });
 
   test('should display the mind map', async ({ page }) => {
-    const mindMap = page.locator('.freemind-map');
+    const mindMap = page.locator('.htmm-map');
     await expect(mindMap).toBeVisible();
   });
 
@@ -24,7 +24,7 @@ test.describe('FreeMind Web - Basic Functionality', () => {
   });
 });
 
-test.describe('FreeMind Web - Node Operations', () => {
+test.describe('htmm - Node Operations', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     // Click on the root node to select it
@@ -88,7 +88,7 @@ test.describe('FreeMind Web - Node Operations', () => {
   });
 });
 
-test.describe('FreeMind Web - Keyboard Navigation', () => {
+test.describe('htmm - Keyboard Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     // Click on the root node
@@ -132,7 +132,7 @@ test.describe('FreeMind Web - Keyboard Navigation', () => {
   });
 });
 
-test.describe('FreeMind Web - Undo/Redo', () => {
+test.describe('htmm - Undo/Redo', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.click('.node-view.root');
@@ -173,13 +173,13 @@ test.describe('FreeMind Web - Undo/Redo', () => {
   });
 });
 
-test.describe('FreeMind Web - Accessibility', () => {
+test.describe('htmm - Accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
   test('should have proper ARIA attributes', async ({ page }) => {
-    const mindMap = page.locator('.freemind-map');
+    const mindMap = page.locator('.htmm-map');
     await expect(mindMap).toHaveAttribute('role', 'tree');
     
     const rootNode = page.locator('.node-view.root');
@@ -188,7 +188,7 @@ test.describe('FreeMind Web - Accessibility', () => {
   });
 
   test('should support keyboard navigation', async ({ page }) => {
-    const mindMap = page.locator('.freemind-map');
+    const mindMap = page.locator('.htmm-map');
     await mindMap.focus();
     
     // Tab should work to add nodes
@@ -201,7 +201,7 @@ test.describe('FreeMind Web - Accessibility', () => {
   });
 });
 
-test.describe('FreeMind Web - Drag and Drop', () => {
+test.describe('htmm - Drag and Drop', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
     await page.click('.node-view.root');
@@ -231,13 +231,13 @@ test.describe('FreeMind Web - Drag and Drop', () => {
   });
 });
 
-test.describe('FreeMind Web - File Load and Save', () => {
+test.describe('htmm - File Load and Save', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
   test('should load .mm file and display content', async ({ page }) => {
-    await expect(page.locator('.freemind-map')).toBeVisible();
+    await expect(page.locator('.htmm-map')).toBeVisible();
     const fileInput = page.getByTestId('file-input');
     await fileInput.setInputFiles(FIXTURE_MM);
     await page.waitForTimeout(500);

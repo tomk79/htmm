@@ -1,6 +1,6 @@
 /**
- * FreeMind XML Generator
- * Generates .mm (FreeMind) files from MindMapData objects
+ * Mind map XML Generator
+ * Generates .mm (FreeMind-compatible) files from MindMapData objects
  */
 
 import type {
@@ -17,9 +17,9 @@ import type {
 } from '../types/mindmap';
 
 /**
- * Generate FreeMind .mm XML string from MindMapData
+ * Generate .mm mind map XML string from MindMapData
  */
-export function generateFreeMindXML(data: MindMapData): string {
+export function generateMindMapXML(data: MindMapData): string {
   const doc = document.implementation.createDocument('', '', null);
   
   const mapElement = doc.createElement('map');
@@ -322,7 +322,7 @@ function generateAttributeLayoutElement(doc: Document, layout: AttributeLayoutIn
  * Save MindMapData as .mm file (download)
  */
 export function saveMindMapFile(data: MindMapData, filename: string = 'mindmap.mm'): void {
-  const xmlString = generateFreeMindXML(data);
+  const xmlString = generateMindMapXML(data);
   const blob = new Blob([xmlString], { type: 'application/xml' });
   const url = URL.createObjectURL(blob);
   
@@ -338,6 +338,6 @@ export function saveMindMapFile(data: MindMapData, filename: string = 'mindmap.m
  * Get XML string as Blob
  */
 export function getMindMapBlob(data: MindMapData): Blob {
-  const xmlString = generateFreeMindXML(data);
+  const xmlString = generateMindMapXML(data);
   return new Blob([xmlString], { type: 'application/xml' });
 }

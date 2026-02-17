@@ -5,7 +5,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import type { LayoutNode } from '../types/mindmap';
-import { useFreeMindStore } from '../store/freemind-store';
+import { useHtmmStore } from '../store/htmm-store';
 import { hasChildren } from '../models/MindMapNode';
 import { getIconEmoji } from '../utils/icons';
 import { RichContentEditor } from './RichContentEditor';
@@ -46,7 +46,7 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
   onDragEnd,
   dragState,
 }) => {
-  const { selectNode, toggleFolded, editable } = useFreeMindStore();
+  const { selectNode, toggleFolded, editable } = useHtmmStore();
   const inputRef = useRef<HTMLDivElement>(null);
   const cancelledRef = useRef<boolean>(false);
   const originalTextRef = useRef<string>('');

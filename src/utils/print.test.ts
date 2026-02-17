@@ -18,7 +18,7 @@ describe('Print utilities', () => {
     
     // Create a mock mind map element
     const mapElement = document.createElement('div');
-    mapElement.className = 'freemind-map';
+    mapElement.className = 'htmm-map';
     document.body.appendChild(mapElement);
   });
 
@@ -57,7 +57,7 @@ describe('Print utilities', () => {
     it('applies scale transformation', () => {
       printMap({ scale: 0.8, showDialog: false });
       
-      const mapElement = document.querySelector('.freemind-map') as HTMLElement;
+      const mapElement = document.querySelector('.htmm-map') as HTMLElement;
       expect(mapElement.style.transform).toContain('scale(0.8)');
       
       // Cleanup
@@ -95,7 +95,7 @@ describe('Print utilities', () => {
     });
 
     it('cleans up after print', () => {
-      const mapElement = document.querySelector('.freemind-map') as HTMLElement;
+      const mapElement = document.querySelector('.htmm-map') as HTMLElement;
       const originalTransform = mapElement.style.transform;
       
       printMap({ scale: 1.5, showDialog: false });
@@ -146,7 +146,7 @@ describe('Print utilities', () => {
 
   describe('estimatePageCount', () => {
     it('returns 1 for small maps', () => {
-      const mapElement = document.querySelector('.freemind-map') as HTMLElement;
+      const mapElement = document.querySelector('.htmm-map') as HTMLElement;
       
       // Mock getBoundingClientRect
       vi.spyOn(mapElement, 'getBoundingClientRect').mockReturnValue({
@@ -165,7 +165,7 @@ describe('Print utilities', () => {
     });
 
     it('returns multiple pages for large maps', () => {
-      const mapElement = document.querySelector('.freemind-map') as HTMLElement;
+      const mapElement = document.querySelector('.htmm-map') as HTMLElement;
       
       // Mock a large map
       vi.spyOn(mapElement, 'getBoundingClientRect').mockReturnValue({
@@ -191,7 +191,7 @@ describe('Print utilities', () => {
     });
 
     it('calculates correctly for different paper sizes', () => {
-      const mapElement = document.querySelector('.freemind-map') as HTMLElement;
+      const mapElement = document.querySelector('.htmm-map') as HTMLElement;
       
       vi.spyOn(mapElement, 'getBoundingClientRect').mockReturnValue({
         width: 1500,

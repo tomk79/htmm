@@ -1,6 +1,6 @@
 /**
  * MindMapNode Model
- * Based on FreeMind's NodeAdapter and MindMapNodeModel
+ * Based on FreeMind NodeAdapter / MindMapNodeModel (for .mm compatibility)
  */
 
 import type { MindMapNode } from '../types/mindmap';

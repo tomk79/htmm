@@ -4,7 +4,7 @@
  */
 
 import nodeViewCss from './components/NodeView.css?inline'
-import freeMindMapCss from './components/FreeMindMap.css?inline'
+import htmmMapCss from './components/HtmmMap.css?inline'
 import attributesPanelCss from './components/AttributesPanel.css?inline'
 import richContentEditorCss from './components/RichContentEditor.module.css?inline'
 import printCss from './styles/print.css?inline'
@@ -17,7 +17,7 @@ export function injectStyles(): void {
 
   const combined = [
     nodeViewCss,
-    freeMindMapCss,
+    htmmMapCss,
     attributesPanelCss,
     richContentEditorCss,
     printCss,

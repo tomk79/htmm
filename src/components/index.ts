@@ -2,7 +2,7 @@
  * Component exports
  */
 
-export { FreeMindMap } from './FreeMindMap';
+export { HtmmMap } from './HtmmMap';
 export { NodeView } from './NodeView';
 export { EdgeView } from './EdgeView';
 export { ArrowLinkView } from './ArrowLinkView';

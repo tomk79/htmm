@@ -7,7 +7,7 @@ import DOMPurify from 'dompurify';
 import type { Config } from 'dompurify';
 
 /**
- * Default DOMPurify configuration for FreeMind content
+ * Default DOMPurify configuration for mind map content
  */
 const DEFAULT_CONFIG: Config = {
   // Allow common HTML tags used in rich text

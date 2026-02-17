@@ -1,10 +1,10 @@
 /**
- * Tests for FreeMindMap component (single and multi-instance)
+ * Tests for HtmmMap component (single and multi-instance)
  */
 
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { FreeMindMap } from './FreeMindMap';
+import { HtmmMap } from './HtmmMap';
 import { createRootNode } from '../models/MindMapNode';
 import type { MindMapData } from '../types/mindmap';
 
@@ -15,7 +15,7 @@ function makeMapData(rootText: string): MindMapData {
   };
 }
 
-describe('FreeMindMap', () => {
+describe('HtmmMap', () => {
   describe('with initialMapData (multi-instance)', () => {
     it('renders two maps with different data independently', () => {
       const mapData1 = makeMapData('Map One');
@@ -23,8 +23,8 @@ describe('FreeMindMap', () => {
 
       render(
         <div>
-          <FreeMindMap initialMapData={mapData1} width={400} height={300} />
-          <FreeMindMap initialMapData={mapData2} width={400} height={300} />
+          <HtmmMap initialMapData={mapData1} width={400} height={300} />
+          <HtmmMap initialMapData={mapData2} width={400} height={300} />
         </div>
       );
 
@@ -40,8 +40,8 @@ describe('FreeMindMap', () => {
 
       render(
         <div>
-          <FreeMindMap initialMapData={mapDataA} width={400} height={300} />
-          <FreeMindMap initialMapData={mapDataB} width={400} height={300} />
+          <HtmmMap initialMapData={mapDataA} width={400} height={300} />
+          <HtmmMap initialMapData={mapDataB} width={400} height={300} />
         </div>
       );
 

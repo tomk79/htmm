@@ -1,10 +1,10 @@
 /**
- * FreeMindMap Component
+ * HtmmMap Component
  * Main component for rendering mind maps
  */
 
 import React, { useEffect, useState, useCallback, useRef, useContext } from 'react';
-import { useFreeMindStore, FreeMindStoreContext, createFreeMindStore, defaultStore } from '../store/freemind-store';
+import { useHtmmStore, HtmmStoreContext, createHtmmStore, defaultStore } from '../store/htmm-store';
 import { calculateLayout } from '../layout/layout-engine';
 import { NodeView } from './NodeView';
 import { EdgeView } from './EdgeView';
@@ -24,18 +24,18 @@ import {
   collectAllArrowLinks
 } from '../models/MindMapNode';
 
-interface FreeMindMapInnerProps {
+interface HtmmMapInnerProps {
   width?: number | string;
   height?: number | string;
   className?: string;
 }
 
-const FreeMindMapInner: React.FC<FreeMindMapInnerProps> = ({
+const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   width = '100%',
   height = '600px',
   className = '',
 }) => {
-  const contextStore = useContext(FreeMindStoreContext);
+  const contextStore = useContext(HtmmStoreContext);
   const store = contextStore ?? defaultStore;
 
   const {
@@ -60,7 +60,7 @@ const FreeMindMapInner: React.FC<FreeMindMapInnerProps> = ({
     setZoom,
     setPan,
     resetView,
-  } = useFreeMindStore();
+  } = useHtmmStore();
   const [layoutNodes, setLayoutNodes] = useState<LayoutNode[]>([]);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const previousSelectedNodeIdRef = useRef<string | null>(null);
@@ -566,7 +566,7 @@ const FreeMindMapInner: React.FC<FreeMindMapInnerProps> = ({
   
   if (!mapData) {
     return (
-      <div className="freemind-map-empty" style={{ width, height }}>
+      <div className="htmm-map-empty" style={{ width, height }}>
         <p>No mind map loaded. Call loadMap() or newMap() to get started.</p>
       </div>
     );
@@ -616,7 +616,7 @@ const FreeMindMapInner: React.FC<FreeMindMapInnerProps> = ({
   return (
     <div 
       ref={containerRef}
-      className={`freemind-map ${className}`} 
+      className={`htmm-map ${className}`} 
       style={viewportStyle}
       role="tree"
       aria-label={`Mind map: ${mapTitle}`}
@@ -628,7 +628,7 @@ const FreeMindMapInner: React.FC<FreeMindMapInnerProps> = ({
     >
       <div
         ref={canvasRef}
-        className="freemind-canvas"
+        className="htmm-canvas"
         style={canvasStyle}
         aria-live="polite"
         aria-atomic="false"
@@ -677,7 +677,7 @@ const FreeMindMapInner: React.FC<FreeMindMapInnerProps> = ({
         </div>
       </div>
       <div
-        className="freemind-map-zoom-controls"
+        className="htmm-map-zoom-controls"
         aria-label="Zoom controls"
         onTouchStart={(e) => e.stopPropagation()}
         onTouchMove={(e) => e.stopPropagation()}
@@ -690,7 +690,7 @@ const FreeMindMapInner: React.FC<FreeMindMapInnerProps> = ({
   );
 };
 
-interface FreeMindMapProps {
+interface HtmmMapProps {
   width?: number | string;
   height?: number | string;
   className?: string;
@@ -698,15 +698,15 @@ interface FreeMindMapProps {
   initialMapData?: MindMapData;
 }
 
-export const FreeMindMap: React.FC<FreeMindMapProps> = ({
+export const HtmmMap: React.FC<HtmmMapProps> = ({
   width = '100%',
   height = '600px',
   className = '',
   initialMapData,
 }) => {
-  const storeRef = useRef<ReturnType<typeof createFreeMindStore> | null>(null);
+  const storeRef = useRef<ReturnType<typeof createHtmmStore> | null>(null);
   if (initialMapData != null && storeRef.current === null) {
-    storeRef.current = createFreeMindStore();
+    storeRef.current = createHtmmStore();
   }
   const internalStore = storeRef.current;
 
@@ -716,13 +716,13 @@ export const FreeMindMap: React.FC<FreeMindMapProps> = ({
     }
   }, [initialMapData, internalStore]);
 
-  const inner = <FreeMindMapInner width={width} height={height} className={className} />;
+  const inner = <HtmmMapInner width={width} height={height} className={className} />;
 
   if (initialMapData != null && internalStore != null) {
     return (
-      <FreeMindStoreContext.Provider value={internalStore}>
+      <HtmmStoreContext.Provider value={internalStore}>
         {inner}
-      </FreeMindStoreContext.Provider>
+      </HtmmStoreContext.Provider>
     );
   }
   return inner;

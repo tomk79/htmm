@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { parseFreeMindXML } from '../io/parser';
-import { generateFreeMindXML } from '../io/generator';
+import { parseMindMapXML } from '../io/parser';
+import { generateMindMapXML } from '../io/generator';
 import type { MindMapData } from '../types/mindmap';
 
 describe('XML Parser and Generator', () => {
@@ -27,9 +27,9 @@ describe('XML Parser and Generator', () => {
   </node>
 </map>`;
 
-  describe('parseFreeMindXML', () => {
+  describe('parseMindMapXML', () => {
     it('should parse a simple mind map', () => {
-      const result = parseFreeMindXML(simpleXML);
+      const result = parseMindMapXML(simpleXML);
       
       expect(result).toBeDefined();
       expect(result.root.text).toBe('Root Node');
@@ -42,7 +42,7 @@ describe('XML Parser and Generator', () => {
     });
 
     it('should parse node styles', () => {
-      const result = parseFreeMindXML(complexXML);
+      const result = parseMindMapXML(complexXML);
       
       expect(result.root.backgroundColor).toBe('#FF0000');
       expect(result.root.color).toBe('#FFFFFF');
@@ -52,7 +52,7 @@ describe('XML Parser and Generator', () => {
     });
 
     it('should parse edge styles', () => {
-      const result = parseFreeMindXML(complexXML);
+      const result = parseMindMapXML(complexXML);
       
       expect(result.root.edge?.color).toBe('#0000FF');
       expect(result.root.edge?.style).toBe('bezier');
@@ -60,7 +60,7 @@ describe('XML Parser and Generator', () => {
     });
 
     it('should parse icons and clouds', () => {
-      const result = parseFreeMindXML(complexXML);
+      const result = parseMindMapXML(complexXML);
       
       const childWithIcon = result.root.children![0];
       expect(childWithIcon.icons).toHaveLength(1);
@@ -69,7 +69,7 @@ describe('XML Parser and Generator', () => {
     });
 
     it('should parse folded nodes', () => {
-      const result = parseFreeMindXML(complexXML);
+      const result = parseMindMapXML(complexXML);
       
       const foldedChild = result.root.children![1];
       expect(foldedChild.folded).toBe(true);
@@ -77,18 +77,18 @@ describe('XML Parser and Generator', () => {
     });
 
     it('should handle empty/invalid XML gracefully', () => {
-      expect(() => parseFreeMindXML('')).toThrow();
-      expect(() => parseFreeMindXML('<invalid>')).toThrow();
+      expect(() => parseMindMapXML('')).toThrow();
+      expect(() => parseMindMapXML('<invalid>')).toThrow();
     });
 
     it('should parse version information', () => {
-      const result = parseFreeMindXML(simpleXML);
+      const result = parseMindMapXML(simpleXML);
       
       expect(result.version).toBe('1.0.1');
     });
   });
 
-  describe('generateFreeMindXML', () => {
+  describe('generateMindMapXML', () => {
     it('should generate valid XML for a simple mind map', () => {
       const data: MindMapData = {
         version: '1.0.1',
@@ -118,7 +118,7 @@ describe('XML Parser and Generator', () => {
         },
       };
       
-      const xml = generateFreeMindXML(data);
+      const xml = generateMindMapXML(data);
       
       expect(xml).toContain('<?xml version="1.0" encoding="UTF-8"?>');
       expect(xml).toContain('<map version="1.0.1">');
@@ -153,7 +153,7 @@ describe('XML Parser and Generator', () => {
         },
       };
       
-      const xml = generateFreeMindXML(data);
+      const xml = generateMindMapXML(data);
       
       expect(xml).toContain('BACKGROUND_COLOR="#FF0000"');
       expect(xml).toContain('COLOR="#FFFFFF"');
@@ -173,7 +173,7 @@ describe('XML Parser and Generator', () => {
         },
       };
       
-      const xml = generateFreeMindXML(data);
+      const xml = generateMindMapXML(data);
       
       expect(xml).toContain('&lt;special&gt;');
       expect(xml).toContain('&amp;');
@@ -183,9 +183,9 @@ describe('XML Parser and Generator', () => {
 
   describe('Round-trip conversion', () => {
     it('should preserve data through parse and generate cycle', () => {
-      const original = parseFreeMindXML(simpleXML);
-      const xml = generateFreeMindXML(original);
-      const parsed = parseFreeMindXML(xml);
+      const original = parseMindMapXML(simpleXML);
+      const xml = generateMindMapXML(original);
+      const parsed = parseMindMapXML(xml);
       
       expect(parsed.root.text).toBe(original.root.text);
       expect(parsed.root.children).toHaveLength(original.root.children!.length);
@@ -194,9 +194,9 @@ describe('XML Parser and Generator', () => {
     });
 
     it('should preserve complex styles through round-trip', () => {
-      const original = parseFreeMindXML(complexXML);
-      const xml = generateFreeMindXML(original);
-      const parsed = parseFreeMindXML(xml);
+      const original = parseMindMapXML(complexXML);
+      const xml = generateMindMapXML(original);
+      const parsed = parseMindMapXML(xml);
       
       expect(parsed.root.backgroundColor).toBe(original.root.backgroundColor);
       expect(parsed.root.color).toBe(original.root.color);

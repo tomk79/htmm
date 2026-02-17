@@ -1,6 +1,6 @@
 /**
- * FreeMind XML Parser
- * Parses .mm (FreeMind) files into MindMapData objects
+ * Mind map XML Parser
+ * Parses .mm (FreeMind-compatible) files into MindMapData objects
  */
 
 import type {
@@ -22,9 +22,9 @@ import type {
 } from '../types/mindmap';
 
 /**
- * Parse a FreeMind .mm file from XML string
+ * Parse a .mm mind map file from XML string
  */
-export function parseFreeMindXML(xmlString: string): MindMapData {
+export function parseMindMapXML(xmlString: string): MindMapData {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xmlString, 'text/xml');
   
@@ -36,14 +36,14 @@ export function parseFreeMindXML(xmlString: string): MindMapData {
   
   const mapElement = doc.querySelector('map');
   if (!mapElement) {
-    throw new Error('Invalid FreeMind file: missing <map> element');
+    throw new Error('Invalid mind map file: missing <map> element');
   }
   
   const version = mapElement.getAttribute('version') || '1.0.1';
   
   const rootNodeElement = mapElement.querySelector(':scope > node');
   if (!rootNodeElement) {
-    throw new Error('Invalid FreeMind file: missing root <node> element');
+    throw new Error('Invalid mind map file: missing root <node> element');
   }
   
   const root = parseNode(rootNodeElement);
@@ -319,7 +319,7 @@ function isEdgeWidth(value: string): value is EdgeWidth {
  */
 export async function loadMindMapFile(file: File): Promise<MindMapData> {
   const text = await file.text();
-  return parseFreeMindXML(text);
+  return parseMindMapXML(text);
 }
 
 /**
@@ -331,5 +331,5 @@ export async function loadMindMapURL(url: string): Promise<MindMapData> {
     throw new Error(`Failed to load mind map: ${response.statusText}`);
   }
   const text = await response.text();
-  return parseFreeMindXML(text);
+  return parseMindMapXML(text);
 }

@@ -6,8 +6,8 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { parseFreeMindXML } from './parser';
-import { generateFreeMindXML } from './generator';
+import { parseMindMapXML } from './parser';
+import { generateMindMapXML } from './generator';
 import type { MindMapNode } from '../types/mindmap';
 
 /** Minimal .mm similar to what FreeMind might export */
@@ -41,7 +41,7 @@ function assertTreeShape(actual: MindMapNode, expected: { text?: string; childCo
 describe('FreeMind compatibility', () => {
   describe('Parse FreeMind-style .mm', () => {
     it('should parse FreeMind-style file with CREATED/MODIFIED', () => {
-      const data = parseFreeMindXML(FREEMIND_STYLE_MM);
+      const data = parseMindMapXML(FREEMIND_STYLE_MM);
       expect(data.version).toBe('1.0.1');
       assertTreeShape(data.root, { text: 'Root', childCount: 2, childTexts: ['Child A', 'Child B'] });
       expect(data.root.created).toBe(1234567890000);
@@ -52,7 +52,7 @@ describe('FreeMind compatibility', () => {
     });
 
     it('should parse sample fixture used by E2E', () => {
-      const data = parseFreeMindXML(SAMPLE_MM);
+      const data = parseMindMapXML(SAMPLE_MM);
       assertTreeShape(data.root, { text: 'Loaded Map', childCount: 2, childTexts: ['Child A', 'Child B'] });
       expect(data.root.id).toBe('fixture-root');
     });
@@ -60,9 +60,9 @@ describe('FreeMind compatibility', () => {
 
   describe('Round-trip (FreeMind Web edited .mm remains valid)', () => {
     it('should preserve structure and key fields through parse -> generate -> parse', () => {
-      const first = parseFreeMindXML(FREEMIND_STYLE_MM);
-      const xml = generateFreeMindXML(first);
-      const second = parseFreeMindXML(xml);
+      const first = parseMindMapXML(FREEMIND_STYLE_MM);
+      const xml = generateMindMapXML(first);
+      const second = parseMindMapXML(xml);
 
       expect(second.version).toBe(first.version);
       expect(second.root.id).toBe(first.root.id);
@@ -76,9 +76,9 @@ describe('FreeMind compatibility', () => {
     });
 
     it('should produce parseable XML from parsed data (sample fixture)', () => {
-      const data = parseFreeMindXML(SAMPLE_MM);
-      const xml = generateFreeMindXML(data);
-      const reparsed = parseFreeMindXML(xml);
+      const data = parseMindMapXML(SAMPLE_MM);
+      const xml = generateMindMapXML(data);
+      const reparsed = parseMindMapXML(xml);
       assertTreeShape(reparsed.root, { text: 'Loaded Map', childCount: 2, childTexts: ['Child A', 'Child B'] });
     });
   });

@@ -1,11 +1,11 @@
 /**
  * Demo Application
- * Demonstrates FreeMind Web library usage
+ * Demonstrates htmm library usage
  */
 
 import React, { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
-import { FreeMindMap, useFreeMindStore, saveMindMapFile, loadMindMapFile } from '@tomk79/htmm';
+import { HtmmMap, useHtmmStore, saveMindMapFile, loadMindMapFile } from '@tomk79/htmm';
 import '@tomk79/htmm/styles/print.css';
 import './demo.css';
 
@@ -28,11 +28,11 @@ const DemoApp: React.FC = () => {
     setLink,
     setCloud,
     removeCloud,
-  } = useFreeMindStore();
+  } = useHtmmStore();
   
   useEffect(() => {
     // Create a sample mind map on mount
-    newMap('FreeMind Web Demo');
+    newMap('htmm Demo');
   }, [newMap]);
   
   useEffect(() => {
@@ -50,7 +50,7 @@ const DemoApp: React.FC = () => {
       
       // Use a timeout to ensure the children are added before we search for them
       setTimeout(() => {
-        const store = useFreeMindStore.getState();
+        const store = useHtmmStore.getState();
         if (store.mapData) {
           // Find the Features node and add sub-items
           const featuresNode = store.mapData.root.children?.find(n => n.text === 'Features');
@@ -178,7 +178,7 @@ const DemoApp: React.FC = () => {
   return (
     <div className="demo-app">
       <header className="demo-header">
-        <h1>FreeMind Web Demo</h1>
+        <h1>htmm Demo</h1>
         <p>A modern React library for FreeMind-compatible mind maps</p>
       </header>
       
@@ -252,7 +252,7 @@ const DemoApp: React.FC = () => {
       </div>
       
       <div className="demo-canvas">
-        <FreeMindMap width="100%" height="calc(100vh - 200px)" />
+        <HtmmMap width="100%" height="calc(100vh - 200px)" />
       </div>
       
       <footer className="demo-footer">

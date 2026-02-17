@@ -1,11 +1,11 @@
 /**
- * FreeMind Icon Utilities
- * Maps FreeMind builtin icon names to emoji representations
+ * Icon Utilities
+ * Maps .mm builtin icon names to emoji representations
  */
 
 /**
  * Icon name to emoji mapping
- * Based on FreeMind's standard icon set
+ * Based on .mm (FreeMind) standard icon set
  */
 export const ICON_MAP: Record<string, string> = {
   // Status & Actions
@@ -109,8 +109,8 @@ export const ICON_MAP: Record<string, string> = {
 };
 
 /**
- * Get emoji representation of a FreeMind icon
- * @param iconName - FreeMind builtin icon name
+ * Get emoji representation of a .mm builtin icon
+ * @param iconName - .mm builtin icon name
  * @returns Emoji string or fallback icon
  */
 export function getIconEmoji(iconName: string): string {

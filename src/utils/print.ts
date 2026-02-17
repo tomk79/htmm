@@ -1,5 +1,5 @@
 /**
- * Print utilities for FreeMind maps
+ * Print utilities for htmm maps
  */
 
 export interface PrintOptions {
@@ -52,7 +52,7 @@ export const printMap = (options: PrintOptions = {}): void => {
   document.title = title;
 
   // Apply scale transformation if needed
-  const mapElement = document.querySelector('.freemind-map') as HTMLElement;
+  const mapElement = document.querySelector('.htmm-map') as HTMLElement;
   const originalTransform = mapElement?.style.transform || '';
   
   if (mapElement && scale !== 1) {
@@ -131,7 +131,7 @@ export const supportsPrint = (): boolean => {
  * Note: This is an approximation based on viewport size
  */
 export const estimatePageCount = (paperSize: 'A4' | 'Letter' | 'Legal' = 'A4'): number => {
-  const mapElement = document.querySelector('.freemind-map') as HTMLElement;
+  const mapElement = document.querySelector('.htmm-map') as HTMLElement;
   if (!mapElement) return 1;
 
   const mapBounds = mapElement.getBoundingClientRect();

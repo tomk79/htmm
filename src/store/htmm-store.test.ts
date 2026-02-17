@@ -1,16 +1,16 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useFreeMindStore } from './freemind-store';
+import { useHtmmStore } from './htmm-store';
 import { createRootNode } from '../models/MindMapNode';
 import type { MindMapData } from '../types/mindmap';
 
-describe('FreeMind Store', () => {
+describe('Htmm Store', () => {
   beforeEach(() => {
-    useFreeMindStore.getState().newMap('Test');
+    useHtmmStore.getState().newMap('Test');
   });
 
   describe('Map operations', () => {
     it('newMap should set mapData with root and reset history', () => {
-      const state = useFreeMindStore.getState();
+      const state = useHtmmStore.getState();
       expect(state.mapData).not.toBeNull();
       expect(state.mapData!.root.text).toBe('Test');
       expect(state.history).toHaveLength(1);
@@ -23,8 +23,8 @@ describe('FreeMind Store', () => {
         version: '1.0.1',
         root: createRootNode('Loaded Root'),
       };
-      useFreeMindStore.getState().loadMap(data);
-      const state = useFreeMindStore.getState();
+      useHtmmStore.getState().loadMap(data);
+      const state = useHtmmStore.getState();
       expect(state.mapData!.root.text).toBe('Loaded Root');
       expect(state.history).toHaveLength(1);
       expect(state.historyIndex).toBe(0);
@@ -33,7 +33,7 @@ describe('FreeMind Store', () => {
 
   describe('Node operations', () => {
     it('addChild should add a child and select it', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       const id = getState().addChild(rootId, 'Child A');
       expect(id).toBeDefined();
@@ -44,7 +44,7 @@ describe('FreeMind Store', () => {
     });
 
     it('addSibling should add sibling before or after', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       getState().addChild(rootId, 'First');
       const secondId = getState().addChild(rootId, 'Second');
@@ -60,7 +60,7 @@ describe('FreeMind Store', () => {
     });
 
     it('deleteNode should remove node and select another', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       const childId = getState().addChild(rootId, 'ToDelete');
       getState().deleteNode(childId!);
@@ -69,7 +69,7 @@ describe('FreeMind Store', () => {
     });
 
     it('editNode should update text', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       const childId = getState().addChild(rootId, 'Original');
       getState().editNode(childId!, 'Updated');
@@ -78,7 +78,7 @@ describe('FreeMind Store', () => {
     });
 
     it('moveNode should move node to new parent', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       const childA = getState().addChild(rootId, 'A');
       const childB = getState().addChild(rootId, 'B');
@@ -92,7 +92,7 @@ describe('FreeMind Store', () => {
 
   describe('Folding', () => {
     it('toggleFolded should flip folded state', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       getState().addChild(rootId, 'Child');
       const childId = getState().mapData!.root.children![0].id;
@@ -104,7 +104,7 @@ describe('FreeMind Store', () => {
     });
 
     it('foldAll and unfoldAll should affect all nodes with children', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       getState().addChild(rootId, 'C');
       getState().foldAll();
@@ -116,7 +116,7 @@ describe('FreeMind Store', () => {
 
   describe('History', () => {
     it('undo should be no-op when at first history entry', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       getState().addChild(rootId, 'Child');
       getState().undo();
@@ -124,7 +124,7 @@ describe('FreeMind Store', () => {
     });
 
     it('redo should reapply undone state when redo is available', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       getState().addChild(rootId, 'Child');
       getState().undo();
@@ -134,7 +134,7 @@ describe('FreeMind Store', () => {
     });
 
     it('history should grow after actions that push history', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       const initialLength = getState().history.length;
       getState().addChild(rootId, 'A');
@@ -144,7 +144,7 @@ describe('FreeMind Store', () => {
 
   describe('Selection and clipboard', () => {
     it('selectNode and deselectAll should update selectedNodeIds', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       const childId = getState().addChild(rootId, 'C');
       getState().deselectAll();
@@ -154,7 +154,7 @@ describe('FreeMind Store', () => {
     });
 
     it('cutNode should set clipboard with cloned node', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       getState().addChild(rootId, 'CutMe');
       const childId = getState().mapData!.root.children![0].id;
@@ -164,7 +164,7 @@ describe('FreeMind Store', () => {
     });
 
     it('copyNode and pasteNode should clone node to new parent', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       const childId = getState().addChild(rootId, 'CopyMe');
       getState().copyNode(childId!);
@@ -180,7 +180,7 @@ describe('FreeMind Store', () => {
 
   describe('Styling', () => {
     it('setNodeColor and setNodeBackgroundColor should update node', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       getState().setNodeColor(rootId, '#ff0000');
       getState().setNodeBackgroundColor(rootId, '#00ff00');
@@ -189,7 +189,7 @@ describe('FreeMind Store', () => {
     });
 
     it('setFont and setNodeStyle should update node', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       getState().setFont(rootId, { size: 16, bold: true });
       getState().setNodeStyle(rootId, 'bubble');
@@ -201,7 +201,7 @@ describe('FreeMind Store', () => {
 
   describe('View', () => {
     it('setZoom should clamp between 0.1 and 5', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       getState().setZoom(2.5);
       expect(getState().zoom).toBe(2.5);
       getState().setZoom(10);
@@ -211,7 +211,7 @@ describe('FreeMind Store', () => {
     });
 
     it('setPan and resetView should update pan and zoom', () => {
-      const { getState } = useFreeMindStore;
+      const { getState } = useHtmmStore;
       getState().setPan(100, 50);
       expect(getState().panX).toBe(100);
       expect(getState().panY).toBe(50);

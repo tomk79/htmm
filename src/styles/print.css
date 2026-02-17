@@ -30,7 +30,7 @@
   }
 
   /* Ensure mind map is visible */
-  .freemind-map {
+  .htmm-map {
     position: relative !important;
     width: 100% !important;
     height: auto !important;
@@ -113,7 +113,7 @@
   padding: 20px;
 }
 
-.print-preview .freemind-map {
+.print-preview .htmm-map {
   background: white;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
   margin: 0 auto;

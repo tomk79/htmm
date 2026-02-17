@@ -230,17 +230,17 @@
   }
 }
 `;
-  const freeMindMapCss = "/* FreeMindMap Styles */\n\n.freemind-map {\n  position: relative;\n  overflow: hidden;\n  background-color: #fafafa;\n  border: 1px solid #ddd;\n  outline: none;\n  /* Margins so root can sit at center with space on all sides */\n  padding: 80px;\n  box-sizing: border-box;\n}\n\n.freemind-map:focus {\n  border-color: #4a90e2;\n  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);\n}\n\n.freemind-map-empty {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: #f5f5f5;\n  border: 1px solid #ddd;\n  color: #999;\n}\n\n.freemind-canvas {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform-origin: center center;\n  cursor: grab;\n}\n\n/* Layers */\n.edges-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n  pointer-events: none;\n}\n\n.nodes-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 0;\n  height: 0;\n}\n\n/* Edge styles */\n.edge-view {\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n/* Utilities */\n.freemind-map * {\n  box-sizing: border-box;\n}\n\n/* Mobile / touch-friendly: larger tap targets and zoom controls */\n@media (max-width: 768px), (pointer: coarse) {\n  .freemind-map {\n    -webkit-tap-highlight-color: transparent;\n    touch-action: none; /* pan/zoom handled by gesture hook */\n  }\n\n  .freemind-map .node-view {\n    min-height: 44px;\n    padding: 10px 14px;\n    min-width: 44px;\n  }\n\n  .freemind-map .fold-symbol {\n    width: 28px;\n    height: 28px;\n    min-width: 28px;\n    min-height: 28px;\n    left: -32px;\n    font-size: 12px;\n  }\n}\n\n/* Floating zoom controls (mobile / when no mouse) */\n.freemind-map-zoom-controls {\n  position: absolute;\n  bottom: 12px;\n  right: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  z-index: 10;\n  pointer-events: auto;\n}\n\n.freemind-map-zoom-controls button {\n  width: 44px;\n  height: 44px;\n  border-radius: 8px;\n  border: 1px solid #ccc;\n  background: #fff;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);\n  font-size: 18px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.freemind-map-zoom-controls button:hover {\n  background: #f5f5f5;\n}\n\n.freemind-map-zoom-controls button:active {\n  background: #e8e8e8;\n}\n\n@media (min-width: 769px) and (pointer: fine) {\n  .freemind-map-zoom-controls {\n    display: none;\n  }\n}\n";
+  const htmmMapCss = "/* HtmmMap Styles */\n\n.htmm-map {\n  position: relative;\n  overflow: hidden;\n  background-color: #fafafa;\n  border: 1px solid #ddd;\n  outline: none;\n  /* Margins so root can sit at center with space on all sides */\n  padding: 80px;\n  box-sizing: border-box;\n}\n\n.htmm-map:focus {\n  border-color: #4a90e2;\n  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);\n}\n\n.htmm-map-empty {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: #f5f5f5;\n  border: 1px solid #ddd;\n  color: #999;\n}\n\n.htmm-canvas {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform-origin: center center;\n  cursor: grab;\n}\n\n/* Layers */\n.edges-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n  pointer-events: none;\n}\n\n.nodes-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 0;\n  height: 0;\n}\n\n/* Edge styles */\n.edge-view {\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n/* Utilities */\n.htmm-map * {\n  box-sizing: border-box;\n}\n\n/* Mobile / touch-friendly: larger tap targets and zoom controls */\n@media (max-width: 768px), (pointer: coarse) {\n  .htmm-map {\n    -webkit-tap-highlight-color: transparent;\n    touch-action: none; /* pan/zoom handled by gesture hook */\n  }\n\n  .htmm-map .node-view {\n    min-height: 44px;\n    padding: 10px 14px;\n    min-width: 44px;\n  }\n\n  .htmm-map .fold-symbol {\n    width: 28px;\n    height: 28px;\n    min-width: 28px;\n    min-height: 28px;\n    left: -32px;\n    font-size: 12px;\n  }\n}\n\n/* Floating zoom controls (mobile / when no mouse) */\n.htmm-map-zoom-controls {\n  position: absolute;\n  bottom: 12px;\n  right: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  z-index: 10;\n  pointer-events: auto;\n}\n\n.htmm-map-zoom-controls button {\n  width: 44px;\n  height: 44px;\n  border-radius: 8px;\n  border: 1px solid #ccc;\n  background: #fff;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);\n  font-size: 18px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-zoom-controls button:hover {\n  background: #f5f5f5;\n}\n\n.htmm-map-zoom-controls button:active {\n  background: #e8e8e8;\n}\n\n@media (min-width: 769px) and (pointer: fine) {\n  .htmm-map-zoom-controls {\n    display: none;\n  }\n}\n";
   const attributesPanelCss = ".attributes-panel {\n  display: flex;\n  flex-direction: column;\n  background: #fff;\n  border: 1px solid #ddd;\n  border-radius: 4px;\n  padding: 12px;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n}\n\n.attributes-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 12px;\n}\n\n.attributes-header h3 {\n  margin: 0;\n  font-size: 16px;\n  font-weight: 600;\n  color: #333;\n}\n\n.btn-add-attribute {\n  padding: 4px 12px;\n  border: 1px solid #0066cc;\n  border-radius: 3px;\n  background: #0066cc;\n  color: #fff;\n  font-size: 13px;\n  cursor: pointer;\n  transition: background 0.2s;\n}\n\n.btn-add-attribute:hover:not(:disabled) {\n  background: #0052a3;\n}\n\n.btn-add-attribute:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.attributes-list {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n\n.attributes-empty {\n  padding: 16px;\n  text-align: center;\n  color: #999;\n  font-size: 14px;\n}\n\n.attribute-item {\n  border: 1px solid #e0e0e0;\n  border-radius: 3px;\n  padding: 8px;\n  background: #fafafa;\n}\n\n.attribute-display {\n  display: grid;\n  grid-template-columns: 1fr 2fr auto;\n  gap: 8px;\n  align-items: center;\n}\n\n.attribute-edit {\n  display: grid;\n  grid-template-columns: 1fr 2fr auto;\n  gap: 8px;\n  align-items: center;\n}\n\n.attribute-key {\n  font-weight: 600;\n  color: #555;\n  font-size: 13px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.attribute-value {\n  color: #333;\n  font-size: 13px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.attribute-key-input,\n.attribute-value-input {\n  padding: 4px 8px;\n  border: 1px solid #ccc;\n  border-radius: 3px;\n  font-size: 13px;\n  outline: none;\n}\n\n.attribute-key-input:focus,\n.attribute-value-input:focus {\n  border-color: #0066cc;\n  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);\n}\n\n.attribute-actions {\n  display: flex;\n  gap: 4px;\n}\n\n.btn-edit,\n.btn-delete,\n.btn-save,\n.btn-cancel {\n  padding: 4px 8px;\n  border: 1px solid #d0d0d0;\n  border-radius: 3px;\n  background: #fff;\n  cursor: pointer;\n  font-size: 14px;\n  transition: all 0.2s;\n  min-width: 28px;\n  height: 28px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.btn-edit:hover,\n.btn-delete:hover,\n.btn-save:hover,\n.btn-cancel:hover {\n  background: #f0f0f0;\n  border-color: #b0b0b0;\n}\n\n.btn-delete:hover {\n  background: #fee;\n  border-color: #fcc;\n}\n\n.btn-save {\n  color: #0a0;\n  border-color: #0a0;\n}\n\n.btn-save:hover {\n  background: #efe;\n  border-color: #0a0;\n}\n\n.btn-cancel {\n  color: #c00;\n  border-color: #c00;\n}\n\n.btn-cancel:hover {\n  background: #fee;\n  border-color: #c00;\n}\n";
   const richContentEditorCss = "._rich-content-editor_1ep5h_1 {\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n}\n\n._rich-content-toolbar_1ep5h_12 {\n  display: flex;\n  gap: 4px;\n  padding: 8px;\n  border-bottom: 1px solid #e0e0e0;\n  background: #f5f5f5;\n  flex-wrap: wrap;\n}\n\n._toolbar-group_1ep5h_21 {\n  display: flex;\n  gap: 2px;\n}\n\n._toolbar-divider_1ep5h_26 {\n  width: 1px;\n  background: #d0d0d0;\n  margin: 0 4px;\n}\n\n._toolbar-button_1ep5h_32 {\n  padding: 6px 10px;\n  border: 1px solid #d0d0d0;\n  border-radius: 3px;\n  background: #fff;\n  cursor: pointer;\n  font-weight: bold;\n  font-size: 14px;\n  transition: all 0.2s;\n  min-width: 32px;\n  height: 32px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n._toolbar-button_1ep5h_32:hover:not(:disabled) {\n  background: #e8e8e8;\n  border-color: #b0b0b0;\n}\n\n._toolbar-button_1ep5h_32:active:not(:disabled) {\n  background: #d8d8d8;\n}\n\n._toolbar-button_1ep5h_32:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n._rich-content-editable_1ep5h_62 {\n  padding: 12px;\n  min-height: 100px;\n  max-height: 400px;\n  overflow-y: auto;\n  outline: none;\n  line-height: 1.5;\n  font-size: 14px;\n}\n\n._rich-content-editable_1ep5h_62:focus {\n  background: #fafafa;\n}\n\n._rich-content-editable_1ep5h_62:empty::before {\n  content: attr(data-placeholder);\n  color: #999;\n  pointer-events: none;\n}\n\n/* Rich content formatting */\n._rich-content-editable_1ep5h_62 b,\n._rich-content-editable_1ep5h_62 strong {\n  font-weight: bold;\n}\n\n._rich-content-editable_1ep5h_62 i,\n._rich-content-editable_1ep5h_62 em {\n  font-style: italic;\n}\n\n._rich-content-editable_1ep5h_62 u {\n  text-decoration: underline;\n}\n\n._rich-content-editable_1ep5h_62 strike,\n._rich-content-editable_1ep5h_62 del {\n  text-decoration: line-through;\n}\n\n._rich-content-editable_1ep5h_62 ul,\n._rich-content-editable_1ep5h_62 ol {\n  margin: 8px 0;\n  padding-left: 24px;\n}\n\n._rich-content-editable_1ep5h_62 li {\n  margin: 4px 0;\n}\n\n._rich-content-editable_1ep5h_62 a {\n  color: #0066cc;\n  text-decoration: underline;\n}\n\n._rich-content-editable_1ep5h_62 a:hover {\n  color: #0052a3;\n}\n\n._rich-content-editable_1ep5h_62 img {\n  max-width: 100%;\n  height: auto;\n  display: block;\n  margin: 8px 0;\n}\n";
-  const printCss = '/**\n * Print-specific styles\n * Applied when printing or print preview\n */\n\n@media print {\n  /* Reset page margins */\n  @page {\n    margin: 1cm;\n    size: A4 landscape;\n  }\n\n  /* Hide UI elements */\n  body {\n    margin: 0;\n    padding: 0;\n  }\n\n  /* Hide non-printable elements */\n  .no-print,\n  .toolbar,\n  .sidebar,\n  button,\n  input,\n  select,\n  textarea,\n  .attributes-panel,\n  .rich-content-toolbar {\n    display: none !important;\n  }\n\n  /* Ensure mind map is visible */\n  .freemind-map {\n    position: relative !important;\n    width: 100% !important;\n    height: auto !important;\n    overflow: visible !important;\n    page-break-inside: avoid;\n  }\n\n  /* Node styling for print */\n  .node-view {\n    page-break-inside: avoid;\n    break-inside: avoid;\n  }\n\n  /* Ensure text is readable */\n  .node-text {\n    color: #000 !important;\n    background: transparent !important;\n  }\n\n  /* Remove interactive states */\n  .node-view.selected {\n    border-color: #999 !important;\n    border-width: 1px !important;\n    box-shadow: none !important;\n  }\n\n  .node-view:hover {\n    box-shadow: none !important;\n  }\n\n  /* Simplify edges for print */\n  .edge-path {\n    stroke: #666 !important;\n  }\n\n  /* Hide fold symbols in print */\n  .fold-symbol {\n    display: none !important;\n  }\n\n  /* Ensure links are visible */\n  .node-link-indicator {\n    display: inline-block !important;\n  }\n\n  a[href]:after {\n    content: " (" attr(href) ")";\n    font-size: 0.8em;\n    color: #666;\n  }\n\n  /* Cloud borders */\n  .node-cloud {\n    border: 2px solid #999 !important;\n  }\n\n  /* Rich content */\n  .node-rich-content {\n    max-height: none !important;\n    overflow: visible !important;\n  }\n\n  /* Icons */\n  .node-icons,\n  .node-icon {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n\n  /* Preserve colors */\n  * {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n}\n\n/* Print preview mode */\n.print-preview {\n  background: #eee;\n  padding: 20px;\n}\n\n.print-preview .freemind-map {\n  background: white;\n  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n  margin: 0 auto;\n  max-width: 297mm; /* A4 landscape width */\n  min-height: 210mm; /* A4 landscape height */\n}\n';
+  const printCss = '/**\n * Print-specific styles\n * Applied when printing or print preview\n */\n\n@media print {\n  /* Reset page margins */\n  @page {\n    margin: 1cm;\n    size: A4 landscape;\n  }\n\n  /* Hide UI elements */\n  body {\n    margin: 0;\n    padding: 0;\n  }\n\n  /* Hide non-printable elements */\n  .no-print,\n  .toolbar,\n  .sidebar,\n  button,\n  input,\n  select,\n  textarea,\n  .attributes-panel,\n  .rich-content-toolbar {\n    display: none !important;\n  }\n\n  /* Ensure mind map is visible */\n  .htmm-map {\n    position: relative !important;\n    width: 100% !important;\n    height: auto !important;\n    overflow: visible !important;\n    page-break-inside: avoid;\n  }\n\n  /* Node styling for print */\n  .node-view {\n    page-break-inside: avoid;\n    break-inside: avoid;\n  }\n\n  /* Ensure text is readable */\n  .node-text {\n    color: #000 !important;\n    background: transparent !important;\n  }\n\n  /* Remove interactive states */\n  .node-view.selected {\n    border-color: #999 !important;\n    border-width: 1px !important;\n    box-shadow: none !important;\n  }\n\n  .node-view:hover {\n    box-shadow: none !important;\n  }\n\n  /* Simplify edges for print */\n  .edge-path {\n    stroke: #666 !important;\n  }\n\n  /* Hide fold symbols in print */\n  .fold-symbol {\n    display: none !important;\n  }\n\n  /* Ensure links are visible */\n  .node-link-indicator {\n    display: inline-block !important;\n  }\n\n  a[href]:after {\n    content: " (" attr(href) ")";\n    font-size: 0.8em;\n    color: #666;\n  }\n\n  /* Cloud borders */\n  .node-cloud {\n    border: 2px solid #999 !important;\n  }\n\n  /* Rich content */\n  .node-rich-content {\n    max-height: none !important;\n    overflow: visible !important;\n  }\n\n  /* Icons */\n  .node-icons,\n  .node-icon {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n\n  /* Preserve colors */\n  * {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n}\n\n/* Print preview mode */\n.print-preview {\n  background: #eee;\n  padding: 20px;\n}\n\n.print-preview .htmm-map {\n  background: white;\n  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n  margin: 0 auto;\n  max-width: 297mm; /* A4 landscape width */\n  min-height: 210mm; /* A4 landscape height */\n}\n';
   const STYLE_ID = "htmm-styles";
   function injectStyles() {
     if (typeof document === "undefined") return;
     if (document.getElementById(STYLE_ID)) return;
     const combined = [
       nodeViewCss,
-      freeMindMapCss,
+      htmmMapCss,
       attributesPanelCss,
       richContentEditorCss,
       printCss
@@ -3342,7 +3342,7 @@
     return arrowLinks;
   }
   enableMapSet();
-  function createFreeMindStoreSlice(set2, get2) {
+  function createHtmmStoreSlice(set2, get2) {
     return {
       // Initial state
       mapData: null,
@@ -3724,16 +3724,16 @@
       })
     };
   }
-  const defaultStore = create$1()(immer(createFreeMindStoreSlice));
-  function createFreeMindStore() {
-    return create$1()(immer(createFreeMindStoreSlice));
+  const defaultStore = create$1()(immer(createHtmmStoreSlice));
+  function createHtmmStore() {
+    return create$1()(immer(createHtmmStoreSlice));
   }
-  const FreeMindStoreContext = reactExports.createContext(null);
-  function useFreeMindStoreHook(selector) {
-    const store = reactExports.useContext(FreeMindStoreContext) ?? defaultStore;
+  const HtmmStoreContext = reactExports.createContext(null);
+  function useHtmmStoreHook(selector) {
+    const store = reactExports.useContext(HtmmStoreContext) ?? defaultStore;
     return useStore(store, selector ?? ((s2) => s2));
   }
-  const useFreeMindStore = Object.assign(useFreeMindStoreHook, {
+  const useHtmmStore = Object.assign(useHtmmStoreHook, {
     getState: () => defaultStore.getState()
   });
   const LAYOUT_CONSTANTS = {
@@ -5394,7 +5394,7 @@
     onDragEnd,
     dragState
   }) => {
-    const { selectNode, toggleFolded, editable } = useFreeMindStore();
+    const { selectNode, toggleFolded, editable } = useHtmmStore();
     const inputRef = reactExports.useRef(null);
     const cancelledRef = reactExports.useRef(false);
     const originalTextRef = reactExports.useRef("");
@@ -6109,12 +6109,12 @@ Ctrl+Click to open`,
       handlers
     };
   }
-  const FreeMindMapInner = ({
+  const HtmmMapInner = ({
     width = "100%",
     height = "600px",
     className = ""
   }) => {
-    const contextStore = reactExports.useContext(FreeMindStoreContext);
+    const contextStore = reactExports.useContext(HtmmStoreContext);
     const store = contextStore ?? defaultStore;
     const {
       mapData,
@@ -6138,7 +6138,7 @@ Ctrl+Click to open`,
       setZoom,
       setPan,
       resetView
-    } = useFreeMindStore();
+    } = useHtmmStore();
     const [layoutNodes, setLayoutNodes] = reactExports.useState([]);
     const [editingNodeId, setEditingNodeId] = reactExports.useState(null);
     const previousSelectedNodeIdRef = reactExports.useRef(null);
@@ -6524,7 +6524,7 @@ Ctrl+Click to open`,
       return () => el.removeEventListener("touchmove", onTouchMove);
     }, [touchHandlers.onTouchMove]);
     if (!mapData) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "freemind-map-empty", style: { width, height }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No mind map loaded. Call loadMap() or newMap() to get started." }) });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-empty", style: { width, height }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No mind map loaded. Call loadMap() or newMap() to get started." }) });
     }
     const edges = [];
     for (const node2 of layoutNodes) {
@@ -6561,7 +6561,7 @@ Ctrl+Click to open`,
       "div",
       {
         ref: containerRef,
-        className: `freemind-map ${className}`,
+        className: `htmm-map ${className}`,
         style: viewportStyle,
         role: "tree",
         "aria-label": `Mind map: ${mapTitle}`,
@@ -6575,7 +6575,7 @@ Ctrl+Click to open`,
             "div",
             {
               ref: canvasRef,
-              className: "freemind-canvas",
+              className: "htmm-canvas",
               style: canvasStyle,
               "aria-live": "polite",
               "aria-atomic": "false",
@@ -6626,7 +6626,7 @@ Ctrl+Click to open`,
           /* @__PURE__ */ jsxRuntimeExports.jsxs(
             "div",
             {
-              className: "freemind-map-zoom-controls",
+              className: "htmm-map-zoom-controls",
               "aria-label": "Zoom controls",
               onTouchStart: (e2) => e2.stopPropagation(),
               onTouchMove: (e2) => e2.stopPropagation(),
@@ -6641,7 +6641,7 @@ Ctrl+Click to open`,
       }
     );
   };
-  const FreeMindMap = ({
+  const HtmmMap = ({
     width = "100%",
     height = "600px",
     className = "",
@@ -6649,7 +6649,7 @@ Ctrl+Click to open`,
   }) => {
     const storeRef = reactExports.useRef(null);
     if (initialMapData != null && storeRef.current === null) {
-      storeRef.current = createFreeMindStore();
+      storeRef.current = createHtmmStore();
     }
     const internalStore = storeRef.current;
     reactExports.useEffect(() => {
@@ -6657,13 +6657,13 @@ Ctrl+Click to open`,
         internalStore.getState().loadMap(initialMapData);
       }
     }, [initialMapData, internalStore]);
-    const inner = /* @__PURE__ */ jsxRuntimeExports.jsx(FreeMindMapInner, { width, height, className });
+    const inner = /* @__PURE__ */ jsxRuntimeExports.jsx(HtmmMapInner, { width, height, className });
     if (initialMapData != null && internalStore != null) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(FreeMindStoreContext.Provider, { value: internalStore, children: inner });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx(HtmmStoreContext.Provider, { value: internalStore, children: inner });
     }
     return inner;
   };
-  function parseFreeMindXML(xmlString) {
+  function parseMindMapXML(xmlString) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(xmlString, "text/xml");
     const parserError = doc.querySelector("parsererror");
@@ -6672,12 +6672,12 @@ Ctrl+Click to open`,
     }
     const mapElement = doc.querySelector("map");
     if (!mapElement) {
-      throw new Error("Invalid FreeMind file: missing <map> element");
+      throw new Error("Invalid mind map file: missing <map> element");
     }
     const version = mapElement.getAttribute("version") || "1.0.1";
     const rootNodeElement = mapElement.querySelector(":scope > node");
     if (!rootNodeElement) {
-      throw new Error("Invalid FreeMind file: missing root <node> element");
+      throw new Error("Invalid mind map file: missing root <node> element");
     }
     const root = parseNode(rootNodeElement);
     return {
@@ -6858,7 +6858,7 @@ Ctrl+Click to open`,
   }
   async function loadMindMapFile(file) {
     const text2 = await file.text();
-    return parseFreeMindXML(text2);
+    return parseMindMapXML(text2);
   }
   async function loadMindMapURL(url) {
     const response = await fetch(url);
@@ -6866,9 +6866,9 @@ Ctrl+Click to open`,
       throw new Error(`Failed to load mind map: ${response.statusText}`);
     }
     const text2 = await response.text();
-    return parseFreeMindXML(text2);
+    return parseMindMapXML(text2);
   }
-  function generateFreeMindXML(data) {
+  function generateMindMapXML(data) {
     const doc = document.implementation.createDocument("", "", null);
     const mapElement = doc.createElement("map");
     mapElement.setAttribute("version", data.version);
@@ -7064,7 +7064,7 @@ Ctrl+Click to open`,
     return element;
   }
   function saveMindMapFile(data, filename = "mindmap.mm") {
-    const xmlString = generateFreeMindXML(data);
+    const xmlString = generateMindMapXML(data);
     const blob = new Blob([xmlString], { type: "application/xml" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -7074,7 +7074,7 @@ Ctrl+Click to open`,
     URL.revokeObjectURL(url);
   }
   function getMindMapBlob(data) {
-    const xmlString = generateFreeMindXML(data);
+    const xmlString = generateMindMapXML(data);
     return new Blob([xmlString], { type: "application/xml" });
   }
   function _typeof$1(o2) {
@@ -18451,7 +18451,7 @@ Ctrl+Click to open`,
       scale = 2,
       quality = 0.95
     } = options;
-    const canvas = containerElement.querySelector(".freemind-canvas");
+    const canvas = containerElement.querySelector(".htmm-canvas");
     if (!canvas) {
       throw new Error("Mind map canvas not found");
     }
@@ -18515,7 +18515,7 @@ Ctrl+Click to open`,
   }
   function exportToSVG(containerElement, filename = "mindmap.svg", options = {}) {
     const { backgroundColor: backgroundColor2 = "white", padding = 20 } = options;
-    const canvas = containerElement.querySelector(".freemind-canvas");
+    const canvas = containerElement.querySelector(".htmm-canvas");
     if (!canvas) {
       throw new Error("Mind map canvas not found");
     }
@@ -18659,7 +18659,7 @@ Ctrl+Click to open`,
       padding = 20,
       scale = 2
     } = options;
-    const canvas = containerElement.querySelector(".freemind-canvas");
+    const canvas = containerElement.querySelector(".htmm-canvas");
     if (!canvas) {
       throw new Error("Mind map canvas not found");
     }
@@ -18733,7 +18733,7 @@ Ctrl+Click to open`,
     } = options;
     const originalTitle = document.title;
     document.title = title;
-    const mapElement = document.querySelector(".freemind-map");
+    const mapElement = document.querySelector(".htmm-map");
     const originalTransform = mapElement?.style.transform || "";
     if (mapElement && scale !== 1) {
       mapElement.style.transform = `scale(${scale})`;
@@ -18778,7 +18778,7 @@ Ctrl+Click to open`,
     return typeof window !== "undefined" && "print" in window;
   };
   const estimatePageCount = (paperSize = "A4") => {
-    const mapElement = document.querySelector(".freemind-map");
+    const mapElement = document.querySelector(".htmm-map");
     if (!mapElement) return 1;
     const mapBounds = mapElement.getBoundingClientRect();
     const paperSizes = {
@@ -37117,7 +37117,7 @@ Ctrl+Click to open`,
     vectorsRatio
   }, Symbol.toStringTag, { value: "Module" }));
   exports2.EdgeView = EdgeView;
-  exports2.FreeMindMap = FreeMindMap;
+  exports2.HtmmMap = HtmmMap;
   exports2.ICON_CATEGORIES = ICON_CATEGORIES;
   exports2.ICON_MAP = ICON_MAP;
   exports2.NodeView = NodeView;
@@ -37134,7 +37134,7 @@ Ctrl+Click to open`,
   exports2.exportToSVG = exportToSVG;
   exports2.findNodeById = findNodeById;
   exports2.findParentNode = findParentNode;
-  exports2.generateFreeMindXML = generateFreeMindXML;
+  exports2.generateMindMapXML = generateMindMapXML;
   exports2.getAllChildren = getAllChildren;
   exports2.getAvailableIcons = getAvailableIcons;
   exports2.getBoundingBox = getBoundingBox;
@@ -37153,11 +37153,11 @@ Ctrl+Click to open`,
   exports2.isValidIcon = isValidIcon;
   exports2.loadMindMapFile = loadMindMapFile;
   exports2.loadMindMapURL = loadMindMapURL;
-  exports2.parseFreeMindXML = parseFreeMindXML;
+  exports2.parseMindMapXML = parseMindMapXML;
   exports2.printMap = printMap;
   exports2.saveMindMapFile = saveMindMapFile;
   exports2.supportsPrint = supportsPrint;
   exports2.useCollaboration = useCollaboration;
-  exports2.useFreeMindStore = useFreeMindStore;
+  exports2.useHtmmStore = useHtmmStore;
   Object.defineProperty(exports2, Symbol.toStringTag, { value: "Module" });
 }));

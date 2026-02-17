@@ -4,7 +4,7 @@
  */
 
 import { useCallback, useMemo } from 'react';
-import { useFreeMindStore } from '../store/freemind-store';
+import { useHtmmStore } from '../store/htmm-store';
 import type { MindMapNode } from '../types/mindmap';
 import { findNodeById } from '../models/MindMapNode';
 
@@ -12,7 +12,7 @@ import { findNodeById } from '../models/MindMapNode';
  * Hook for managing node selection
  */
 export function useNodeSelection() {
-  const { selectedNodeIds, selectNode, deselectAll, mapData } = useFreeMindStore(
+  const { selectedNodeIds, selectNode, deselectAll, mapData } = useHtmmStore(
     (state) => ({
       selectedNodeIds: state.selectedNodeIds,
       selectNode: state.selectNode,
@@ -64,7 +64,7 @@ export function useNodeSelection() {
  * Hook for clipboard operations
  */
 export function useClipboard() {
-  const { clipboard, cutNode, copyNode, pasteNode } = useFreeMindStore(
+  const { clipboard, cutNode, copyNode, pasteNode } = useHtmmStore(
     (state) => ({
       clipboard: state.clipboard,
       cutNode: state.cutNode,
@@ -111,7 +111,7 @@ export function useClipboard() {
  * Hook for history operations (undo/redo)
  */
 export function useHistory() {
-  const { history, historyIndex, undo, redo } = useFreeMindStore(
+  const { history, historyIndex, undo, redo } = useHtmmStore(
     (state) => ({
       history: state.history,
       historyIndex: state.historyIndex,
@@ -142,7 +142,7 @@ export function useNodeOperations() {
     editNode,
     moveNode,
     toggleFolded,
-  } = useFreeMindStore((state) => ({
+  } = useHtmmStore((state) => ({
     addChild: state.addChild,
     addSibling: state.addSibling,
     deleteNode: state.deleteNode,
@@ -177,7 +177,7 @@ export function useNodeStyling() {
     removeLink,
     setCloud,
     removeCloud,
-  } = useFreeMindStore((state) => ({
+  } = useHtmmStore((state) => ({
     setNodeColor: state.setNodeColor,
     setNodeBackgroundColor: state.setNodeBackgroundColor,
     setFont: state.setFont,
@@ -210,7 +210,7 @@ export function useNodeStyling() {
  * Hook for view operations
  */
 export function useView() {
-  const { zoom, panX, panY, setZoom, setPan, resetView } = useFreeMindStore(
+  const { zoom, panX, panY, setZoom, setPan, resetView } = useHtmmStore(
     (state) => ({
       zoom: state.zoom,
       panX: state.panX,
@@ -245,7 +245,7 @@ export function useView() {
  * Hook for getting a specific node
  */
 export function useNode(nodeId: string | null) {
-  const mapData = useFreeMindStore((state) => state.mapData);
+  const mapData = useHtmmStore((state) => state.mapData);
 
   const node = useMemo(() => {
     if (!mapData || !nodeId) return null;
@@ -259,7 +259,7 @@ export function useNode(nodeId: string | null) {
  * Hook for map data access
  */
 export function useMapData() {
-  const { mapData, loadMap, newMap } = useFreeMindStore((state) => ({
+  const { mapData, loadMap, newMap } = useHtmmStore((state) => ({
     mapData: state.mapData,
     loadMap: state.loadMap,
     newMap: state.newMap,

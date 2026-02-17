@@ -1,5 +1,5 @@
 /**
- * FreeMind Web - Type Definitions
+ * htmm - Type Definitions
  * Based on FreeMind XML Schema (freemind.xsd)
  */
 

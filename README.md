@@ -1,6 +1,6 @@
 # htmm
 
-FreeMindのJavaアプリケーションをウェブに移植した、軽量で埋め込み可能なマインドマップUIコンポーネント
+FreeMind互換の .mm 形式を扱う、軽量で埋め込み可能なマインドマップUIコンポーネント
 
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
@@ -43,9 +43,9 @@ pnpm add @tomk79/htmm
 <script src="path/to/htmm.min.js"></script>
 <script>
   const { createRoot } = window.ReactDOM;
-  const { FreeMindMap, useFreeMindStore } = window.htmm;
+  const { HtmmMap, useHtmmStore } = window.htmm;
   const root = createRoot(document.getElementById('root'));
-  // 使用前に newMap などで初期化してから FreeMindMap を描画
+  // 使用前に newMap などで初期化してから HtmmMap を描画
   root.render(/* あなたのアプリ */);
 </script>
 ```
@@ -55,18 +55,18 @@ pnpm add @tomk79/htmm
 ### 基本的な使い方（パッケージ利用時）
 
 ```tsx
-import { FreeMindMap, useFreeMindStore } from '@tomk79/htmm';
+import { HtmmMap, useHtmmStore } from '@tomk79/htmm';
 import { useEffect } from 'react';
 
 function App() {
-  const { newMap, addChild } = useFreeMindStore();
+  const { newMap, addChild } = useHtmmStore();
 
   useEffect(() => {
     // 新しいマインドマップを作成
     newMap('My Mind Map');
     
     // ルートノードに子を追加
-    const store = useFreeMindStore.getState();
+    const store = useHtmmStore.getState();
     if (store.mapData) {
       const rootId = store.mapData.root.id;
       store.addChild(rootId, 'First Topic');
@@ -76,7 +76,7 @@ function App() {
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <FreeMindMap width="100%" height="100%" />
+      <HtmmMap width="100%" height="100%" />
     </div>
   );
 }
@@ -86,10 +86,10 @@ function App() {
 
 ```tsx
 import { loadMindMapFile } from '@tomk79/htmm';
-import { useFreeMindStore } from '@tomk79/htmm';
+import { useHtmmStore } from '@tomk79/htmm';
 
 function FileLoader() {
-  const { loadMap } = useFreeMindStore();
+  const { loadMap } = useHtmmStore();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -107,10 +107,10 @@ function FileLoader() {
 
 ```tsx
 import { saveMindMapFile } from '@tomk79/htmm';
-import { useFreeMindStore } from '@tomk79/htmm';
+import { useHtmmStore } from '@tomk79/htmm';
 
 function SaveButton() {
-  const { mapData } = useFreeMindStore();
+  const { mapData } = useHtmmStore();
 
   const handleSave = () => {
     if (mapData) {
@@ -124,11 +124,11 @@ function SaveButton() {
 
 ### 1ページに複数マップを配置する
 
-同一ページに、異なる .mm データを持つマップを複数表示する場合は、各 `<FreeMindMap />` に **`initialMapData`** を渡してください。各インスタンスが内部で専用のストアを持ち、データ・ズーム・パンなどが独立します。既存の単一マップのコード（`loadMap()` のあと `<FreeMindMap />` を 1 つだけマウントする使い方）は変更不要です。
+同一ページに、異なる .mm データを持つマップを複数表示する場合は、各 `<HtmmMap />` に **`initialMapData`** を渡してください。各インスタンスが内部で専用のストアを持ち、データ・ズーム・パンなどが独立します。既存の単一マップのコード（`loadMap()` のあと `<HtmmMap />` を 1 つだけマウントする使い方）は変更不要です。
 
 ```tsx
 import { useState, useEffect } from 'react';
-import { FreeMindMap, loadMindMapURL } from '@tomk79/htmm';
+import { HtmmMap, loadMindMapURL } from '@tomk79/htmm';
 
 function MultiMapPage() {
   const [mapData1, setMapData1] = useState(null);
@@ -141,8 +141,8 @@ function MultiMapPage() {
 
   return (
     <div>
-      {mapData1 && <FreeMindMap initialMapData={mapData1} width="100%" height="400px" />}
-      {mapData2 && <FreeMindMap initialMapData={mapData2} width="100%" height="400px" />}
+      {mapData1 && <HtmmMap initialMapData={mapData1} width="100%" height="400px" />}
+      {mapData2 && <HtmmMap initialMapData={mapData2} width="100%" height="400px" />}
     </div>
   );
 }
@@ -152,10 +152,10 @@ function MultiMapPage() {
 
 ### コンポーネント
 
-#### `<FreeMindMap />`
+#### `<HtmmMap />`
 
 ```tsx
-<FreeMindMap 
+<HtmmMap 
   width="100%" 
   height="600px" 
   className="custom-class"
@@ -165,7 +165,7 @@ function MultiMapPage() {
 
 ### フック
 
-#### `useFreeMindStore()`
+#### `useHtmmStore()`
 
 ```tsx
 const {
@@ -208,7 +208,7 @@ const {
   cutNode,
   copyNode,
   pasteNode,
-} = useFreeMindStore();
+} = useHtmmStore();
 ```
 
 ### ユーティリティ関数
@@ -219,12 +219,12 @@ const {
 // 読み込み
 const mapData = await loadMindMapFile(file);
 const mapData = await loadMindMapURL('https://example.com/map.mm');
-const mapData = parseFreeMindXML(xmlString);
+const mapData = parseMindMapXML(xmlString);
 
 // 保存
 saveMindMapFile(mapData, 'filename.mm');
 const blob = getMindMapBlob(mapData);
-const xmlString = generateFreeMindXML(mapData);
+const xmlString = generateMindMapXML(mapData);
 ```
 
 #### ノード操作
@@ -266,7 +266,7 @@ const cloned = cloneNode(node, true);
 ## スタイリング例
 
 ```tsx
-const { setNodeColor, setNodeBackgroundColor, setFont, setNodeStyle } = useFreeMindStore();
+const { setNodeColor, setNodeBackgroundColor, setFont, setNodeStyle } = useHtmmStore();
 
 // テキスト色を変更
 setNodeColor(nodeId, '#ff0000');
@@ -293,6 +293,7 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 - npm のエントリーポイントを修正。
 - 公開ファイルリストの不備を修正。
 - 複数のマインドマップを配置できるようになった。
+- オブジェクト名称の変更。
 
 ### @tomk79/htmm v0.0.1 (2026年2月15日)
 

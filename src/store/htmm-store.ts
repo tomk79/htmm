@@ -1,5 +1,5 @@
 /**
- * FreeMind Web Store
+ * htmm Store
  * Central state management using Zustand + Immer
  */
 
@@ -15,12 +15,12 @@ import { createRootNode, findNodeById, findParentNode, cloneNode, generateNodeId
 enableMapSet();
 
 /** Internal type for the store instance (Context and multi-instance) */
-export type FreeMindStoreApi = StoreApi<FreeMindState & FreeMindActions>;
+export type HtmmStoreApi = StoreApi<HtmmState & HtmmActions>;
 
 /**
  * Store state interface
  */
-export interface FreeMindState {
+export interface HtmmState {
   // Data
   mapData: MindMapData | null;
   
@@ -47,7 +47,7 @@ export interface FreeMindState {
 /**
  * Store actions interface
  */
-export interface FreeMindActions {
+export interface HtmmActions {
   // Map operations
   loadMap: (data: MindMapData) => void;
   newMap: (rootText?: string) => void;
@@ -113,13 +113,13 @@ export interface FreeMindActions {
 }
 
 /** Immer middleware: set accepts a producer (state) => void or partial state */
-type SetStateInternal = (partial: Partial<FreeMindState & FreeMindActions> | ((s: FreeMindState & FreeMindActions) => void)) => void;
-type GetStateInternal = () => FreeMindState & FreeMindActions;
+type SetStateInternal = (partial: Partial<HtmmState & HtmmActions> | ((s: HtmmState & HtmmActions) => void)) => void;
+type GetStateInternal = () => HtmmState & HtmmActions;
 
 /**
- * Store slice creator - shared by default store and createFreeMindStore()
+ * Store slice creator - shared by default store and createHtmmStore()
  */
-function createFreeMindStoreSlice(set: SetStateInternal, get: GetStateInternal): FreeMindState & FreeMindActions {
+function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal): HtmmState & HtmmActions {
   return {
     // Initial state
     mapData: null,
@@ -645,30 +645,30 @@ function createFreeMindStoreSlice(set: SetStateInternal, get: GetStateInternal):
   };
 }
 
-/** Default store for single-map usage (no Provider / no initialMapData). Exported for FreeMindMap internal use. */
-export const defaultStore = create<FreeMindState & FreeMindActions>()(immer(createFreeMindStoreSlice));
+/** Default store for single-map usage (no Provider / no initialMapData). Exported for HtmmMap internal use. */
+export const defaultStore = create<HtmmState & HtmmActions>()(immer(createHtmmStoreSlice));
 
 /**
- * Create a new store instance (internal use only; for multi-instance, use FreeMindMap with initialMapData).
- * Exported for FreeMindMap.tsx but not re-exported from index.ts.
+ * Create a new store instance (internal use only; for multi-instance, use HtmmMap with initialMapData).
+ * Exported for HtmmMap.tsx but not re-exported from index.ts.
  */
-export function createFreeMindStore(): FreeMindStoreApi {
-  return create<FreeMindState & FreeMindActions>()(immer(createFreeMindStoreSlice)) as unknown as FreeMindStoreApi;
+export function createHtmmStore(): HtmmStoreApi {
+  return create<HtmmState & HtmmActions>()(immer(createHtmmStoreSlice)) as unknown as HtmmStoreApi;
 }
 
 /** Context for injecting a store so descendants use it instead of defaultStore */
-export const FreeMindStoreContext = createContext<FreeMindStoreApi | null>(null);
+export const HtmmStoreContext = createContext<HtmmStoreApi | null>(null);
 
 /**
- * Hook to use the FreeMind store. Uses store from Context when inside a Provider (e.g. FreeMindMap with initialMapData), otherwise the default store.
+ * Hook to use the htmm store. Uses store from Context when inside a Provider (e.g. HtmmMap with initialMapData), otherwise the default store.
  */
-function useFreeMindStoreHook<T = FreeMindState & FreeMindActions>(
-  selector?: (state: FreeMindState & FreeMindActions) => T
+function useHtmmStoreHook<T = HtmmState & HtmmActions>(
+  selector?: (state: HtmmState & HtmmActions) => T
 ): T {
-  const store = useContext(FreeMindStoreContext) ?? defaultStore;
-  return useStore(store as FreeMindStoreApi, (selector ?? (s => s)) as (state: FreeMindState & FreeMindActions) => T);
+  const store = useContext(HtmmStoreContext) ?? defaultStore;
+  return useStore(store as HtmmStoreApi, (selector ?? (s => s)) as (state: HtmmState & HtmmActions) => T);
 }
 
-export const useFreeMindStore = Object.assign(useFreeMindStoreHook, {
+export const useHtmmStore = Object.assign(useHtmmStoreHook, {
   getState: () => defaultStore.getState(),
 });

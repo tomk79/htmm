@@ -22,7 +22,7 @@ export interface ExportOptions {
 /**
  * Export mind map to PNG format
  * 
- * @param containerElement - The FreeMind map container element
+ * @param containerElement - The htmm map container element
  * @param filename - The filename for the downloaded PNG
  * @param options - Export options
  */
@@ -39,7 +39,7 @@ export async function exportToPNG(
   } = options;
 
   // Find the canvas element
-  const canvas = containerElement.querySelector('.freemind-canvas') as HTMLElement;
+  const canvas = containerElement.querySelector('.htmm-canvas') as HTMLElement;
   if (!canvas) {
     throw new Error('Mind map canvas not found');
   }
@@ -128,7 +128,7 @@ export async function exportToPNG(
 /**
  * Export mind map to SVG format
  * 
- * @param containerElement - The FreeMind map container element
+ * @param containerElement - The htmm map container element
  * @param filename - The filename for the downloaded SVG
  * @param options - Export options
  */
@@ -139,7 +139,7 @@ export function exportToSVG(
 ): void {
   const { backgroundColor = 'white', padding = 20 } = options;
 
-  const canvas = containerElement.querySelector('.freemind-canvas') as HTMLElement;
+  const canvas = containerElement.querySelector('.htmm-canvas') as HTMLElement;
   if (!canvas) {
     throw new Error('Mind map canvas not found');
   }
@@ -339,7 +339,7 @@ function downloadBlob(blob: Blob, filename: string): void {
 /**
  * Export mind map to PDF format
  * 
- * @param containerElement - The FreeMind map container element
+ * @param containerElement - The htmm map container element
  * @param filename - The filename for the downloaded PDF
  * @param options - Export options
  */
@@ -355,7 +355,7 @@ export async function exportToPDF(
   } = options;
 
   // Find the canvas element
-  const canvas = containerElement.querySelector('.freemind-canvas') as HTMLElement;
+  const canvas = containerElement.querySelector('.htmm-canvas') as HTMLElement;
   if (!canvas) {
     throw new Error('Mind map canvas not found');
   }
