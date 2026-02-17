@@ -325,6 +325,7 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 - 複数のマインドマップを配置できるようになった。
 - オブジェクト名称の変更。
 - 読み込み専用（ReadOnly）モードを追加。`<HtmmMap readOnly />` または `createHtmmStore({ readOnly: true })` で、ノードの追加・変更・削除・並び替え・ペーストなどを無効にしつつ、選択・開閉・ズーム・コピーは利用可能。
+- その他UIの改善、不具合の修正など。
 
 ### @tomk79/htmm v0.0.1 (2026年2月15日)
 

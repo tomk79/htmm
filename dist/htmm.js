@@ -3495,6 +3495,18 @@
           get2().pushHistory();
         });
       },
+      setNodePosition: (nodeId, position2) => {
+        if (get2().readOnly) return;
+        set2((state) => {
+          if (!state.mapData || nodeId === state.mapData.root.id) return;
+          const parent = findParentNode(state.mapData.root, nodeId);
+          if (!parent || parent.id !== state.mapData.root.id) return;
+          const node2 = findNodeById(state.mapData.root, nodeId);
+          if (!node2) return;
+          node2.position = position2;
+          get2().pushHistory();
+        });
+      },
       // Folding
       toggleFolded: (nodeId) => set2((state) => {
         if (!state.mapData) return;
@@ -6204,6 +6216,7 @@ Ctrl+Click to open`,
       addSibling,
       deleteNode,
       moveNode,
+      setNodePosition,
       toggleFolded,
       undo,
       redo,
@@ -6441,11 +6454,24 @@ Ctrl+Click to open`,
             }
           }
         } else if (e2.key === "ArrowLeft" || e2.key === "ArrowRight") {
+          const currentNode = findNodeById(mapData.root, selectedId);
           const currentLayoutNode = layoutNodes.find((node2) => node2.id === selectedId);
-          if (!currentLayoutNode) return;
+          if (!currentNode || !currentLayoutNode) return;
           const isRightKey = e2.key === "ArrowRight";
           const isLeftKey = e2.key === "ArrowLeft";
-          const side = currentLayoutNode.side;
+          const parent = findParentNode(mapData.root, selectedId);
+          const side = parent?.id === mapData.root.id ? currentNode.position === "left" ? "left" : "right" : currentLayoutNode.side;
+          if (parent?.id === mapData.root.id) {
+            const onLeft = currentNode.position === "left";
+            if (isLeftKey && !onLeft) {
+              setNodePosition(selectedId, "left");
+              return;
+            }
+            if (isRightKey && onLeft) {
+              setNodePosition(selectedId, "right");
+              return;
+            }
+          }
           let moveToHigherLevel = false;
           let moveToLowerLevel = false;
           if (side === "left") {
@@ -6456,11 +6482,11 @@ Ctrl+Click to open`,
             moveToLowerLevel = isRightKey;
           }
           if (moveToHigherLevel) {
-            const parent = findParentNode(mapData.root, selectedId);
-            if (parent && parent.id !== mapData.root.id) {
-              const grandParent = findParentNode(mapData.root, parent.id);
+            const parent2 = findParentNode(mapData.root, selectedId);
+            if (parent2 && parent2.id !== mapData.root.id) {
+              const grandParent = findParentNode(mapData.root, parent2.id);
               if (grandParent) {
-                const parentIndex = getNodeIndex(mapData.root, parent.id);
+                const parentIndex = getNodeIndex(mapData.root, parent2.id);
                 moveNode(selectedId, grandParent.id, parentIndex + 1);
               }
             }
@@ -6561,7 +6587,7 @@ Ctrl+Click to open`,
           }
         }
       }
-    }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont, readOnly]);
+    }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, setNodePosition, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont, readOnly]);
     reactExports.useEffect(() => {
       const container = containerRef.current;
       if (!container) return;

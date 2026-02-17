@@ -61,6 +61,7 @@ export interface HtmmActions {
   deleteNode: (nodeId: string) => void;
   editNode: (nodeId: string, text: string) => void;
   moveNode: (nodeId: string, newParentId: string, index?: number) => void;
+  setNodePosition: (nodeId: string, position: 'left' | 'right') => void;
   
   // Folding
   toggleFolded: (nodeId: string) => void;
@@ -328,6 +329,19 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       
       get().pushHistory();
     });
+    },
+    
+    setNodePosition: (nodeId, position) => {
+      if (get().readOnly) return;
+      set((state) => {
+        if (!state.mapData || nodeId === state.mapData.root.id) return;
+        const parent = findParentNode(state.mapData.root, nodeId);
+        if (!parent || parent.id !== state.mapData.root.id) return;
+        const node = findNodeById(state.mapData.root, nodeId);
+        if (!node) return;
+        node.position = position;
+        get().pushHistory();
+      });
     },
     
     // Folding

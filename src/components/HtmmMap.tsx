@@ -47,6 +47,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     addSibling,
     deleteNode,
     moveNode,
+    setNodePosition,
     toggleFolded,
     undo,
     redo,
@@ -373,13 +374,31 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
           }
         }
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        // Get the current node's layout info to determine side
+        // Get the current node (use mapData for position to avoid stale layoutNodes after setNodePosition)
+        const currentNode = findNodeById(mapData.root, selectedId);
         const currentLayoutNode = layoutNodes.find(node => node.id === selectedId);
-        if (!currentLayoutNode) return;
+        if (!currentNode || !currentLayoutNode) return;
         
         const isRightKey = e.key === 'ArrowRight';
         const isLeftKey = e.key === 'ArrowLeft';
-        const side = currentLayoutNode.side;
+        const parent = findParentNode(mapData.root, selectedId);
+        // Use position from mapData for root's children so it's correct right after setNodePosition (layoutNodes can be stale)
+        const side = parent?.id === mapData.root.id
+          ? (currentNode.position === 'left' ? 'left' : 'right')
+          : currentLayoutNode.side;
+        
+        // For root's direct children: Ctrl+← move to left, Ctrl+→ move to right
+        if (parent?.id === mapData.root.id) {
+          const onLeft = currentNode.position === 'left';
+          if (isLeftKey && !onLeft) {
+            setNodePosition(selectedId, 'left');
+            return;
+          }
+          if (isRightKey && onLeft) {
+            setNodePosition(selectedId, 'right');
+            return;
+          }
+        }
         
         // Determine the action based on side (reverse for left side)
         let moveToHigherLevel = false;
@@ -510,7 +529,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
         }
       }
     }
-  }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont, readOnly]);
+  }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, setNodePosition, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont, readOnly]);
   
   // Setup keyboard event listener
   useEffect(() => {
