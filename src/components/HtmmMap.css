@@ -86,7 +86,7 @@
   }
 }
 
-/* Floating zoom controls (mobile / when no mouse) */
+/* Floating zoom controls */
 .htmm-map-zoom-controls {
   position: absolute;
   bottom: 12px;
@@ -119,10 +119,4 @@
 
 .htmm-map-zoom-controls button:active {
   background: #e8e8e8;
-}
-
-@media (min-width: 769px) and (pointer: fine) {
-  .htmm-map-zoom-controls {
-    display: none;
-  }
 }
