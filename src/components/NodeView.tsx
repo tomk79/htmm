@@ -167,11 +167,13 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
+      e.stopPropagation();
       if (inputRef.current) {
         onEndEdit(inputRef.current.textContent || '');
       }
     } else if (e.key === 'Escape') {
       e.preventDefault();
+      e.stopPropagation();
       // Set cancelled flag to prevent blur from saving
       cancelledRef.current = true;
       // Pass the original text to restore it

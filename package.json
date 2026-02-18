@@ -9,6 +9,8 @@
     "build:lib": "vite build --config vite.lib.config.ts && BUILD_MINIFIED=1 vite build --config vite.lib.config.ts",
     "lint": "eslint .",
     "preview": "vite preview",
+    "prod": "npm run production",
+    "production": "npm run build",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",

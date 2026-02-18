@@ -5875,11 +5875,13 @@
     const handleKeyDown = (e2) => {
       if (e2.key === "Enter" && !e2.shiftKey) {
         e2.preventDefault();
+        e2.stopPropagation();
         if (inputRef.current) {
           onEndEdit(inputRef.current.textContent || "");
         }
       } else if (e2.key === "Escape") {
         e2.preventDefault();
+        e2.stopPropagation();
         cancelledRef.current = true;
         onEndEdit(originalTextRef.current, true);
       } else if (e2.key === "Tab") {
