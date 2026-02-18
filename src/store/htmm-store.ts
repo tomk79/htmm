@@ -147,7 +147,6 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
     
     // Map operations
     loadMap: (data) => {
-      if (get().readOnly) return;
       set((state) => {
       const copy = JSON.parse(JSON.stringify(data)) as MindMapData;
       state.mapData = copy;

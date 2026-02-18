@@ -3418,7 +3418,6 @@
       clipboard: null,
       // Map operations
       loadMap: (data) => {
-        if (get2().readOnly) return;
         set2((state) => {
           const copy = JSON.parse(JSON.stringify(data));
           state.mapData = copy;
