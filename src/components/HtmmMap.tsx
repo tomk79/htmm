@@ -80,7 +80,8 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   const panStartRef = useRef<{ panX: number; panY: number; clientX: number; clientY: number } | null>(null);
 
   const SCROLL_INTO_VIEW_MARGIN = 24;
-  
+  const PAN_LIMIT_VISIBLE_PX = 20;
+
   // Drag and drop handler
   const handleNodeMove = useCallback((draggedNodeId: string, targetNodeId: string, position: 'before' | 'after' | 'child') => {
     if (!mapData) return;
@@ -135,7 +136,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     }
   }, [mapData]);
 
-  // Pan bounds: at the limit, only PAN_LIMIT_VISIBLE_PX of the edge node is visible (rest hidden)
+  // Pan bounds: from each edge node's edge, negative margin of (viewport size - PAN_LIMIT_VISIBLE_PX). At limit, only 20px of content visible.
   const getPanBounds = useCallback((contentWidth: number, contentHeight: number) => {
     if (layoutNodes.length === 0) {
       return { minPanX: -Infinity, maxPanX: Infinity, minPanY: -Infinity, maxPanY: Infinity };
@@ -153,12 +154,12 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     }
     const cx = contentWidth / 2;
     const cy = contentHeight / 2;
-    // Node edge at viewport edge → only the edge 20px of the node remains visible
+    // Right/bottom limit: edge at 20px from viewport edge → smallest pan (minPanX/minPanY). Left/top limit: edge at (size-20) → largest pan (maxPanX/maxPanY).
     return {
-      minPanX: 0 - cx - minLeft * zoom,
-      maxPanX: contentWidth - cx - maxRight * zoom,
-      minPanY: 0 - cy - minTop * zoom,
-      maxPanY: contentHeight - cy - maxBottom * zoom,
+      minPanX: PAN_LIMIT_VISIBLE_PX - cx - maxRight * zoom,
+      maxPanX: (contentWidth - PAN_LIMIT_VISIBLE_PX) - cx - minLeft * zoom,
+      minPanY: PAN_LIMIT_VISIBLE_PX - cy - maxBottom * zoom,
+      maxPanY: (contentHeight - PAN_LIMIT_VISIBLE_PX) - cy - minTop * zoom,
     };
   }, [layoutNodes, zoom]);
 

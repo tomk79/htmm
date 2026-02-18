@@ -6546,6 +6546,7 @@ Ctrl+Click to open`,
     const canvasRef = reactExports.useRef(null);
     const panStartRef = reactExports.useRef(null);
     const SCROLL_INTO_VIEW_MARGIN = 24;
+    const PAN_LIMIT_VISIBLE_PX = 20;
     const handleNodeMove = reactExports.useCallback((draggedNodeId, targetNodeId, position2) => {
       if (!mapData) return;
       const draggedNode = findNodeById(mapData.root, draggedNodeId);
@@ -6603,10 +6604,10 @@ Ctrl+Click to open`,
       const cx = contentWidth / 2;
       const cy = contentHeight / 2;
       return {
-        minPanX: 0 - cx - minLeft * zoom,
-        maxPanX: contentWidth - cx - maxRight * zoom,
-        minPanY: 0 - cy - minTop * zoom,
-        maxPanY: contentHeight - cy - maxBottom * zoom
+        minPanX: PAN_LIMIT_VISIBLE_PX - cx - maxRight * zoom,
+        maxPanX: contentWidth - PAN_LIMIT_VISIBLE_PX - cx - minLeft * zoom,
+        minPanY: PAN_LIMIT_VISIBLE_PX - cy - maxBottom * zoom,
+        maxPanY: contentHeight - PAN_LIMIT_VISIBLE_PX - cy - minTop * zoom
       };
     }, [layoutNodes, zoom]);
     const clampPan = reactExports.useCallback((panX2, panY2, contentWidth, contentHeight) => {
