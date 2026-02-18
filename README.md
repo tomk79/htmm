@@ -164,6 +164,27 @@ function MultiMapPage() {
 <HtmmMap src="/map.mm" readOnly width="100%" height="400px" />
 ```
 
+### 表示テーマ（appearance）と言語（lang）
+
+マップの見た目と言語を初期化オプションで指定できます。
+
+- **`appearance`** — テーマを指定します。`'dark'`（ダーク）、`'light'`（ライト）、`'auto'`（OSの設定に従う）。省略時は `'auto'` です。
+- **`lang`** — マップのルート要素に付与する言語コード（BCP 47、例: `'en'`, `'ja'`）。アクセシビリティや言語指定に利用します。省略時は `'en'` です。
+
+```tsx
+// 常にダークテーマで表示
+<HtmmMap appearance="dark" width="100%" height="600px" />
+
+// 常にライトテーマ
+<HtmmMap appearance="light" width="100%" height="600px" />
+
+// 言語を日本語に（省略時は en）
+<HtmmMap lang="ja" width="100%" height="600px" />
+
+// 組み合わせ
+<HtmmMap appearance="dark" lang="ja" src="/map.mm" width="100%" height="400px" />
+```
+
 `useHtmmStore()` は **HtmmMap の内側**（子コンポーネント）でのみ利用できます。HtmmMap の外から操作する場合は ref の `loadMap` / `getMapData` を使ってください。
 
 ## 主要API
@@ -181,6 +202,8 @@ function MultiMapPage() {
   src="/path/to/map.mm"   // 省略可。.mm の URL を指定するとここから読み込む
   initialMapData={mapData} // 省略可。src がないときに使う初期データ
   readOnly={false}        // 省略可。true にすると編集不可（選択・開閉・ズーム・コピーは可能）
+  appearance="auto"       // 省略可。'dark' | 'light' | 'auto'。デフォルトは 'auto'（OSに従う）
+  lang="en"               // 省略可。言語コード（例: en, ja）。デフォルトは 'en'
 />
 ```
 
@@ -330,6 +353,7 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 - 複数のマインドマップを配置できるようになった。
 - オブジェクト名称の変更。
 - 読み込み専用（ReadOnly）モードを追加。`<HtmmMap readOnly />` または `createHtmmStore({ readOnly: true })` で、ノードの追加・変更・削除・並び替え・ペーストなどを無効にしつつ、選択・開閉・ズーム・コピーは利用可能。
+- `lang` と `appearance` オプションを追加。
 - その他UIの改善、不具合の修正など。
 
 ### @tomk79/htmm v0.0.1 (2026年2月15日)

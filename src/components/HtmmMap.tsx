@@ -27,12 +27,19 @@ import {
   collectAllArrowLinks
 } from '../models/MindMapNode';
 
+/** Resolved appearance for rendering (always 'dark' or 'light'; 'auto' is resolved via prefers-color-scheme). */
+export type HtmmAppearance = 'dark' | 'light' | 'auto';
+
 interface HtmmMapInnerProps {
   width?: number | string;
   height?: number | string;
   className?: string;
   /** When loading from src failed, this is set to the error message. */
   loadError?: string | null;
+  /** Theme: dark, light, or auto (follow system). Default: auto. */
+  appearance?: HtmmAppearance;
+  /** Language code for the map container (e.g. en, ja). Default: en. */
+  lang?: string;
 }
 
 const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
@@ -40,8 +47,26 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   height = '600px',
   className = '',
   loadError = null,
+  appearance = 'auto',
+  lang = 'en',
 }) => {
   const store = useContext(HtmmStoreContext);
+
+  // Resolve 'auto' to 'dark' or 'light' using prefers-color-scheme (when matchMedia is available)
+  const [resolvedAppearance, setResolvedAppearance] = useState<'dark' | 'light'>(() => {
+    if (typeof window === 'undefined' || appearance !== 'auto') return 'light';
+    const mq = window.matchMedia?.( '(prefers-color-scheme: dark)' );
+    return mq?.matches ? 'dark' : 'light';
+  });
+  useEffect(() => {
+    if (appearance !== 'auto' || typeof window === 'undefined' || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const handler = () => setResolvedAppearance(mq.matches ? 'dark' : 'light');
+    handler(); // set initial
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, [appearance]);
+  const effectiveAppearance: 'dark' | 'light' = appearance === 'auto' ? resolvedAppearance : appearance;
   if (store === null) {
     throw new Error('HtmmMapInner must be rendered inside HtmmStoreContext.Provider.');
   }
@@ -737,6 +762,8 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
       aria-label={`Mind map: ${mapTitle}`}
       aria-multiselectable="true"
       tabIndex={0}
+      data-appearance={effectiveAppearance}
+      lang={lang}
       onTouchStart={touchHandlers.onTouchStart}
       onTouchEnd={touchHandlers.onTouchEnd}
       onTouchCancel={touchHandlers.onTouchCancel}
@@ -817,7 +844,7 @@ export interface HtmmMapHandle {
   getMapData: () => MindMapData | null;
 }
 
-interface HtmmMapProps {
+export interface HtmmMapProps {
   width?: number | string;
   height?: number | string;
   className?: string;
@@ -827,6 +854,10 @@ interface HtmmMapProps {
   initialMapData?: MindMapData;
   /** When true, node edit operations (add/change/delete/reorder/paste) are disabled; folding is allowed. */
   readOnly?: boolean;
+  /** Theme: dark, light, or auto (follow system). Default: auto. */
+  appearance?: HtmmAppearance;
+  /** Language code for the map container (e.g. en, ja). Default: en. */
+  lang?: string;
   /** Optional children (e.g. toolbar). Rendered inside the same store Provider so they can use useHtmmStore(). */
   children?: React.ReactNode;
 }
@@ -838,6 +869,8 @@ export const HtmmMap = forwardRef<HtmmMapHandle, HtmmMapProps>(function HtmmMap(
   src,
   initialMapData,
   readOnly = false,
+  appearance = 'auto',
+  lang = 'en',
   children,
 }, ref) {
   const storeRef = useRef<ReturnType<typeof createHtmmStore> | null>(null);
@@ -883,6 +916,8 @@ export const HtmmMap = forwardRef<HtmmMapHandle, HtmmMapProps>(function HtmmMap(
       height={height}
       className={className}
       loadError={loadError}
+      appearance={appearance}
+      lang={lang}
     />
   );
 

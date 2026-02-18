@@ -9,7 +9,7 @@ injectStyles()
 
 // Components
 export { HtmmMap } from './components/HtmmMap';
-export type { HtmmMapHandle } from './components/HtmmMap';
+export type { HtmmMapHandle, HtmmMapProps, HtmmAppearance } from './components/HtmmMap';
 export { NodeView } from './components/NodeView';
 export { EdgeView } from './components/EdgeView';
 
