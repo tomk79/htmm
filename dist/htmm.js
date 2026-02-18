@@ -3256,6 +3256,13 @@
     }
     return parent.children.findIndex((child) => child.id === nodeId);
   }
+  function getDepth(root, nodeId) {
+    const path2 = getNodePath(root, nodeId);
+    if (!path2) {
+      return -1;
+    }
+    return path2.length - 1;
+  }
   function isLeaf(node2) {
     return !hasChildren(node2);
   }
@@ -3308,6 +3315,58 @@
       return null;
     }
     return node2.children[0];
+  }
+  function getLastDescendantAtDepth(root, startNode, targetDepth) {
+    let current2 = startNode;
+    let d2 = getDepth(root, startNode.id);
+    while (d2 < targetDepth && current2.children && current2.children.length > 0) {
+      current2 = current2.children[current2.children.length - 1];
+      d2 += 1;
+    }
+    return current2;
+  }
+  function getFirstDescendantAtDepth(root, startNode, targetDepth) {
+    let current2 = startNode;
+    let d2 = getDepth(root, startNode.id);
+    while (d2 < targetDepth && current2.children && current2.children.length > 0) {
+      current2 = current2.children[0];
+      d2 += 1;
+    }
+    return current2;
+  }
+  function getPreviousSiblingOrAbove(root, nodeId) {
+    const prev = getPreviousSibling(root, nodeId);
+    if (prev) return prev;
+    const node2 = findNodeById(root, nodeId);
+    if (!node2) return null;
+    const targetDepth = getDepth(root, nodeId);
+    let current2 = node2;
+    while (true) {
+      const parent = findParentNode(root, current2.id);
+      if (!parent || parent.id === root.id) return null;
+      const prevSibling = getPreviousSibling(root, parent.id);
+      if (prevSibling) {
+        return getLastDescendantAtDepth(root, prevSibling, targetDepth);
+      }
+      current2 = parent;
+    }
+  }
+  function getNextSiblingOrBelow(root, nodeId) {
+    const next = getNextSibling(root, nodeId);
+    if (next) return next;
+    const node2 = findNodeById(root, nodeId);
+    if (!node2) return null;
+    const targetDepth = getDepth(root, nodeId);
+    let current2 = node2;
+    while (true) {
+      const parent = findParentNode(root, current2.id);
+      if (!parent || parent.id === root.id) return null;
+      const nextSibling = getNextSibling(root, parent.id);
+      if (nextSibling) {
+        return getFirstDescendantAtDepth(root, nextSibling, targetDepth);
+      }
+      current2 = parent;
+    }
   }
   function getFirstChildByPosition(node2, position2) {
     if (!node2.children || node2.children.length === 0) {
@@ -6385,9 +6444,9 @@ Ctrl+Click to open`,
         e2.preventDefault();
         let nextNode = null;
         if (e2.key === "ArrowUp") {
-          nextNode = getPreviousSibling(mapData.root, selectedId);
+          nextNode = getPreviousSiblingOrAbove(mapData.root, selectedId);
         } else if (e2.key === "ArrowDown") {
-          nextNode = getNextSibling(mapData.root, selectedId);
+          nextNode = getNextSiblingOrBelow(mapData.root, selectedId);
         } else if (e2.key === "ArrowRight" || e2.key === "ArrowLeft") {
           const currentNode = findNodeById(mapData.root, selectedId);
           const currentLayoutNode = layoutNodes.find((node2) => node2.id === selectedId);

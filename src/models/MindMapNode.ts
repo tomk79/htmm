@@ -349,6 +349,89 @@ export function getFirstChild(node: MindMapNode): MindMapNode | null {
 }
 
 /**
+ * Get last child node
+ */
+export function getLastChild(node: MindMapNode): MindMapNode | null {
+  if (!node.children || node.children.length === 0) {
+    return null;
+  }
+  
+  return node.children[node.children.length - 1];
+}
+
+/**
+ * Get the last descendant of startNode at targetDepth (from root).
+ * Walks down always taking the last child. If no children before reaching targetDepth, returns the deepest node reached.
+ */
+export function getLastDescendantAtDepth(root: MindMapNode, startNode: MindMapNode, targetDepth: number): MindMapNode {
+  let current: MindMapNode = startNode;
+  let d = getDepth(root, startNode.id);
+  while (d < targetDepth && current.children && current.children.length > 0) {
+    current = current.children[current.children.length - 1];
+    d += 1;
+  }
+  return current;
+}
+
+/**
+ * Get the first descendant of startNode at targetDepth (from root).
+ * Walks down always taking the first child. If no children before reaching targetDepth, returns the deepest node reached.
+ */
+export function getFirstDescendantAtDepth(root: MindMapNode, startNode: MindMapNode, targetDepth: number): MindMapNode {
+  let current: MindMapNode = startNode;
+  let d = getDepth(root, startNode.id);
+  while (d < targetDepth && current.children && current.children.length > 0) {
+    current = current.children[0];
+    d += 1;
+  }
+  return current;
+}
+
+/**
+ * Get previous sibling, or if none: the last descendant at same depth under the previous sibling of the nearest ancestor that has one.
+ * Does not cross the root (never moves to the other side).
+ */
+export function getPreviousSiblingOrAbove(root: MindMapNode, nodeId: string): MindMapNode | null {
+  const prev = getPreviousSibling(root, nodeId);
+  if (prev) return prev;
+  const node = findNodeById(root, nodeId);
+  if (!node) return null;
+  const targetDepth = getDepth(root, nodeId);
+  let current: MindMapNode = node;
+  while (true) {
+    const parent = findParentNode(root, current.id);
+    if (!parent || parent.id === root.id) return null;
+    const prevSibling = getPreviousSibling(root, parent.id);
+    if (prevSibling) {
+      return getLastDescendantAtDepth(root, prevSibling, targetDepth);
+    }
+    current = parent;
+  }
+}
+
+/**
+ * Get next sibling, or if none: the first descendant at same depth under the next sibling of the nearest ancestor that has one.
+ * Does not cross the root (never moves to the other side).
+ */
+export function getNextSiblingOrBelow(root: MindMapNode, nodeId: string): MindMapNode | null {
+  const next = getNextSibling(root, nodeId);
+  if (next) return next;
+  const node = findNodeById(root, nodeId);
+  if (!node) return null;
+  const targetDepth = getDepth(root, nodeId);
+  let current: MindMapNode = node;
+  while (true) {
+    const parent = findParentNode(root, current.id);
+    if (!parent || parent.id === root.id) return null;
+    const nextSibling = getNextSibling(root, parent.id);
+    if (nextSibling) {
+      return getFirstDescendantAtDepth(root, nextSibling, targetDepth);
+    }
+    current = parent;
+  }
+}
+
+/**
  * Get first child node by position (for root node's children)
  */
 export function getFirstChildByPosition(node: MindMapNode, position: 'left' | 'right'): MindMapNode | null {

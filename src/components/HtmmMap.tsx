@@ -16,8 +16,9 @@ import type { LayoutNode, MindMapData } from '../types/mindmap';
 import { 
   findParentNode, 
   findNodeById,
-  getNextSibling, 
-  getPreviousSibling, 
+  getNextSiblingOrBelow,
+  getPreviousSibling,
+  getPreviousSiblingOrAbove,
   getFirstChild,
   getFirstChildByPosition,
   getNodeIndex,
@@ -269,11 +270,11 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
       let nextNode = null;
       
       if (e.key === 'ArrowUp') {
-        // Navigate to previous sibling
-        nextNode = getPreviousSibling(mapData.root, selectedId);
+        // Navigate to previous sibling, or cross to previous branch's last descendant at same depth
+        nextNode = getPreviousSiblingOrAbove(mapData.root, selectedId);
       } else if (e.key === 'ArrowDown') {
-        // Navigate to next sibling
-        nextNode = getNextSibling(mapData.root, selectedId);
+        // Navigate to next sibling, or cross to next branch's first descendant at same depth
+        nextNode = getNextSiblingOrBelow(mapData.root, selectedId);
       } else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
         // Get the current node and its layout info
         const currentNode = findNodeById(mapData.root, selectedId);
