@@ -6585,6 +6585,49 @@ Ctrl+Click to open`,
         setLayoutNodes(layout);
       }
     }, [mapData]);
+    const getPanBounds = reactExports.useCallback((contentWidth, contentHeight) => {
+      if (layoutNodes.length === 0) {
+        return { minPanX: -Infinity, maxPanX: Infinity, minPanY: -Infinity, maxPanY: Infinity };
+      }
+      let minLeft = Infinity, maxRight = -Infinity, minTop = Infinity, maxBottom = -Infinity;
+      for (const n2 of layoutNodes) {
+        const left = n2.x - n2.width / 2;
+        const right = n2.x + n2.width / 2;
+        const top = n2.y - n2.height / 2;
+        const bottom = n2.y + n2.height / 2;
+        minLeft = Math.min(minLeft, left);
+        maxRight = Math.max(maxRight, right);
+        minTop = Math.min(minTop, top);
+        maxBottom = Math.max(maxBottom, bottom);
+      }
+      const cx = contentWidth / 2;
+      const cy = contentHeight / 2;
+      return {
+        minPanX: 0 - cx - minLeft * zoom,
+        maxPanX: contentWidth - cx - maxRight * zoom,
+        minPanY: 0 - cy - minTop * zoom,
+        maxPanY: contentHeight - cy - maxBottom * zoom
+      };
+    }, [layoutNodes, zoom]);
+    const clampPan = reactExports.useCallback((panX2, panY2, contentWidth, contentHeight) => {
+      const b2 = getPanBounds(contentWidth, contentHeight);
+      return {
+        panX: Math.max(b2.minPanX, Math.min(b2.maxPanX, panX2)),
+        panY: Math.max(b2.minPanY, Math.min(b2.maxPanY, panY2))
+      };
+    }, [getPanBounds]);
+    reactExports.useEffect(() => {
+      const el = containerRef.current;
+      if (!el || layoutNodes.length === 0) return;
+      const cw = el.clientWidth;
+      const ch = el.clientHeight;
+      if (cw <= 0 || ch <= 0) return;
+      const state = store.getState();
+      const clamped = clampPan(state.panX, state.panY, cw, ch);
+      if (clamped.panX !== state.panX || clamped.panY !== state.panY) {
+        state.setPan(clamped.panX, clamped.panY);
+      }
+    }, [layoutNodes, zoom, clampPan, store]);
     const enableCulling = shouldEnableViewportCulling(layoutNodes.length);
     const visibleNodes = useViewportCulling(
       layoutNodes,
@@ -6600,7 +6643,13 @@ Ctrl+Click to open`,
       maxScale: 4,
       onPan: (deltaX, deltaY) => {
         const state = store.getState();
-        state.setPan(state.panX + deltaX, state.panY + deltaY);
+        const el = containerRef.current;
+        const cw = el?.clientWidth ?? 0;
+        const ch = el?.clientHeight ?? 0;
+        const proposedX = state.panX + deltaX;
+        const proposedY = state.panY + deltaY;
+        const clamped = cw > 0 && ch > 0 ? clampPan(proposedX, proposedY, cw, ch) : { panX: proposedX, panY: proposedY };
+        state.setPan(clamped.panX, clamped.panY);
       },
       onPinch: (scale) => {
         setZoom(scale);
@@ -6617,13 +6666,23 @@ Ctrl+Click to open`,
       const el = containerRef.current;
       if (!el) return;
       const onWheel = (e2) => {
-        e2.preventDefault();
         const state = store.getState();
-        state.setPan(state.panX - e2.deltaX, state.panY - e2.deltaY);
+        const cw = el.clientWidth;
+        const ch = el.clientHeight;
+        if (cw <= 0 || ch <= 0) return;
+        const proposedX = state.panX - e2.deltaX;
+        const proposedY = state.panY - e2.deltaY;
+        const clamped = clampPan(proposedX, proposedY, cw, ch);
+        const atLimit = clamped.panX !== proposedX || clamped.panY !== proposedY;
+        if (atLimit) {
+          return;
+        }
+        e2.preventDefault();
+        state.setPan(clamped.panX, clamped.panY);
       };
       el.addEventListener("wheel", onWheel, { passive: false });
       return () => el.removeEventListener("wheel", onWheel);
-    }, [mapData]);
+    }, [mapData, clampPan, store]);
     const handleCanvasMouseDown = reactExports.useCallback((e2) => {
       if (e2.button !== 0 || e2.target !== e2.currentTarget) return;
       const state = store.getState();
@@ -6640,10 +6699,13 @@ Ctrl+Click to open`,
         if (!start) return;
         e2.preventDefault();
         document.body.style.cursor = "grabbing";
-        store.getState().setPan(
-          start.panX + (e2.clientX - start.clientX),
-          start.panY + (e2.clientY - start.clientY)
-        );
+        const el = containerRef.current;
+        const cw = el?.clientWidth ?? 0;
+        const ch = el?.clientHeight ?? 0;
+        const proposedX = start.panX + (e2.clientX - start.clientX);
+        const proposedY = start.panY + (e2.clientY - start.clientY);
+        const clamped = cw > 0 && ch > 0 ? clampPan(proposedX, proposedY, cw, ch) : { panX: proposedX, panY: proposedY };
+        store.getState().setPan(clamped.panX, clamped.panY);
       };
       const onMouseUp = () => {
         if (panStartRef.current) document.body.style.cursor = "";
@@ -6656,7 +6718,7 @@ Ctrl+Click to open`,
         window.removeEventListener("mousemove", onMouseMove);
         window.removeEventListener("mouseup", onMouseUp);
       };
-    }, [store]);
+    }, [store, clampPan]);
     const nodesToRender = enableCulling ? visibleNodes : layoutNodes;
     const handleStartEdit = reactExports.useCallback((nodeId) => {
       setEditingNodeId(nodeId);
@@ -6937,10 +6999,11 @@ Ctrl+Click to open`,
       if (nodeRight > visibleRight) desiredPanX = visibleRight - cx - (layoutNode.x + layoutNode.width / 2) * currentZoom;
       if (nodeTop < visibleTop) desiredPanY = visibleTop - cy - (layoutNode.y - layoutNode.height / 2) * currentZoom;
       if (nodeBottom > visibleBottom) desiredPanY = visibleBottom - cy - (layoutNode.y + layoutNode.height / 2) * currentZoom;
-      if (desiredPanX !== currentPanX || desiredPanY !== currentPanY) {
-        setPan(desiredPanX, desiredPanY);
+      const clamped = clampPan(desiredPanX, desiredPanY, contentWidth, contentHeight);
+      if (clamped.panX !== currentPanX || clamped.panY !== currentPanY) {
+        setPan(clamped.panX, clamped.panY);
       }
-    }, [selectedNodeIds, layoutNodes, editingNodeId, setPan]);
+    }, [selectedNodeIds, layoutNodes, editingNodeId, setPan, clampPan]);
     reactExports.useEffect(() => {
       const el = containerRef.current;
       if (!el) return;

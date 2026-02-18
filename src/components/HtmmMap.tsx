@@ -134,6 +134,55 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
       setLayoutNodes(layout);
     }
   }, [mapData]);
+
+  // Pan bounds: at the limit, only PAN_LIMIT_VISIBLE_PX of the edge node is visible (rest hidden)
+  const getPanBounds = useCallback((contentWidth: number, contentHeight: number) => {
+    if (layoutNodes.length === 0) {
+      return { minPanX: -Infinity, maxPanX: Infinity, minPanY: -Infinity, maxPanY: Infinity };
+    }
+    let minLeft = Infinity, maxRight = -Infinity, minTop = Infinity, maxBottom = -Infinity;
+    for (const n of layoutNodes) {
+      const left = n.x - n.width / 2;
+      const right = n.x + n.width / 2;
+      const top = n.y - n.height / 2;
+      const bottom = n.y + n.height / 2;
+      minLeft = Math.min(minLeft, left);
+      maxRight = Math.max(maxRight, right);
+      minTop = Math.min(minTop, top);
+      maxBottom = Math.max(maxBottom, bottom);
+    }
+    const cx = contentWidth / 2;
+    const cy = contentHeight / 2;
+    // Node edge at viewport edge → only the edge 20px of the node remains visible
+    return {
+      minPanX: 0 - cx - minLeft * zoom,
+      maxPanX: contentWidth - cx - maxRight * zoom,
+      minPanY: 0 - cy - minTop * zoom,
+      maxPanY: contentHeight - cy - maxBottom * zoom,
+    };
+  }, [layoutNodes, zoom]);
+
+  const clampPan = useCallback((panX: number, panY: number, contentWidth: number, contentHeight: number) => {
+    const b = getPanBounds(contentWidth, contentHeight);
+    return {
+      panX: Math.max(b.minPanX, Math.min(b.maxPanX, panX)),
+      panY: Math.max(b.minPanY, Math.min(b.maxPanY, panY)),
+    };
+  }, [getPanBounds]);
+
+  // Keep pan within bounds when zoom or layout changes (e.g. after zoom in)
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || layoutNodes.length === 0) return;
+    const cw = el.clientWidth;
+    const ch = el.clientHeight;
+    if (cw <= 0 || ch <= 0) return;
+    const state = store.getState();
+    const clamped = clampPan(state.panX, state.panY, cw, ch);
+    if (clamped.panX !== state.panX || clamped.panY !== state.panY) {
+      state.setPan(clamped.panX, clamped.panY);
+    }
+  }, [layoutNodes, zoom, clampPan, store]);
   
   // Apply viewport culling for large maps (optimization)
   const enableCulling = shouldEnableViewportCulling(layoutNodes.length);
@@ -146,14 +195,20 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     panY
   );
 
-  // Touch gestures: pan and pinch zoom (mobile)
+  // Touch gestures: pan and pinch zoom (mobile) — pan clamped to bounds
   const { handlers: touchHandlers } = useTouchGestures({
     initialScale: zoom,
     minScale: 0.25,
     maxScale: 4,
     onPan: (deltaX, deltaY) => {
       const state = store.getState();
-      state.setPan(state.panX + deltaX, state.panY + deltaY);
+      const el = containerRef.current;
+      const cw = el?.clientWidth ?? 0;
+      const ch = el?.clientHeight ?? 0;
+      const proposedX = state.panX + deltaX;
+      const proposedY = state.panY + deltaY;
+      const clamped = cw > 0 && ch > 0 ? clampPan(proposedX, proposedY, cw, ch) : { panX: proposedX, panY: proposedY };
+      state.setPan(clamped.panX, clamped.panY);
     },
     onPinch: (scale) => {
       setZoom(scale);
@@ -168,19 +223,30 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     setZoom(Math.max(zoom / 1.25, 0.25));
   }, [zoom, setZoom]);
 
-  // Wheel scroll (pan) — use native listener with passive: false so preventDefault works
+  // Wheel scroll (pan) — clamp to pan bounds; when at limit, do not preventDefault so browser can scroll
   useEffect(() => {
     if (!mapData) return;
     const el = containerRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
-      e.preventDefault();
       const state = store.getState();
-      state.setPan(state.panX - e.deltaX, state.panY - e.deltaY);
+      const cw = el.clientWidth;
+      const ch = el.clientHeight;
+      if (cw <= 0 || ch <= 0) return;
+      const proposedX = state.panX - e.deltaX;
+      const proposedY = state.panY - e.deltaY;
+      const clamped = clampPan(proposedX, proposedY, cw, ch);
+      const atLimit = clamped.panX !== proposedX || clamped.panY !== proposedY;
+      if (atLimit) {
+        // At pan limit and user scrolled further — let the browser handle it (e.g. page scroll)
+        return;
+      }
+      e.preventDefault();
+      state.setPan(clamped.panX, clamped.panY);
     };
     el.addEventListener('wheel', onWheel, { passive: false });
     return () => el.removeEventListener('wheel', onWheel);
-  }, [mapData]);
+  }, [mapData, clampPan, store]);
 
   // Mouse drag to pan (when dragging on canvas background, not on a node)
   const handleCanvasMouseDown = useCallback((e: React.MouseEvent) => {
@@ -201,10 +267,13 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
       if (!start) return;
       e.preventDefault();
       document.body.style.cursor = 'grabbing';
-      store.getState().setPan(
-        start.panX + (e.clientX - start.clientX),
-        start.panY + (e.clientY - start.clientY)
-      );
+      const el = containerRef.current;
+      const cw = el?.clientWidth ?? 0;
+      const ch = el?.clientHeight ?? 0;
+      const proposedX = start.panX + (e.clientX - start.clientX);
+      const proposedY = start.panY + (e.clientY - start.clientY);
+      const clamped = cw > 0 && ch > 0 ? clampPan(proposedX, proposedY, cw, ch) : { panX: proposedX, panY: proposedY };
+      store.getState().setPan(clamped.panX, clamped.panY);
     };
     const onMouseUp = () => {
       if (panStartRef.current) document.body.style.cursor = '';
@@ -217,7 +286,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
-  }, [store]);
+  }, [store, clampPan]);
   
   // Use visible nodes only if culling is enabled, otherwise use all nodes
   const nodesToRender = enableCulling ? visibleNodes : layoutNodes;
@@ -590,10 +659,11 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     if (nodeRight > visibleRight) desiredPanX = visibleRight - cx - (layoutNode.x + layoutNode.width / 2) * currentZoom;
     if (nodeTop < visibleTop) desiredPanY = visibleTop - cy - (layoutNode.y - layoutNode.height / 2) * currentZoom;
     if (nodeBottom > visibleBottom) desiredPanY = visibleBottom - cy - (layoutNode.y + layoutNode.height / 2) * currentZoom;
-    if (desiredPanX !== currentPanX || desiredPanY !== currentPanY) {
-      setPan(desiredPanX, desiredPanY);
+    const clamped = clampPan(desiredPanX, desiredPanY, contentWidth, contentHeight);
+    if (clamped.panX !== currentPanX || clamped.panY !== currentPanY) {
+      setPan(clamped.panX, clamped.panY);
     }
-  }, [selectedNodeIds, layoutNodes, editingNodeId, setPan]);
+  }, [selectedNodeIds, layoutNodes, editingNodeId, setPan, clampPan]);
 
   // Attach touch move with passive: false so we can preventDefault (stops page scroll during pan/pinch).
   // Must be declared before any early return so hook order is consistent every render (React rules of hooks).
