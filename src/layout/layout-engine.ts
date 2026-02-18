@@ -11,7 +11,8 @@ import { isFolded } from '../models/MindMapNode';
  */
 export const LAYOUT_CONSTANTS = {
   DEFAULT_HGAP: 20,      // Horizontal gap from parent
-  DEFAULT_VGAP: 3,       // Vertical gap between siblings
+  SIBLING_VGAP: 9,       // Vertical gap between direct siblings (直接の兄弟)
+  SUBTREE_VGAP: 15,      // Vertical gap between sibling subtrees (サブツリー同士)
   MIN_NODE_WIDTH: 150,   // Minimum node width
   MIN_NODE_HEIGHT: 20,   // Minimum node height
   ICON_SIZE: 16,         // Icon dimensions
@@ -22,6 +23,13 @@ export const LAYOUT_CONSTANTS = {
   ROOT_X: 0,             // Root X position (center)
   ROOT_Y: 0,             // Root Y position (center)
 };
+
+/** Vertical gap after a child: SUBTREE_VGAP if child has children, else SIBLING_VGAP. Overridden by node.layout.vgap. */
+function getVgapAfterChild(child: MindMapNode): number {
+  if (child.layout?.vgap !== undefined) return child.layout.vgap;
+  const hasSubtree = !!(child.children && child.children.length > 0 && !isFolded(child));
+  return hasSubtree ? LAYOUT_CONSTANTS.SUBTREE_VGAP : LAYOUT_CONSTANTS.SIBLING_VGAP;
+}
 
 /**
  * Calculate text dimensions (approximate)
@@ -97,8 +105,7 @@ function calculateSubtreeHeight(node: MindMapNode): number {
     totalHeight += childHeight;
     
     if (i < node.children.length - 1) {
-      const vgap = node.children[i].layout?.vgap ?? LAYOUT_CONSTANTS.DEFAULT_VGAP;
-      totalHeight += vgap;
+      totalHeight += getVgapAfterChild(node.children[i]);
     }
   }
   
@@ -120,8 +127,7 @@ function calculateSubtreeHeightForChildren(children: MindMapNode[]): number {
     totalHeight += childHeight;
     
     if (i < children.length - 1) {
-      const vgap = children[i].layout?.vgap ?? LAYOUT_CONSTANTS.DEFAULT_VGAP;
-      totalHeight += vgap;
+      totalHeight += getVgapAfterChild(children[i]);
     }
   }
   
@@ -191,10 +197,7 @@ function layoutChildren(
         result.push(...grandchildren);
         
         currentY += childSubtreeHeight;
-        const vgap = child.layout?.vgap !== undefined 
-          ? child.layout.vgap 
-          : LAYOUT_CONSTANTS.DEFAULT_VGAP;
-        currentY += vgap;
+        currentY += getVgapAfterChild(child);
       }
     }
     
@@ -237,10 +240,7 @@ function layoutChildren(
         result.push(...grandchildren);
         
         currentY += childSubtreeHeight;
-        const vgap = child.layout?.vgap !== undefined 
-          ? child.layout.vgap 
-          : LAYOUT_CONSTANTS.DEFAULT_VGAP;
-        currentY += vgap;
+        currentY += getVgapAfterChild(child);
       }
     }
   } else {
@@ -285,10 +285,7 @@ function layoutChildren(
       result.push(...grandchildren);
       
       currentY += childSubtreeHeight;
-      const vgap = child.layout?.vgap !== undefined 
-        ? child.layout.vgap 
-        : LAYOUT_CONSTANTS.DEFAULT_VGAP;
-      currentY += vgap;
+      currentY += getVgapAfterChild(child);
     }
   }
   

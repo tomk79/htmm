@@ -4127,8 +4127,10 @@
   const LAYOUT_CONSTANTS = {
     DEFAULT_HGAP: 20,
     // Horizontal gap from parent
-    DEFAULT_VGAP: 3,
-    // Vertical gap between siblings
+    SIBLING_VGAP: 9,
+    // Vertical gap between direct siblings (直接の兄弟)
+    SUBTREE_VGAP: 15,
+    // Vertical gap between sibling subtrees (サブツリー同士)
     MIN_NODE_WIDTH: 150,
     // Minimum node width
     MIN_NODE_HEIGHT: 20,
@@ -4146,6 +4148,11 @@
     ROOT_Y: 0
     // Root Y position (center)
   };
+  function getVgapAfterChild(child) {
+    if (child.layout?.vgap !== void 0) return child.layout.vgap;
+    const hasSubtree = !!(child.children && child.children.length > 0 && !isFolded(child));
+    return hasSubtree ? LAYOUT_CONSTANTS.SUBTREE_VGAP : LAYOUT_CONSTANTS.SIBLING_VGAP;
+  }
   function calculateTextDimensions(text2 = "", fontSize2 = 12, fontFamily2 = "Arial") {
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
@@ -4191,8 +4198,7 @@
       const childHeight = calculateSubtreeHeight(node2.children[i2]);
       totalHeight += childHeight;
       if (i2 < node2.children.length - 1) {
-        const vgap = node2.children[i2].layout?.vgap ?? LAYOUT_CONSTANTS.DEFAULT_VGAP;
-        totalHeight += vgap;
+        totalHeight += getVgapAfterChild(node2.children[i2]);
       }
     }
     const dims = calculateNodeDimensions(node2);
@@ -4207,8 +4213,7 @@
       const childHeight = calculateSubtreeHeight(children[i2]);
       totalHeight += childHeight;
       if (i2 < children.length - 1) {
-        const vgap = children[i2].layout?.vgap ?? LAYOUT_CONSTANTS.DEFAULT_VGAP;
-        totalHeight += vgap;
+        totalHeight += getVgapAfterChild(children[i2]);
       }
     }
     return totalHeight;
@@ -4251,8 +4256,7 @@
           );
           result.push(...grandchildren);
           currentY += childSubtreeHeight;
-          const vgap = child.layout?.vgap !== void 0 ? child.layout.vgap : LAYOUT_CONSTANTS.DEFAULT_VGAP;
-          currentY += vgap;
+          currentY += getVgapAfterChild(child);
         }
       }
       if (rightChildren.length > 0) {
@@ -4284,8 +4288,7 @@
           );
           result.push(...grandchildren);
           currentY += childSubtreeHeight;
-          const vgap = child.layout?.vgap !== void 0 ? child.layout.vgap : LAYOUT_CONSTANTS.DEFAULT_VGAP;
-          currentY += vgap;
+          currentY += getVgapAfterChild(child);
         }
       }
     } else {
@@ -4317,8 +4320,7 @@
         );
         result.push(...grandchildren);
         currentY += childSubtreeHeight;
-        const vgap = child.layout?.vgap !== void 0 ? child.layout.vgap : LAYOUT_CONSTANTS.DEFAULT_VGAP;
-        currentY += vgap;
+        currentY += getVgapAfterChild(child);
       }
     }
     return result;

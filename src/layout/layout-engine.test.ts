@@ -14,7 +14,8 @@ describe('Layout Engine', () => {
   describe('LAYOUT_CONSTANTS', () => {
     it('should have expected constant values', () => {
       expect(LAYOUT_CONSTANTS.DEFAULT_HGAP).toBe(20);
-      expect(LAYOUT_CONSTANTS.DEFAULT_VGAP).toBe(3);
+      expect(LAYOUT_CONSTANTS.SIBLING_VGAP).toBe(3);
+      expect(LAYOUT_CONSTANTS.SUBTREE_VGAP).toBe(12);
       expect(LAYOUT_CONSTANTS.MIN_NODE_WIDTH).toBe(150);
       expect(LAYOUT_CONSTANTS.MIN_NODE_HEIGHT).toBe(20);
       expect(LAYOUT_CONSTANTS.ICON_SIZE).toBe(16);
