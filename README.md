@@ -44,9 +44,8 @@ pnpm add @tomk79/htmm
 <script src="path/to/htmm.min.js"></script>
 <script>
   const { createRoot } = window.ReactDOM;
-  const { HtmmMap, useHtmmStore } = window.htmm;
+  const { HtmmMap } = window.htmm;
   const root = createRoot(document.getElementById('root'));
-  // 使用前に newMap などで初期化してから HtmmMap を描画
   root.render(/* あなたのアプリ */);
 </script>
 ```
@@ -55,95 +54,96 @@ pnpm add @tomk79/htmm
 
 ### 基本的な使い方（パッケージ利用時）
 
+各 `<HtmmMap />` は内部で専用のストアを持ち、`src` もしくは `initialMapData` を渡さない場合は空のマップが自動作成されます。1つだけでも複数でも同じように使えます。
+
 ```tsx
-import { HtmmMap, useHtmmStore } from '@tomk79/htmm';
-import { useEffect } from 'react';
+import { HtmmMap } from '@tomk79/htmm';
 
 function App() {
-  const { newMap, addChild } = useHtmmStore();
-
-  useEffect(() => {
-    // 新しいマインドマップを作成
-    newMap('My Mind Map');
-    
-    // ルートノードに子を追加
-    const store = useHtmmStore.getState();
-    if (store.mapData) {
-      const rootId = store.mapData.root.id;
-      store.addChild(rootId, 'First Topic');
-      store.addChild(rootId, 'Second Topic');
-    }
-  }, []);
-
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
+      {/* 空のマップを表示 */}
       <HtmmMap width="100%" height="100%" />
     </div>
   );
 }
 ```
 
-### .mmファイルの読み込み
+URL から .mm を読み込む場合は **`src`** を指定します。
 
 ```tsx
-import { loadMindMapFile } from '@tomk79/htmm';
-import { useHtmmStore } from '@tomk79/htmm';
+<HtmmMap src="/path/to/map.mm" width="100%" height="100%" />
+```
+
+### .mmファイルの読み込み（ref を使う場合）
+
+親コンポーネントから「ファイルを開く」などでデータを渡す場合は、ref の **`loadMap`** を使います。
+
+```tsx
+import { useRef } from 'react';
+import { HtmmMap, loadMindMapFile } from '@tomk79/htmm';
+import type { HtmmMapHandle } from '@tomk79/htmm';
 
 function FileLoader() {
-  const { loadMap } = useHtmmStore();
+  const mapRef = useRef<HtmmMapHandle>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const mapData = await loadMindMapFile(file);
-      loadMap(mapData);
+      mapRef.current?.loadMap(mapData);
     }
   };
 
-  return <input type="file" accept=".mm" onChange={handleFileChange} />;
+  return (
+    <>
+      <input type="file" accept=".mm" onChange={handleFileChange} />
+      <HtmmMap ref={mapRef} width="100%" height="600px" />
+    </>
+  );
 }
 ```
 
-### .mmファイルの保存
+### .mmファイルの保存（ref を使う場合）
+
+保存する場合は ref の **`getMapData`** で現在のマップデータを取得します。
 
 ```tsx
-import { saveMindMapFile } from '@tomk79/htmm';
-import { useHtmmStore } from '@tomk79/htmm';
+import { useRef } from 'react';
+import { HtmmMap, saveMindMapFile } from '@tomk79/htmm';
+import type { HtmmMapHandle } from '@tomk79/htmm';
 
 function SaveButton() {
-  const { mapData } = useHtmmStore();
+  const mapRef = useRef<HtmmMapHandle>(null);
 
   const handleSave = () => {
+    const mapData = mapRef.current?.getMapData();
     if (mapData) {
       saveMindMapFile(mapData, 'my-mindmap.mm');
     }
   };
 
-  return <button onClick={handleSave}>Save</button>;
+  return (
+    <>
+      <button onClick={handleSave}>Save</button>
+      <HtmmMap ref={mapRef} width="100%" height="600px" />
+    </>
+  );
 }
 ```
 
 ### 1ページに複数マップを配置する
 
-同一ページに、異なる .mm データを持つマップを複数表示する場合は、各 `<HtmmMap />` に **`initialMapData`** を渡してください。各インスタンスが内部で専用のストアを持ち、データ・ズーム・パンなどが独立します。既存の単一マップのコード（`loadMap()` のあと `<HtmmMap />` を 1 つだけマウントする使い方）は変更不要です。
+各 `<HtmmMap />` は常に専用のストアを持つため、複数並べるだけで独立したマップになります。初期データは **`src`** で .mm の URL を指定するか、**`initialMapData`** でオブジェクトを渡します。
 
 ```tsx
-import { useState, useEffect } from 'react';
-import { HtmmMap, loadMindMapURL } from '@tomk79/htmm';
+import { HtmmMap } from '@tomk79/htmm';
 
 function MultiMapPage() {
-  const [mapData1, setMapData1] = useState(null);
-  const [mapData2, setMapData2] = useState(null);
-
-  useEffect(() => {
-    loadMindMapURL('/map1.mm').then(setMapData1);
-    loadMindMapURL('/map2.mm').then(setMapData2);
-  }, []);
-
   return (
     <div>
-      {mapData1 && <HtmmMap initialMapData={mapData1} width="100%" height="400px" />}
-      {mapData2 && <HtmmMap initialMapData={mapData2} width="100%" height="400px" />}
+      <HtmmMap src="/map1.mm" width="100%" height="400px" />
+      <HtmmMap src="/map2.mm" width="100%" height="400px" />
     </div>
   );
 }
@@ -156,19 +156,15 @@ function MultiMapPage() {
 - **できないこと:** ノードの追加・変更・削除、並び替え（ドラッグ＆ドロップ）、カット・ペースト、スタイル変更、Undo/Redo など
 - **できること:** ノードの選択、ノードの開閉（折りたたみ）、ズーム・パン、コピー
 
-初期化時にオプションで指定するか、`initialMapData` と組み合わせて利用できます。
-
 ```tsx
-// 単一マップで読み込み専用
+// 空のマップを読み込み専用で表示
 <HtmmMap readOnly width="100%" height="600px" />
 
-// 複数マップのうち1つだけ読み込み専用で表示
-{mapData && (
-  <HtmmMap initialMapData={mapData} readOnly width="100%" height="400px" />
-)}
+// src で読み込んで読み込み専用
+<HtmmMap src="/map.mm" readOnly width="100%" height="400px" />
 ```
 
-ストアを直接扱う場合は `createHtmmStore({ readOnly: true })` で読み込み専用のストアを作成するか、`useHtmmStore.getState().setReadOnly(true)` で切り替えられます。`HtmmState` / `HtmmActions` の型には `readOnly` と `setReadOnly` が含まれます。
+`useHtmmStore()` は **HtmmMap の内側**（子コンポーネント）でのみ利用できます。HtmmMap の外から操作する場合は ref の `loadMap` / `getMapData` を使ってください。
 
 ## 主要API
 
@@ -178,17 +174,26 @@ function MultiMapPage() {
 
 ```tsx
 <HtmmMap 
+  ref={mapRef}            // 省略可。loadMap / getMapData で操作するときに指定
   width="100%" 
   height="600px" 
   className="custom-class"
-  initialMapData={mapData}  // 省略可。指定するとこのインスタンス専用のストアで複数マップ対応
-  readOnly={false}         // 省略可。true にすると編集不可（選択・開閉・ズーム・コピーは可能）
+  src="/path/to/map.mm"   // 省略可。.mm の URL を指定するとここから読み込む
+  initialMapData={mapData} // 省略可。src がないときに使う初期データ
+  readOnly={false}        // 省略可。true にすると編集不可（選択・開閉・ズーム・コピーは可能）
 />
 ```
+
+ref で取得できる **HtmmMapHandle** のメソッド:
+
+- **`loadMap(data)`** — マップデータを差し替える
+- **`getMapData()`** — 現在のマップデータを返す（保存時に利用）
 
 ### フック
 
 #### `useHtmmStore()`
+
+**HtmmMap の内側**（子コンポーネント）でのみ利用できます。ツールバーなどを HtmmMap の子として配置し、ここで取得した操作でノードの追加・編集などを行います。
 
 ```tsx
 const {

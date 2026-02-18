@@ -761,12 +761,16 @@ export function createHtmmStore(options?: HtmmStoreInitialOptions): HtmmStoreApi
 export const HtmmStoreContext = createContext<HtmmStoreApi | null>(null);
 
 /**
- * Hook to use the htmm store. Uses store from Context when inside a Provider (e.g. HtmmMap with initialMapData), otherwise the default store.
+ * Hook to use the htmm store. Must be used within a HtmmMap (or a descendant of HtmmMap).
+ * The store is provided by the nearest HtmmMap instance.
  */
 function useHtmmStoreHook<T = HtmmState & HtmmActions>(
   selector?: (state: HtmmState & HtmmActions) => T
 ): T {
-  const store = useContext(HtmmStoreContext) ?? defaultStore;
+  const store = useContext(HtmmStoreContext);
+  if (store === null) {
+    throw new Error('useHtmmStore must be used within a HtmmMap. Use a ref and loadMap/getMapData for operations from outside.');
+  }
   return useStore(store as HtmmStoreApi, (selector ?? (s => s)) as (state: HtmmState & HtmmActions) => T);
 }
 

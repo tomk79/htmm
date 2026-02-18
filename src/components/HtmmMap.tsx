@@ -3,8 +3,9 @@
  * Main component for rendering mind maps
  */
 
-import React, { useEffect, useState, useCallback, useRef, useContext } from 'react';
-import { useHtmmStore, HtmmStoreContext, createHtmmStore, defaultStore } from '../store/htmm-store';
+import React, { useEffect, useState, useCallback, useRef, useContext, forwardRef, useImperativeHandle } from 'react';
+import { useHtmmStore, HtmmStoreContext, createHtmmStore } from '../store/htmm-store';
+import { loadMindMapURL } from '../io/parser';
 import { calculateLayout } from '../layout/layout-engine';
 import { NodeView } from './NodeView';
 import { EdgeView } from './EdgeView';
@@ -13,8 +14,9 @@ import { useDragAndDrop } from '../hooks/useDragAndDrop';
 import { useViewportCulling, shouldEnableViewportCulling } from '../hooks/useViewportCulling';
 import { useTouchGestures } from '../hooks/useTouchGestures';
 import type { LayoutNode, MindMapData } from '../types/mindmap';
-import { 
-  findParentNode, 
+import { createRootNode } from '../models/MindMapNode';
+import {
+  findParentNode,
   findNodeById,
   getNextSiblingOrBelow,
   getPreviousSibling,
@@ -29,15 +31,20 @@ interface HtmmMapInnerProps {
   width?: number | string;
   height?: number | string;
   className?: string;
+  /** When loading from src failed, this is set to the error message. */
+  loadError?: string | null;
 }
 
 const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   width = '100%',
   height = '600px',
   className = '',
+  loadError = null,
 }) => {
-  const contextStore = useContext(HtmmStoreContext);
-  const store = contextStore ?? defaultStore;
+  const store = useContext(HtmmStoreContext);
+  if (store === null) {
+    throw new Error('HtmmMapInner must be rendered inside HtmmStoreContext.Provider.');
+  }
 
   const {
     mapData,
@@ -604,7 +611,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   if (!mapData) {
     return (
       <div className="htmm-map-empty" style={{ width, height }}>
-        <p>No mind map loaded. Call loadMap() or newMap() to get started.</p>
+        <p>{loadError ?? 'Loading…'}</p>
       </div>
     );
   }
@@ -727,43 +734,91 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   );
 };
 
+function createEmptyMapData(): MindMapData {
+  return {
+    version: '1.0.1',
+    root: createRootNode('New Mind Map'),
+  };
+}
+
+export interface HtmmMapHandle {
+  loadMap: (data: MindMapData) => void;
+  getMapData: () => MindMapData | null;
+}
+
 interface HtmmMapProps {
   width?: number | string;
   height?: number | string;
   className?: string;
-  /** When provided, this instance uses its own internal store (for multiple maps on one page). */
+  /** URL to a .mm file to load. When provided, the map is loaded from this URL. */
+  src?: string;
+  /** Initial map data (used when src is not provided). When neither src nor initialMapData is set, an empty map is created. */
   initialMapData?: MindMapData;
   /** When true, node edit operations (add/change/delete/reorder/paste) are disabled; folding is allowed. */
   readOnly?: boolean;
+  /** Optional children (e.g. toolbar). Rendered inside the same store Provider so they can use useHtmmStore(). */
+  children?: React.ReactNode;
 }
 
-export const HtmmMap: React.FC<HtmmMapProps> = ({
+export const HtmmMap = forwardRef<HtmmMapHandle, HtmmMapProps>(function HtmmMap({
   width = '100%',
   height = '600px',
   className = '',
+  src,
   initialMapData,
   readOnly = false,
-}) => {
+  children,
+}, ref) {
   const storeRef = useRef<ReturnType<typeof createHtmmStore> | null>(null);
-  if (initialMapData != null && storeRef.current === null) {
+  if (storeRef.current === null) {
     storeRef.current = createHtmmStore({ readOnly });
   }
   const internalStore = storeRef.current;
 
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // Initial data: src > initialMapData > empty map
   useEffect(() => {
-    if (initialMapData != null && internalStore != null) {
-      internalStore.getState().loadMap(initialMapData);
+    if (src) {
+      setLoadError(null);
+      loadMindMapURL(src)
+        .then((data) => {
+          internalStore.getState().loadMap(data);
+        })
+        .catch((err) => {
+          setLoadError(err instanceof Error ? err.message : String(err));
+        });
+      return;
     }
-  }, [initialMapData, internalStore]);
+    if (initialMapData != null) {
+      internalStore.getState().loadMap(initialMapData);
+      setLoadError(null);
+      return;
+    }
+    internalStore.getState().loadMap(createEmptyMapData());
+    setLoadError(null);
+  }, [src, initialMapData, internalStore]);
 
-  const inner = <HtmmMapInner width={width} height={height} className={className} />;
+  useImperativeHandle(ref, () => ({
+    loadMap: (data: MindMapData) => {
+      internalStore.getState().loadMap(data);
+    },
+    getMapData: () => internalStore.getState().mapData,
+  }), [internalStore]);
 
-  if (initialMapData != null && internalStore != null) {
-    return (
-      <HtmmStoreContext.Provider value={internalStore}>
-        {inner}
-      </HtmmStoreContext.Provider>
-    );
-  }
-  return inner;
-};
+  const inner = (
+    <HtmmMapInner
+      width={width}
+      height={height}
+      className={className}
+      loadError={loadError}
+    />
+  );
+
+  return (
+    <HtmmStoreContext.Provider value={internalStore}>
+      {children}
+      {inner}
+    </HtmmStoreContext.Provider>
+  );
+});

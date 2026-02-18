@@ -3879,12 +3879,220 @@
   }
   const HtmmStoreContext = reactExports.createContext(null);
   function useHtmmStoreHook(selector) {
-    const store = reactExports.useContext(HtmmStoreContext) ?? defaultStore;
+    const store = reactExports.useContext(HtmmStoreContext);
+    if (store === null) {
+      throw new Error("useHtmmStore must be used within a HtmmMap. Use a ref and loadMap/getMapData for operations from outside.");
+    }
     return useStore(store, selector ?? ((s2) => s2));
   }
   const useHtmmStore = Object.assign(useHtmmStoreHook, {
     getState: () => defaultStore.getState()
   });
+  function parseMindMapXML(xmlString) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xmlString, "text/xml");
+    const parserError = doc.querySelector("parsererror");
+    if (parserError) {
+      throw new Error(`XML parsing error: ${parserError.textContent}`);
+    }
+    const mapElement = doc.querySelector("map");
+    if (!mapElement) {
+      throw new Error("Invalid mind map file: missing <map> element");
+    }
+    const version = mapElement.getAttribute("version") || "1.0.1";
+    const rootNodeElement = mapElement.querySelector(":scope > node");
+    if (!rootNodeElement) {
+      throw new Error("Invalid mind map file: missing root <node> element");
+    }
+    const root = parseNode(rootNodeElement);
+    return {
+      version,
+      root
+    };
+  }
+  function parseNode(element) {
+    const node2 = {
+      id: element.getAttribute("ID") || `ID_${Date.now()}_${Math.random()}`,
+      text: element.getAttribute("TEXT") || void 0,
+      children: []
+    };
+    const position2 = element.getAttribute("POSITION");
+    if (position2 === "left" || position2 === "right") {
+      node2.position = position2;
+    }
+    const folded = element.getAttribute("FOLDED");
+    if (folded === "true") {
+      node2.folded = true;
+    }
+    node2.color = element.getAttribute("COLOR") || void 0;
+    node2.backgroundColor = element.getAttribute("BACKGROUND_COLOR") || void 0;
+    const style = element.getAttribute("STYLE");
+    if (style && isNodeStyle(style)) {
+      node2.style = style;
+    }
+    node2.link = element.getAttribute("LINK") || void 0;
+    const created = element.getAttribute("CREATED");
+    if (created) {
+      node2.created = parseInt(created, 10);
+    }
+    const modified = element.getAttribute("MODIFIED");
+    if (modified) {
+      node2.modified = parseInt(modified, 10);
+    }
+    node2.encrypted = element.getAttribute("ENCRYPTED_CONTENT") || void 0;
+    const hgap = element.getAttribute("HGAP");
+    const vgap = element.getAttribute("VGAP");
+    const vshift = element.getAttribute("VSHIFT");
+    if (hgap || vgap || vshift) {
+      node2.layout = {};
+      if (hgap) node2.layout.hgap = parseInt(hgap, 10);
+      if (vgap) node2.layout.vgap = parseInt(vgap, 10);
+      if (vshift) node2.layout.vshift = parseInt(vshift, 10);
+    }
+    const fontElement = element.querySelector(":scope > font");
+    if (fontElement) {
+      node2.font = parseFont(fontElement);
+    }
+    const edgeElement = element.querySelector(":scope > edge");
+    if (edgeElement) {
+      node2.edge = parseEdge(edgeElement);
+    }
+    const cloudElement = element.querySelector(":scope > cloud");
+    if (cloudElement) {
+      node2.cloud = parseCloud(cloudElement);
+    }
+    const iconElements = element.querySelectorAll(":scope > icon");
+    if (iconElements.length > 0) {
+      node2.icons = Array.from(iconElements).map(parseIcon);
+    }
+    const arrowLinkElements = element.querySelectorAll(":scope > arrowlink");
+    if (arrowLinkElements.length > 0) {
+      node2.arrowLinks = Array.from(arrowLinkElements).map(parseArrowLink);
+    }
+    const richContentElements = element.querySelectorAll(":scope > richcontent");
+    if (richContentElements.length > 0) {
+      node2.richContent = Array.from(richContentElements).map(parseRichContent);
+    }
+    const attributeElements = element.querySelectorAll(":scope > attribute");
+    if (attributeElements.length > 0) {
+      node2.attributes = Array.from(attributeElements).map(parseAttribute);
+    }
+    const attributeLayoutElement = element.querySelector(":scope > attribute_layout");
+    if (attributeLayoutElement) {
+      node2.attributeLayout = parseAttributeLayout(attributeLayoutElement);
+    }
+    const childNodeElements = element.querySelectorAll(":scope > node");
+    if (childNodeElements.length > 0) {
+      node2.children = Array.from(childNodeElements).map(parseNode);
+    }
+    return node2;
+  }
+  function parseFont(element) {
+    const font = {};
+    font.name = element.getAttribute("NAME") || void 0;
+    const size = element.getAttribute("SIZE");
+    if (size) {
+      font.size = parseInt(size, 10);
+    }
+    if (element.getAttribute("BOLD") === "true") {
+      font.bold = true;
+    }
+    if (element.getAttribute("ITALIC") === "true") {
+      font.italic = true;
+    }
+    if (element.getAttribute("STRIKETHROUGH") === "true") {
+      font.strikethrough = true;
+    }
+    return font;
+  }
+  function parseEdge(element) {
+    const edge = {};
+    edge.color = element.getAttribute("COLOR") || void 0;
+    const style = element.getAttribute("STYLE");
+    if (style && isEdgeStyle(style)) {
+      edge.style = style;
+    }
+    const width = element.getAttribute("WIDTH");
+    if (width && isEdgeWidth(width)) {
+      edge.width = width;
+    }
+    return edge;
+  }
+  function parseCloud(element) {
+    return {
+      color: element.getAttribute("COLOR") || void 0
+    };
+  }
+  function parseIcon(element) {
+    return {
+      builtin: element.getAttribute("BUILTIN") || ""
+    };
+  }
+  function parseArrowLink(element) {
+    const destination = element.getAttribute("DESTINATION");
+    if (!destination) {
+      throw new Error("Arrow link missing DESTINATION attribute");
+    }
+    return {
+      destination,
+      color: element.getAttribute("COLOR") || void 0,
+      startArrow: element.getAttribute("STARTARROW") || void 0,
+      endArrow: element.getAttribute("ENDARROW") || void 0,
+      startInclination: element.getAttribute("STARTINCLINATION") || void 0,
+      endInclination: element.getAttribute("ENDINCLINATION") || void 0
+    };
+  }
+  function parseRichContent(element) {
+    const type = element.getAttribute("TYPE");
+    if (type !== "NODE" && type !== "NOTE") {
+      throw new Error(`Invalid richcontent TYPE: ${type}`);
+    }
+    const htmlElement = element.querySelector("html");
+    const html2 = htmlElement ? htmlElement.outerHTML : "";
+    return {
+      type,
+      html: html2
+    };
+  }
+  function parseAttribute(element) {
+    return {
+      name: element.getAttribute("NAME") || "",
+      value: element.getAttribute("VALUE") || ""
+    };
+  }
+  function parseAttributeLayout(element) {
+    const layout = {};
+    const nameWidth = element.getAttribute("NAME_WIDTH");
+    if (nameWidth) {
+      layout.nameWidth = parseInt(nameWidth, 10);
+    }
+    const valueWidth = element.getAttribute("VALUE_WIDTH");
+    if (valueWidth) {
+      layout.valueWidth = parseInt(valueWidth, 10);
+    }
+    return layout;
+  }
+  function isNodeStyle(value) {
+    return ["bubble", "fork", "as_parent", "combined"].includes(value);
+  }
+  function isEdgeStyle(value) {
+    return ["linear", "bezier", "sharp_linear", "sharp_bezier"].includes(value);
+  }
+  function isEdgeWidth(value) {
+    return ["parent", "thin", "1", "2", "4", "8"].includes(value);
+  }
+  async function loadMindMapFile(file) {
+    const text2 = await file.text();
+    return parseMindMapXML(text2);
+  }
+  async function loadMindMapURL(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to load mind map: ${response.statusText}`);
+    }
+    const text2 = await response.text();
+    return parseMindMapXML(text2);
+  }
   const LAYOUT_CONSTANTS = {
     DEFAULT_HGAP: 20,
     // Horizontal gap from parent
@@ -6261,10 +6469,13 @@ Ctrl+Click to open`,
   const HtmmMapInner = ({
     width = "100%",
     height = "600px",
-    className = ""
+    className = "",
+    loadError = null
   }) => {
-    const contextStore = reactExports.useContext(HtmmStoreContext);
-    const store = contextStore ?? defaultStore;
+    const store = reactExports.useContext(HtmmStoreContext);
+    if (store === null) {
+      throw new Error("HtmmMapInner must be rendered inside HtmmStoreContext.Provider.");
+    }
     const {
       mapData,
       selectedNodeIds,
@@ -6704,7 +6915,7 @@ Ctrl+Click to open`,
       return () => el.removeEventListener("touchmove", onTouchMove);
     }, [touchHandlers.onTouchMove]);
     if (!mapData) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-empty", style: { width, height }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: "No mind map loaded. Call loadMap() or newMap() to get started." }) });
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-empty", style: { width, height }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: loadError ?? "Loading…" }) });
     }
     const edges = [];
     for (const node2 of layoutNodes) {
@@ -6821,234 +7032,65 @@ Ctrl+Click to open`,
       }
     );
   };
-  const HtmmMap = ({
+  function createEmptyMapData() {
+    return {
+      version: "1.0.1",
+      root: createRootNode("New Mind Map")
+    };
+  }
+  const HtmmMap = reactExports.forwardRef(function HtmmMap2({
     width = "100%",
     height = "600px",
     className = "",
+    src,
     initialMapData,
-    readOnly = false
-  }) => {
+    readOnly = false,
+    children
+  }, ref) {
     const storeRef = reactExports.useRef(null);
-    if (initialMapData != null && storeRef.current === null) {
+    if (storeRef.current === null) {
       storeRef.current = createHtmmStore({ readOnly });
     }
     const internalStore = storeRef.current;
+    const [loadError, setLoadError] = reactExports.useState(null);
     reactExports.useEffect(() => {
-      if (initialMapData != null && internalStore != null) {
-        internalStore.getState().loadMap(initialMapData);
+      if (src) {
+        setLoadError(null);
+        loadMindMapURL(src).then((data) => {
+          internalStore.getState().loadMap(data);
+        }).catch((err) => {
+          setLoadError(err instanceof Error ? err.message : String(err));
+        });
+        return;
       }
-    }, [initialMapData, internalStore]);
-    const inner = /* @__PURE__ */ jsxRuntimeExports.jsx(HtmmMapInner, { width, height, className });
-    if (initialMapData != null && internalStore != null) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx(HtmmStoreContext.Provider, { value: internalStore, children: inner });
-    }
-    return inner;
-  };
-  function parseMindMapXML(xmlString) {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xmlString, "text/xml");
-    const parserError = doc.querySelector("parsererror");
-    if (parserError) {
-      throw new Error(`XML parsing error: ${parserError.textContent}`);
-    }
-    const mapElement = doc.querySelector("map");
-    if (!mapElement) {
-      throw new Error("Invalid mind map file: missing <map> element");
-    }
-    const version = mapElement.getAttribute("version") || "1.0.1";
-    const rootNodeElement = mapElement.querySelector(":scope > node");
-    if (!rootNodeElement) {
-      throw new Error("Invalid mind map file: missing root <node> element");
-    }
-    const root = parseNode(rootNodeElement);
-    return {
-      version,
-      root
-    };
-  }
-  function parseNode(element) {
-    const node2 = {
-      id: element.getAttribute("ID") || `ID_${Date.now()}_${Math.random()}`,
-      text: element.getAttribute("TEXT") || void 0,
-      children: []
-    };
-    const position2 = element.getAttribute("POSITION");
-    if (position2 === "left" || position2 === "right") {
-      node2.position = position2;
-    }
-    const folded = element.getAttribute("FOLDED");
-    if (folded === "true") {
-      node2.folded = true;
-    }
-    node2.color = element.getAttribute("COLOR") || void 0;
-    node2.backgroundColor = element.getAttribute("BACKGROUND_COLOR") || void 0;
-    const style = element.getAttribute("STYLE");
-    if (style && isNodeStyle(style)) {
-      node2.style = style;
-    }
-    node2.link = element.getAttribute("LINK") || void 0;
-    const created = element.getAttribute("CREATED");
-    if (created) {
-      node2.created = parseInt(created, 10);
-    }
-    const modified = element.getAttribute("MODIFIED");
-    if (modified) {
-      node2.modified = parseInt(modified, 10);
-    }
-    node2.encrypted = element.getAttribute("ENCRYPTED_CONTENT") || void 0;
-    const hgap = element.getAttribute("HGAP");
-    const vgap = element.getAttribute("VGAP");
-    const vshift = element.getAttribute("VSHIFT");
-    if (hgap || vgap || vshift) {
-      node2.layout = {};
-      if (hgap) node2.layout.hgap = parseInt(hgap, 10);
-      if (vgap) node2.layout.vgap = parseInt(vgap, 10);
-      if (vshift) node2.layout.vshift = parseInt(vshift, 10);
-    }
-    const fontElement = element.querySelector(":scope > font");
-    if (fontElement) {
-      node2.font = parseFont(fontElement);
-    }
-    const edgeElement = element.querySelector(":scope > edge");
-    if (edgeElement) {
-      node2.edge = parseEdge(edgeElement);
-    }
-    const cloudElement = element.querySelector(":scope > cloud");
-    if (cloudElement) {
-      node2.cloud = parseCloud(cloudElement);
-    }
-    const iconElements = element.querySelectorAll(":scope > icon");
-    if (iconElements.length > 0) {
-      node2.icons = Array.from(iconElements).map(parseIcon);
-    }
-    const arrowLinkElements = element.querySelectorAll(":scope > arrowlink");
-    if (arrowLinkElements.length > 0) {
-      node2.arrowLinks = Array.from(arrowLinkElements).map(parseArrowLink);
-    }
-    const richContentElements = element.querySelectorAll(":scope > richcontent");
-    if (richContentElements.length > 0) {
-      node2.richContent = Array.from(richContentElements).map(parseRichContent);
-    }
-    const attributeElements = element.querySelectorAll(":scope > attribute");
-    if (attributeElements.length > 0) {
-      node2.attributes = Array.from(attributeElements).map(parseAttribute);
-    }
-    const attributeLayoutElement = element.querySelector(":scope > attribute_layout");
-    if (attributeLayoutElement) {
-      node2.attributeLayout = parseAttributeLayout(attributeLayoutElement);
-    }
-    const childNodeElements = element.querySelectorAll(":scope > node");
-    if (childNodeElements.length > 0) {
-      node2.children = Array.from(childNodeElements).map(parseNode);
-    }
-    return node2;
-  }
-  function parseFont(element) {
-    const font = {};
-    font.name = element.getAttribute("NAME") || void 0;
-    const size = element.getAttribute("SIZE");
-    if (size) {
-      font.size = parseInt(size, 10);
-    }
-    if (element.getAttribute("BOLD") === "true") {
-      font.bold = true;
-    }
-    if (element.getAttribute("ITALIC") === "true") {
-      font.italic = true;
-    }
-    if (element.getAttribute("STRIKETHROUGH") === "true") {
-      font.strikethrough = true;
-    }
-    return font;
-  }
-  function parseEdge(element) {
-    const edge = {};
-    edge.color = element.getAttribute("COLOR") || void 0;
-    const style = element.getAttribute("STYLE");
-    if (style && isEdgeStyle(style)) {
-      edge.style = style;
-    }
-    const width = element.getAttribute("WIDTH");
-    if (width && isEdgeWidth(width)) {
-      edge.width = width;
-    }
-    return edge;
-  }
-  function parseCloud(element) {
-    return {
-      color: element.getAttribute("COLOR") || void 0
-    };
-  }
-  function parseIcon(element) {
-    return {
-      builtin: element.getAttribute("BUILTIN") || ""
-    };
-  }
-  function parseArrowLink(element) {
-    const destination = element.getAttribute("DESTINATION");
-    if (!destination) {
-      throw new Error("Arrow link missing DESTINATION attribute");
-    }
-    return {
-      destination,
-      color: element.getAttribute("COLOR") || void 0,
-      startArrow: element.getAttribute("STARTARROW") || void 0,
-      endArrow: element.getAttribute("ENDARROW") || void 0,
-      startInclination: element.getAttribute("STARTINCLINATION") || void 0,
-      endInclination: element.getAttribute("ENDINCLINATION") || void 0
-    };
-  }
-  function parseRichContent(element) {
-    const type = element.getAttribute("TYPE");
-    if (type !== "NODE" && type !== "NOTE") {
-      throw new Error(`Invalid richcontent TYPE: ${type}`);
-    }
-    const htmlElement = element.querySelector("html");
-    const html2 = htmlElement ? htmlElement.outerHTML : "";
-    return {
-      type,
-      html: html2
-    };
-  }
-  function parseAttribute(element) {
-    return {
-      name: element.getAttribute("NAME") || "",
-      value: element.getAttribute("VALUE") || ""
-    };
-  }
-  function parseAttributeLayout(element) {
-    const layout = {};
-    const nameWidth = element.getAttribute("NAME_WIDTH");
-    if (nameWidth) {
-      layout.nameWidth = parseInt(nameWidth, 10);
-    }
-    const valueWidth = element.getAttribute("VALUE_WIDTH");
-    if (valueWidth) {
-      layout.valueWidth = parseInt(valueWidth, 10);
-    }
-    return layout;
-  }
-  function isNodeStyle(value) {
-    return ["bubble", "fork", "as_parent", "combined"].includes(value);
-  }
-  function isEdgeStyle(value) {
-    return ["linear", "bezier", "sharp_linear", "sharp_bezier"].includes(value);
-  }
-  function isEdgeWidth(value) {
-    return ["parent", "thin", "1", "2", "4", "8"].includes(value);
-  }
-  async function loadMindMapFile(file) {
-    const text2 = await file.text();
-    return parseMindMapXML(text2);
-  }
-  async function loadMindMapURL(url) {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to load mind map: ${response.statusText}`);
-    }
-    const text2 = await response.text();
-    return parseMindMapXML(text2);
-  }
+      if (initialMapData != null) {
+        internalStore.getState().loadMap(initialMapData);
+        setLoadError(null);
+        return;
+      }
+      internalStore.getState().loadMap(createEmptyMapData());
+      setLoadError(null);
+    }, [src, initialMapData, internalStore]);
+    reactExports.useImperativeHandle(ref, () => ({
+      loadMap: (data) => {
+        internalStore.getState().loadMap(data);
+      },
+      getMapData: () => internalStore.getState().mapData
+    }), [internalStore]);
+    const inner = /* @__PURE__ */ jsxRuntimeExports.jsx(
+      HtmmMapInner,
+      {
+        width,
+        height,
+        className,
+        loadError
+      }
+    );
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(HtmmStoreContext.Provider, { value: internalStore, children: [
+      children,
+      inner
+    ] });
+  });
   function generateMindMapXML(data) {
     const doc = document.implementation.createDocument("", "", null);
     const mapElement = doc.createElement("map");
