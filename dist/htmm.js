@@ -6838,11 +6838,6 @@ Ctrl+Click to open`,
         internalStore.getState().loadMap(initialMapData);
       }
     }, [initialMapData, internalStore]);
-    reactExports.useEffect(() => {
-      if (initialMapData == null && readOnly !== void 0) {
-        defaultStore.getState().setReadOnly(readOnly);
-      }
-    }, [initialMapData, readOnly]);
     const inner = /* @__PURE__ */ jsxRuntimeExports.jsx(HtmmMapInner, { width, height, className });
     if (initialMapData != null && internalStore != null) {
       return /* @__PURE__ */ jsxRuntimeExports.jsx(HtmmStoreContext.Provider, { value: internalStore, children: inner });

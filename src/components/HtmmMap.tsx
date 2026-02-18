@@ -756,12 +756,6 @@ export const HtmmMap: React.FC<HtmmMapProps> = ({
     }
   }, [initialMapData, internalStore]);
 
-  useEffect(() => {
-    if (initialMapData == null && readOnly !== undefined) {
-      defaultStore.getState().setReadOnly(readOnly);
-    }
-  }, [initialMapData, readOnly]);
-
   const inner = <HtmmMapInner width={width} height={height} className={className} />;
 
   if (initialMapData != null && internalStore != null) {

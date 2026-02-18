@@ -102,6 +102,54 @@ body {
   background-color: #f5f5f5;
 }
 
+.demo-readonly-section {
+  padding: 1.5rem;
+  background-color: white;
+  border-top: 1px solid #ddd;
+}
+
+.demo-readonly-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.demo-readonly-desc {
+  margin-bottom: 1rem;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.demo-readonly-desc code {
+  background-color: #f0f0f0;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.demo-readonly-refresh {
+  display: block;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #764ba2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.demo-readonly-refresh:hover {
+  background-color: #653a8a;
+}
+
+.demo-readonly-canvas {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #fafafa;
+}
+
 .demo-footer {
   background-color: white;
   border-top: 1px solid #ddd;

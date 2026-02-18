@@ -3,7 +3,7 @@
  * Demonstrates htmm library usage
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { HtmmMap, useHtmmStore, saveMindMapFile, loadMindMapFile } from '@tomk79/htmm';
 import '@tomk79/htmm/styles/print.css';
@@ -11,6 +11,7 @@ import './demo.css';
 
 const DemoApp: React.FC = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [readOnlyRefreshKey, setReadOnlyRefreshKey] = useState(0);
   const {
     mapData,
     newMap,
@@ -254,6 +255,31 @@ const DemoApp: React.FC = () => {
       <div className="demo-canvas">
         <HtmmMap width="100%" height="calc(100vh - 200px)" />
       </div>
+
+      <section className="demo-readonly-section" aria-labelledby="readonly-demo-heading">
+        <h2 id="readonly-demo-heading">ReadOnly モードのデモ</h2>
+        <p className="demo-readonly-desc">
+          下のマップは <code>readOnly</code> で表示しています。選択・ズーム・折りたたみ・コピーは可能で、追加・削除・編集はできません。
+        </p>
+        {mapData && (
+          <button
+            type="button"
+            className="demo-readonly-refresh"
+            onClick={() => setReadOnlyRefreshKey((k) => k + 1)}
+          >
+            上記の内容を ReadOnly ビューに反映
+          </button>
+        )}
+        <div className="demo-readonly-canvas">
+          <HtmmMap
+            key={`readonly-${readOnlyRefreshKey}`}
+            initialMapData={mapData ?? undefined}
+            readOnly
+            width="100%"
+            height="400px"
+          />
+        </div>
+      </section>
       
       <footer className="demo-footer">
         <p>
