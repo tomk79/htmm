@@ -4,6 +4,14 @@
  */
 
 import React, { useRef, useEffect, useState } from 'react';
+
+/** ノードのデフォルトスタイル（コンテナ継承を防ぐため明示） */
+const NODE_DEFAULT_STYLE = {
+  color: '#333',
+  fontSize: 12,
+  fontFamily: 'Arial, Helvetica, sans-serif',
+  backgroundColor: '#fff',
+} as const;
 import type { LayoutNode } from '../types/mindmap';
 import { useHtmmStore } from '../store/htmm-store';
 import { hasChildren } from '../models/MindMapNode';
@@ -186,16 +194,16 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
     }
   };
   
-  // Calculate style
+  // Calculate style（デフォルトを明示し、コンテナのスタイル継承で見た目が変わらないようにする）
   const style: React.CSSProperties = {
     left: `${node.x - node.width / 2}px`,
     top: `${node.y - node.height / 2}px`,
     width: `${node.width}px`,
     minHeight: `${node.height}px`,
-    color: node.color,
-    backgroundColor: node.backgroundColor,
-    fontSize: `${node.font?.size || 12}px`,
-    fontFamily: node.font?.name || 'Arial',
+    color: node.color ?? NODE_DEFAULT_STYLE.color,
+    backgroundColor: node.backgroundColor ?? NODE_DEFAULT_STYLE.backgroundColor,
+    fontSize: `${node.font?.size ?? NODE_DEFAULT_STYLE.fontSize}px`,
+    fontFamily: node.font?.name ?? NODE_DEFAULT_STYLE.fontFamily,
     fontWeight: node.font?.bold ? 'bold' : 'normal',
     fontStyle: node.font?.italic ? 'italic' : 'normal',
     textDecoration: node.font?.strikethrough ? 'line-through' : 'none',

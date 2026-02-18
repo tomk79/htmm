@@ -4,15 +4,36 @@
   "use strict";
   const nodeViewCss = `/* NodeView Styles */
 
+/*
+ * ノードのデフォルトスタイル（明示指定）
+ * コンテナのスタイルを継承して見た目が変わらないよう、
+ * 文字色・フォント・背景・ボーダーなどをすべて明示しています。
+ */
 .node-view {
+  /* レイアウト */
   position: absolute;
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 4px 8px;
+  box-sizing: border-box;
+
+  /* 文字（継承されやすいため明示） */
+  color: #333;
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+  line-height: 1.4;
+  text-decoration: none;
+  letter-spacing: normal;
+
+  /* 背景・ボーダー（コンテナと区別するため明示） */
+  background-color: #fff;
   border: 1px solid #999;
   border-radius: 4px;
-  background-color: #fff;
+
+  /* その他 */
   cursor: pointer;
   user-select: none;
   transition: all 0.2s ease;
@@ -96,13 +117,20 @@
   opacity: 1;
 }
 
-/* Text */
+/* Text（ノードのデフォルトを継承するが、必要ならここでも明示可能） */
 .node-text {
   flex: 1;
   outline: none;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  /* 継承されがちなため明示 */
+  color: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  font-style: inherit;
+  line-height: inherit;
 }
 
 .node-text[contenteditable="true"] {
@@ -122,11 +150,14 @@
   z-index: -1;
 }
 
-/* Rich content */
+/* Rich content（ノード内なのでフォント・色を明示） */
 .node-rich-content {
   flex: 1;
   overflow: auto;
   max-height: 300px;
+  color: #333;
+  font-size: 12px;
+  font-family: Arial, Helvetica, sans-serif;
   line-height: 1.4;
 }
 
@@ -5737,6 +5768,12 @@
       )
     ] });
   };
+  const NODE_DEFAULT_STYLE = {
+    color: "#333",
+    fontSize: 12,
+    fontFamily: "Arial, Helvetica, sans-serif",
+    backgroundColor: "#fff"
+  };
   const NodeView = React.memo(({
     node: node2,
     isSelected,
@@ -5862,10 +5899,10 @@
       top: `${node2.y - node2.height / 2}px`,
       width: `${node2.width}px`,
       minHeight: `${node2.height}px`,
-      color: node2.color,
-      backgroundColor: node2.backgroundColor,
-      fontSize: `${node2.font?.size || 12}px`,
-      fontFamily: node2.font?.name || "Arial",
+      color: node2.color ?? NODE_DEFAULT_STYLE.color,
+      backgroundColor: node2.backgroundColor ?? NODE_DEFAULT_STYLE.backgroundColor,
+      fontSize: `${node2.font?.size ?? NODE_DEFAULT_STYLE.fontSize}px`,
+      fontFamily: node2.font?.name ?? NODE_DEFAULT_STYLE.fontFamily,
       fontWeight: node2.font?.bold ? "bold" : "normal",
       fontStyle: node2.font?.italic ? "italic" : "normal",
       textDecoration: node2.font?.strikethrough ? "line-through" : "none"
