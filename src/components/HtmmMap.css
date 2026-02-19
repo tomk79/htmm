@@ -9,6 +9,255 @@
   /* Margins so root can sit at center with space on all sides */
   padding: 80px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pseudo fullscreen: cover viewport with position fixed */
+.htmm-map.htmm-map-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  padding: 12px;
+}
+
+.htmm-map-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Toolbar above the map area */
+.htmm-map-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0;
+  margin: -4px 0 8px 0;
+  border-bottom: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-toolbar {
+  border-bottom-color: #444;
+}
+
+.htmm-map-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.htmm-map-toolbar-group-inline {
+  gap: 8px;
+}
+
+.htmm-map-toolbar-divider {
+  width: 1px;
+  height: 20px;
+  background: #ccc;
+  margin: 0 4px;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-toolbar-divider {
+  background: #555;
+}
+
+.htmm-map-toolbar-btn {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.htmm-map-toolbar-btn:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.htmm-map-toolbar-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.htmm-map-toolbar-btn-active {
+  background: #e0e8f0;
+  border-color: #4a90e2;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn {
+  border-color: #555;
+  background: #333;
+  color: #e0e0e0;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn:hover:not(:disabled) {
+  background: #404040;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn-active {
+  background: #2a3a50;
+  border-color: #5a9ae2;
+}
+
+.htmm-map-toolbar-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #333;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-toolbar-label {
+  color: #ccc;
+}
+
+.htmm-map-toolbar-label-text {
+  white-space: nowrap;
+}
+
+.htmm-map-toolbar-color {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.htmm-map-toolbar-color:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.htmm-map-toolbar-select {
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  font-size: 12px;
+  min-width: 48px;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-toolbar-select {
+  border-color: #555;
+  background: #333;
+  color: #e0e0e0;
+}
+
+.htmm-map-toolbar-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Code edit modal */
+.htmm-map-code-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.htmm-map-code-modal {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-code-modal {
+  background: #2d2d2d;
+  border: 1px solid #444;
+}
+
+.htmm-map-code-modal-title {
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-code-modal-title {
+  border-bottom-color: #444;
+  color: #e0e0e0;
+}
+
+.htmm-map-code-modal-error {
+  margin: 8px 16px 0;
+  padding: 8px;
+  background: #fee;
+  color: #c00;
+  font-size: 12px;
+  border-radius: 4px;
+}
+
+.htmm-map-code-modal-textarea {
+  flex: 1;
+  min-height: 300px;
+  margin: 16px;
+  padding: 12px;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-code-modal-textarea {
+  background: #1e1e1e;
+  border-color: #444;
+  color: #e0e0e0;
+}
+
+.htmm-map-code-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.htmm-map[data-appearance="dark"] .htmm-map-code-modal-actions {
+  border-top-color: #444;
+}
+
+.htmm-map-code-modal-apply {
+  background: #4a90e2;
+  color: #fff;
+  border-color: #4a90e2;
+}
+
+.htmm-map-code-modal-apply:hover:not(:disabled) {
+  background: #357abd;
 }
 
 .htmm-map:focus {

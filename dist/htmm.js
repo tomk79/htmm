@@ -261,7 +261,7 @@
   }
 }
 `;
-  const htmmMapCss = '/* HtmmMap Styles */\n\n.htmm-map {\n  position: relative;\n  overflow: hidden;\n  background-color: #fafafa;\n  border: 1px solid #ddd;\n  outline: none;\n  /* Margins so root can sit at center with space on all sides */\n  padding: 80px;\n  box-sizing: border-box;\n}\n\n.htmm-map:focus {\n  border-color: #4a90e2;\n  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);\n}\n\n/* Dark appearance */\n.htmm-map[data-appearance="dark"] {\n  background-color: #1e1e1e;\n  border-color: #444;\n}\n\n.htmm-map[data-appearance="dark"]:focus {\n  border-color: #5a9ae2;\n  box-shadow: 0 0 0 2px rgba(90, 154, 226, 0.25);\n}\n\n.htmm-map-empty {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: #f5f5f5;\n  border: 1px solid #ddd;\n  color: #999;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-empty {\n  background-color: #2d2d2d;\n  border-color: #444;\n  color: #888;\n}\n\n.htmm-canvas {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform-origin: center center;\n  cursor: grab;\n}\n\n/* Layers */\n.edges-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n  pointer-events: none;\n}\n\n.nodes-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 0;\n  height: 0;\n}\n\n/* Edge styles */\n.edge-view {\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n/* Utilities */\n.htmm-map * {\n  box-sizing: border-box;\n}\n\n/* Mobile / touch-friendly: larger tap targets and zoom controls */\n@media (max-width: 768px), (pointer: coarse) {\n  .htmm-map {\n    -webkit-tap-highlight-color: transparent;\n    touch-action: none; /* pan/zoom handled by gesture hook */\n  }\n\n  .htmm-map .node-view {\n    min-height: 44px;\n    padding: 10px 14px;\n    min-width: 44px;\n  }\n\n  .htmm-map .fold-symbol {\n    width: 28px;\n    height: 28px;\n    min-width: 28px;\n    min-height: 28px;\n    left: -32px;\n    font-size: 12px;\n  }\n}\n\n/* Floating zoom controls */\n.htmm-map-zoom-controls {\n  position: absolute;\n  bottom: 12px;\n  right: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  z-index: 10;\n  pointer-events: auto;\n}\n\n.htmm-map-zoom-controls button {\n  width: 44px;\n  height: 44px;\n  border-radius: 8px;\n  border: 1px solid #ccc;\n  background: #fff;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);\n  font-size: 18px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-zoom-controls button:hover {\n  background: #f5f5f5;\n}\n\n.htmm-map-zoom-controls button:active {\n  background: #e8e8e8;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:hover {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:active {\n  background: #4a4a4a;\n}\n';
+  const htmmMapCss = '/* HtmmMap Styles */\n\n.htmm-map {\n  position: relative;\n  overflow: hidden;\n  background-color: #fafafa;\n  border: 1px solid #ddd;\n  outline: none;\n  /* Margins so root can sit at center with space on all sides */\n  padding: 80px;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n}\n\n/* Pseudo fullscreen: cover viewport with position fixed */\n.htmm-map.htmm-map-fullscreen {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 9999;\n  padding: 12px;\n}\n\n.htmm-map-body {\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n\n/* Toolbar above the map area */\n.htmm-map-toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px;\n  padding: 6px 0;\n  margin: -4px 0 8px 0;\n  border-bottom: 1px solid #e0e0e0;\n  flex-shrink: 0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar {\n  border-bottom-color: #444;\n}\n\n.htmm-map-toolbar-group {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n\n.htmm-map-toolbar-group-inline {\n  gap: 8px;\n}\n\n.htmm-map-toolbar-divider {\n  width: 1px;\n  height: 20px;\n  background: #ccc;\n  margin: 0 4px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-divider {\n  background: #555;\n}\n\n.htmm-map-toolbar-btn {\n  min-width: 28px;\n  height: 28px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #f0f0f0;\n}\n\n.htmm-map-toolbar-btn:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-btn-active {\n  background: #e0e8f0;\n  border-color: #4a90e2;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn-active {\n  background: #2a3a50;\n  border-color: #5a9ae2;\n}\n\n.htmm-map-toolbar-label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  font-size: 12px;\n  color: #333;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-label {\n  color: #ccc;\n}\n\n.htmm-map-toolbar-label-text {\n  white-space: nowrap;\n}\n\n.htmm-map-toolbar-color {\n  width: 24px;\n  height: 24px;\n  padding: 0;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  cursor: pointer;\n  background: transparent;\n}\n\n.htmm-map-toolbar-color:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-select {\n  height: 26px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  min-width: 48px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-select {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map-toolbar-select:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n/* Code edit modal */\n.htmm-map-code-modal-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 10000;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 20px;\n  box-sizing: border-box;\n}\n\n.htmm-map-code-modal {\n  background: #fff;\n  border-radius: 8px;\n  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);\n  max-width: 90vw;\n  max-height: 85vh;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal {\n  background: #2d2d2d;\n  border: 1px solid #444;\n}\n\n.htmm-map-code-modal-title {\n  margin: 0;\n  padding: 12px 16px;\n  font-size: 14px;\n  font-weight: 600;\n  border-bottom: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-title {\n  border-bottom-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-error {\n  margin: 8px 16px 0;\n  padding: 8px;\n  background: #fee;\n  color: #c00;\n  font-size: 12px;\n  border-radius: 4px;\n}\n\n.htmm-map-code-modal-textarea {\n  flex: 1;\n  min-height: 300px;\n  margin: 16px;\n  padding: 12px;\n  font-family: ui-monospace, monospace;\n  font-size: 12px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  resize: vertical;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-textarea {\n  background: #1e1e1e;\n  border-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-actions {\n  display: flex;\n  justify-content: flex-end;\n  gap: 8px;\n  padding: 12px 16px;\n  border-top: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-actions {\n  border-top-color: #444;\n}\n\n.htmm-map-code-modal-apply {\n  background: #4a90e2;\n  color: #fff;\n  border-color: #4a90e2;\n}\n\n.htmm-map-code-modal-apply:hover:not(:disabled) {\n  background: #357abd;\n}\n\n.htmm-map:focus {\n  border-color: #4a90e2;\n  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);\n}\n\n/* Dark appearance */\n.htmm-map[data-appearance="dark"] {\n  background-color: #1e1e1e;\n  border-color: #444;\n}\n\n.htmm-map[data-appearance="dark"]:focus {\n  border-color: #5a9ae2;\n  box-shadow: 0 0 0 2px rgba(90, 154, 226, 0.25);\n}\n\n.htmm-map-empty {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: #f5f5f5;\n  border: 1px solid #ddd;\n  color: #999;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-empty {\n  background-color: #2d2d2d;\n  border-color: #444;\n  color: #888;\n}\n\n.htmm-canvas {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform-origin: center center;\n  cursor: grab;\n}\n\n/* Layers */\n.edges-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n  pointer-events: none;\n}\n\n.nodes-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 0;\n  height: 0;\n}\n\n/* Edge styles */\n.edge-view {\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n/* Utilities */\n.htmm-map * {\n  box-sizing: border-box;\n}\n\n/* Mobile / touch-friendly: larger tap targets and zoom controls */\n@media (max-width: 768px), (pointer: coarse) {\n  .htmm-map {\n    -webkit-tap-highlight-color: transparent;\n    touch-action: none; /* pan/zoom handled by gesture hook */\n  }\n\n  .htmm-map .node-view {\n    min-height: 44px;\n    padding: 10px 14px;\n    min-width: 44px;\n  }\n\n  .htmm-map .fold-symbol {\n    width: 28px;\n    height: 28px;\n    min-width: 28px;\n    min-height: 28px;\n    left: -32px;\n    font-size: 12px;\n  }\n}\n\n/* Floating zoom controls */\n.htmm-map-zoom-controls {\n  position: absolute;\n  bottom: 12px;\n  right: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  z-index: 10;\n  pointer-events: auto;\n}\n\n.htmm-map-zoom-controls button {\n  width: 44px;\n  height: 44px;\n  border-radius: 8px;\n  border: 1px solid #ccc;\n  background: #fff;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);\n  font-size: 18px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-zoom-controls button:hover {\n  background: #f5f5f5;\n}\n\n.htmm-map-zoom-controls button:active {\n  background: #e8e8e8;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:hover {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:active {\n  background: #4a4a4a;\n}\n';
   const attributesPanelCss = ".attributes-panel {\n  display: flex;\n  flex-direction: column;\n  background: #fff;\n  border: 1px solid #ddd;\n  border-radius: 4px;\n  padding: 12px;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n}\n\n.attributes-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 12px;\n}\n\n.attributes-header h3 {\n  margin: 0;\n  font-size: 16px;\n  font-weight: 600;\n  color: #333;\n}\n\n.btn-add-attribute {\n  padding: 4px 12px;\n  border: 1px solid #0066cc;\n  border-radius: 3px;\n  background: #0066cc;\n  color: #fff;\n  font-size: 13px;\n  cursor: pointer;\n  transition: background 0.2s;\n}\n\n.btn-add-attribute:hover:not(:disabled) {\n  background: #0052a3;\n}\n\n.btn-add-attribute:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.attributes-list {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n\n.attributes-empty {\n  padding: 16px;\n  text-align: center;\n  color: #999;\n  font-size: 14px;\n}\n\n.attribute-item {\n  border: 1px solid #e0e0e0;\n  border-radius: 3px;\n  padding: 8px;\n  background: #fafafa;\n}\n\n.attribute-display {\n  display: grid;\n  grid-template-columns: 1fr 2fr auto;\n  gap: 8px;\n  align-items: center;\n}\n\n.attribute-edit {\n  display: grid;\n  grid-template-columns: 1fr 2fr auto;\n  gap: 8px;\n  align-items: center;\n}\n\n.attribute-key {\n  font-weight: 600;\n  color: #555;\n  font-size: 13px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.attribute-value {\n  color: #333;\n  font-size: 13px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.attribute-key-input,\n.attribute-value-input {\n  padding: 4px 8px;\n  border: 1px solid #ccc;\n  border-radius: 3px;\n  font-size: 13px;\n  outline: none;\n}\n\n.attribute-key-input:focus,\n.attribute-value-input:focus {\n  border-color: #0066cc;\n  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);\n}\n\n.attribute-actions {\n  display: flex;\n  gap: 4px;\n}\n\n.btn-edit,\n.btn-delete,\n.btn-save,\n.btn-cancel {\n  padding: 4px 8px;\n  border: 1px solid #d0d0d0;\n  border-radius: 3px;\n  background: #fff;\n  cursor: pointer;\n  font-size: 14px;\n  transition: all 0.2s;\n  min-width: 28px;\n  height: 28px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.btn-edit:hover,\n.btn-delete:hover,\n.btn-save:hover,\n.btn-cancel:hover {\n  background: #f0f0f0;\n  border-color: #b0b0b0;\n}\n\n.btn-delete:hover {\n  background: #fee;\n  border-color: #fcc;\n}\n\n.btn-save {\n  color: #0a0;\n  border-color: #0a0;\n}\n\n.btn-save:hover {\n  background: #efe;\n  border-color: #0a0;\n}\n\n.btn-cancel {\n  color: #c00;\n  border-color: #c00;\n}\n\n.btn-cancel:hover {\n  background: #fee;\n  border-color: #c00;\n}\n";
   const richContentEditorCss = "._rich-content-editor_1ep5h_1 {\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n}\n\n._rich-content-toolbar_1ep5h_12 {\n  display: flex;\n  gap: 4px;\n  padding: 8px;\n  border-bottom: 1px solid #e0e0e0;\n  background: #f5f5f5;\n  flex-wrap: wrap;\n}\n\n._toolbar-group_1ep5h_21 {\n  display: flex;\n  gap: 2px;\n}\n\n._toolbar-divider_1ep5h_26 {\n  width: 1px;\n  background: #d0d0d0;\n  margin: 0 4px;\n}\n\n._toolbar-button_1ep5h_32 {\n  padding: 6px 10px;\n  border: 1px solid #d0d0d0;\n  border-radius: 3px;\n  background: #fff;\n  cursor: pointer;\n  font-weight: bold;\n  font-size: 14px;\n  transition: all 0.2s;\n  min-width: 32px;\n  height: 32px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n._toolbar-button_1ep5h_32:hover:not(:disabled) {\n  background: #e8e8e8;\n  border-color: #b0b0b0;\n}\n\n._toolbar-button_1ep5h_32:active:not(:disabled) {\n  background: #d8d8d8;\n}\n\n._toolbar-button_1ep5h_32:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n._rich-content-editable_1ep5h_62 {\n  padding: 12px;\n  min-height: 100px;\n  max-height: 400px;\n  overflow-y: auto;\n  outline: none;\n  line-height: 1.5;\n  font-size: 14px;\n}\n\n._rich-content-editable_1ep5h_62:focus {\n  background: #fafafa;\n}\n\n._rich-content-editable_1ep5h_62:empty::before {\n  content: attr(data-placeholder);\n  color: #999;\n  pointer-events: none;\n}\n\n/* Rich content formatting */\n._rich-content-editable_1ep5h_62 b,\n._rich-content-editable_1ep5h_62 strong {\n  font-weight: bold;\n}\n\n._rich-content-editable_1ep5h_62 i,\n._rich-content-editable_1ep5h_62 em {\n  font-style: italic;\n}\n\n._rich-content-editable_1ep5h_62 u {\n  text-decoration: underline;\n}\n\n._rich-content-editable_1ep5h_62 strike,\n._rich-content-editable_1ep5h_62 del {\n  text-decoration: line-through;\n}\n\n._rich-content-editable_1ep5h_62 ul,\n._rich-content-editable_1ep5h_62 ol {\n  margin: 8px 0;\n  padding-left: 24px;\n}\n\n._rich-content-editable_1ep5h_62 li {\n  margin: 4px 0;\n}\n\n._rich-content-editable_1ep5h_62 a {\n  color: #0066cc;\n  text-decoration: underline;\n}\n\n._rich-content-editable_1ep5h_62 a:hover {\n  color: #0052a3;\n}\n\n._rich-content-editable_1ep5h_62 img {\n  max-width: 100%;\n  height: auto;\n  display: block;\n  margin: 8px 0;\n}\n";
   const printCss = '/**\n * Print-specific styles\n * Applied when printing or print preview\n */\n\n@media print {\n  /* Reset page margins */\n  @page {\n    margin: 1cm;\n    size: A4 landscape;\n  }\n\n  /* Hide UI elements */\n  body {\n    margin: 0;\n    padding: 0;\n  }\n\n  /* Hide non-printable elements */\n  .no-print,\n  .toolbar,\n  .sidebar,\n  button,\n  input,\n  select,\n  textarea,\n  .attributes-panel,\n  .rich-content-toolbar {\n    display: none !important;\n  }\n\n  /* Ensure mind map is visible */\n  .htmm-map {\n    position: relative !important;\n    width: 100% !important;\n    height: auto !important;\n    overflow: visible !important;\n    page-break-inside: avoid;\n  }\n\n  /* Node styling for print */\n  .node-view {\n    page-break-inside: avoid;\n    break-inside: avoid;\n  }\n\n  /* Ensure text is readable */\n  .node-text {\n    color: #000 !important;\n    background: transparent !important;\n  }\n\n  /* Remove interactive states */\n  .node-view.selected {\n    border-color: #999 !important;\n    border-width: 1px !important;\n    box-shadow: none !important;\n  }\n\n  .node-view:hover {\n    box-shadow: none !important;\n  }\n\n  /* Simplify edges for print */\n  .edge-path {\n    stroke: #666 !important;\n  }\n\n  /* Hide fold symbols in print */\n  .fold-symbol {\n    display: none !important;\n  }\n\n  /* Ensure links are visible */\n  .node-link-indicator {\n    display: inline-block !important;\n  }\n\n  a[href]:after {\n    content: " (" attr(href) ")";\n    font-size: 0.8em;\n    color: #666;\n  }\n\n  /* Cloud borders */\n  .node-cloud {\n    border: 2px solid #999 !important;\n  }\n\n  /* Rich content */\n  .node-rich-content {\n    max-height: none !important;\n    overflow: visible !important;\n  }\n\n  /* Icons */\n  .node-icons,\n  .node-icon {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n\n  /* Preserve colors */\n  * {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n}\n\n/* Print preview mode */\n.print-preview {\n  background: #eee;\n  padding: 20px;\n}\n\n.print-preview .htmm-map {\n  background: white;\n  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n  margin: 0 auto;\n  max-width: 297mm; /* A4 landscape width */\n  min-height: 210mm; /* A4 landscape height */\n}\n';
@@ -6225,999 +6225,6 @@ Ctrl+Click to open`,
         );
     }
   }
-  function useDragAndDrop(onNodeMove) {
-    const [dragState, setDragState] = reactExports.useState({
-      isDragging: false,
-      draggedNodeId: null,
-      dropTargetNodeId: null,
-      dropPosition: null
-    });
-    const handleDragStart = reactExports.useCallback((e2, nodeId) => {
-      e2.stopPropagation();
-      e2.dataTransfer.effectAllowed = "move";
-      e2.dataTransfer.setData("text/plain", nodeId);
-      setDragState({
-        isDragging: true,
-        draggedNodeId: nodeId,
-        dropTargetNodeId: null,
-        dropPosition: null
-      });
-      if (e2.currentTarget instanceof HTMLElement) {
-        const rect = e2.currentTarget.getBoundingClientRect();
-        e2.dataTransfer.setDragImage(
-          e2.currentTarget,
-          rect.width / 2,
-          rect.height / 2
-        );
-      }
-    }, []);
-    const handleDragOver = reactExports.useCallback((e2, nodeId) => {
-      e2.preventDefault();
-      e2.stopPropagation();
-      const draggedNodeId = dragState.draggedNodeId;
-      if (draggedNodeId === nodeId) {
-        e2.dataTransfer.dropEffect = "none";
-        return;
-      }
-      e2.dataTransfer.dropEffect = "move";
-      const targetElement = e2.currentTarget;
-      const rect = targetElement.getBoundingClientRect();
-      const mouseY = e2.clientY - rect.top;
-      const height = rect.height;
-      let position2;
-      if (mouseY < height * 0.25) {
-        position2 = "before";
-      } else if (mouseY > height * 0.75) {
-        position2 = "after";
-      } else {
-        position2 = "child";
-      }
-      setDragState((prev) => ({
-        ...prev,
-        dropTargetNodeId: nodeId,
-        dropPosition: position2
-      }));
-    }, [dragState.draggedNodeId]);
-    const handleDragLeave = reactExports.useCallback((e2) => {
-      e2.stopPropagation();
-      setDragState((prev) => ({
-        ...prev,
-        dropTargetNodeId: null,
-        dropPosition: null
-      }));
-    }, []);
-    const handleDrop = reactExports.useCallback((e2, nodeId) => {
-      e2.preventDefault();
-      e2.stopPropagation();
-      const draggedNodeId = e2.dataTransfer.getData("text/plain");
-      if (draggedNodeId === nodeId) {
-        setDragState({
-          isDragging: false,
-          draggedNodeId: null,
-          dropTargetNodeId: null,
-          dropPosition: null
-        });
-        return;
-      }
-      const position2 = dragState.dropPosition || "child";
-      onNodeMove(draggedNodeId, nodeId, position2);
-      setDragState({
-        isDragging: false,
-        draggedNodeId: null,
-        dropTargetNodeId: null,
-        dropPosition: null
-      });
-    }, [dragState.dropPosition, onNodeMove]);
-    const handleDragEnd = reactExports.useCallback(() => {
-      setDragState({
-        isDragging: false,
-        draggedNodeId: null,
-        dropTargetNodeId: null,
-        dropPosition: null
-      });
-    }, []);
-    return {
-      dragState,
-      handleDragStart,
-      handleDragOver,
-      handleDragLeave,
-      handleDrop,
-      handleDragEnd
-    };
-  }
-  const DEFAULT_MAX_RENDERED_NODES = 800;
-  function useViewportCulling(nodes, containerWidth, containerHeight, zoom = 1, panX = 0, panY = 0, padding = 200, maxRenderedNodes = DEFAULT_MAX_RENDERED_NODES) {
-    const visibleNodes = reactExports.useMemo(() => {
-      const width = typeof containerWidth === "number" ? containerWidth : 800;
-      const height = typeof containerHeight === "number" ? containerHeight : 600;
-      const viewportBounds = {
-        left: -panX / zoom - padding,
-        top: -panY / zoom - padding,
-        right: (-panX + width) / zoom + padding,
-        bottom: (-panY + height) / zoom + padding
-      };
-      const viewportCenterX = (viewportBounds.left + viewportBounds.right) / 2;
-      const viewportCenterY = (viewportBounds.top + viewportBounds.bottom) / 2;
-      let filtered = nodes.filter((node2) => {
-        const nodeLeft = node2.x - node2.width / 2;
-        const nodeTop = node2.y - node2.height / 2;
-        const nodeRight = node2.x + node2.width / 2;
-        const nodeBottom = node2.y + node2.height / 2;
-        const intersects = nodeRight >= viewportBounds.left && nodeLeft <= viewportBounds.right && nodeBottom >= viewportBounds.top && nodeTop <= viewportBounds.bottom;
-        return intersects;
-      });
-      if (filtered.length > maxRenderedNodes) {
-        const withDist = filtered.map((node2) => {
-          const dx = node2.x - viewportCenterX;
-          const dy = node2.y - viewportCenterY;
-          return { node: node2, distSq: dx * dx + dy * dy };
-        });
-        withDist.sort((a2, b2) => a2.distSq - b2.distSq);
-        filtered = withDist.slice(0, maxRenderedNodes).map(({ node: node2 }) => node2);
-      }
-      return filtered;
-    }, [nodes, containerWidth, containerHeight, zoom, panX, panY, padding, maxRenderedNodes]);
-    const enhancedVisibleNodes = reactExports.useMemo(() => {
-      const visibleNodeIds = new Set(visibleNodes.map((n2) => n2.id));
-      const additionalNodes = [];
-      for (const node2 of nodes) {
-        if (node2.depth === 0 && !visibleNodeIds.has(node2.id)) {
-          additionalNodes.push(node2);
-        }
-      }
-      return [...visibleNodes, ...additionalNodes];
-    }, [nodes, visibleNodes]);
-    return enhancedVisibleNodes;
-  }
-  function shouldEnableViewportCulling(nodeCount, threshold = 100) {
-    return nodeCount > threshold;
-  }
-  function useTouchGestures(options) {
-    const {
-      onPan,
-      onPinch,
-      onTap,
-      onDoubleTap,
-      minScale = 0.5,
-      maxScale = 3,
-      initialScale = 1
-    } = options || {};
-    const [gestureState, setGestureState] = reactExports.useState({
-      isPanning: false,
-      isPinching: false,
-      scale: 1,
-      translateX: 0,
-      translateY: 0
-    });
-    const touchStartRef = reactExports.useRef(null);
-    const lastTapRef = reactExports.useRef(null);
-    const lastTouchDistanceRef = reactExports.useRef(null);
-    const initialPinchScaleRef = reactExports.useRef(1);
-    const handleTouchStart = reactExports.useCallback((e2) => {
-      const now = Date.now();
-      const touches = e2.touches;
-      if (touches.length === 1) {
-        const touch = touches[0];
-        touchStartRef.current = {
-          x: touch.clientX,
-          y: touch.clientY,
-          time: now
-        };
-        if (lastTapRef.current) {
-          const timeDiff = now - lastTapRef.current.time;
-          const distX = Math.abs(touch.clientX - lastTapRef.current.x);
-          const distY = Math.abs(touch.clientY - lastTapRef.current.y);
-          if (timeDiff < 300 && distX < 20 && distY < 20) {
-            onDoubleTap?.(touch.clientX, touch.clientY);
-            lastTapRef.current = null;
-            touchStartRef.current = null;
-            return;
-          }
-        }
-        setGestureState((prev) => ({
-          ...prev,
-          isPanning: true
-        }));
-      } else if (touches.length === 2) {
-        const touch1 = touches[0];
-        const touch2 = touches[1];
-        const distance2 = Math.hypot(
-          touch2.clientX - touch1.clientX,
-          touch2.clientY - touch1.clientY
-        );
-        lastTouchDistanceRef.current = distance2;
-        initialPinchScaleRef.current = initialScale;
-        setGestureState((prev) => ({
-          ...prev,
-          isPinching: true,
-          isPanning: false
-        }));
-      }
-    }, [onDoubleTap, initialScale]);
-    const handleTouchMove = reactExports.useCallback((e2) => {
-      e2.preventDefault();
-      const touches = e2.touches;
-      if (touches.length === 1 && gestureState.isPanning && touchStartRef.current) {
-        const touch = touches[0];
-        const deltaX = touch.clientX - touchStartRef.current.x;
-        const deltaY = touch.clientY - touchStartRef.current.y;
-        onPan?.(deltaX, deltaY);
-        touchStartRef.current = {
-          x: touch.clientX,
-          y: touch.clientY,
-          time: touchStartRef.current.time
-        };
-      } else if (touches.length === 2 && gestureState.isPinching && lastTouchDistanceRef.current !== null) {
-        const touch1 = touches[0];
-        const touch2 = touches[1];
-        const distance2 = Math.hypot(
-          touch2.clientX - touch1.clientX,
-          touch2.clientY - touch1.clientY
-        );
-        const scaleChange = distance2 / lastTouchDistanceRef.current;
-        const newScale = Math.max(
-          minScale,
-          Math.min(maxScale, initialPinchScaleRef.current * scaleChange)
-        );
-        onPinch?.(newScale);
-        setGestureState((prev) => ({
-          ...prev,
-          scale: newScale
-        }));
-      }
-    }, [gestureState.isPanning, gestureState.isPinching, onPan, onPinch, minScale, maxScale]);
-    const handleTouchEnd = reactExports.useCallback((e2) => {
-      const now = Date.now();
-      if (touchStartRef.current && e2.touches.length === 0) {
-        const timeDiff = now - touchStartRef.current.time;
-        if (timeDiff < 200) {
-          onTap?.(touchStartRef.current.x, touchStartRef.current.y);
-          lastTapRef.current = {
-            x: touchStartRef.current.x,
-            y: touchStartRef.current.y,
-            time: now
-          };
-        }
-      }
-      setGestureState((prev) => ({
-        ...prev,
-        isPanning: false,
-        isPinching: false
-      }));
-      touchStartRef.current = null;
-      lastTouchDistanceRef.current = null;
-    }, [onTap]);
-    const handleTouchCancel = reactExports.useCallback(() => {
-      setGestureState((prev) => ({
-        ...prev,
-        isPanning: false,
-        isPinching: false
-      }));
-      touchStartRef.current = null;
-      lastTouchDistanceRef.current = null;
-    }, []);
-    const handlers = {
-      onTouchStart: handleTouchStart,
-      onTouchMove: handleTouchMove,
-      onTouchEnd: handleTouchEnd,
-      onTouchCancel: handleTouchCancel
-    };
-    return {
-      gestureState,
-      handlers
-    };
-  }
-  const HtmmMapInner = ({
-    width = "100%",
-    height = "600px",
-    className = "",
-    loadError = null,
-    appearance = "auto",
-    lang = "en"
-  }) => {
-    const store = reactExports.useContext(HtmmStoreContext);
-    const [resolvedAppearance, setResolvedAppearance] = reactExports.useState(() => {
-      if (typeof window === "undefined" || appearance !== "auto") return "light";
-      const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
-      return mq?.matches ? "dark" : "light";
-    });
-    reactExports.useEffect(() => {
-      if (appearance !== "auto" || typeof window === "undefined" || !window.matchMedia) return;
-      const mq = window.matchMedia("(prefers-color-scheme: dark)");
-      const handler = () => setResolvedAppearance(mq.matches ? "dark" : "light");
-      handler();
-      mq.addEventListener("change", handler);
-      return () => mq.removeEventListener("change", handler);
-    }, [appearance]);
-    const effectiveAppearance = appearance === "auto" ? resolvedAppearance : appearance;
-    if (store === null) {
-      throw new Error("HtmmMapInner must be rendered inside HtmmStoreContext.Provider.");
-    }
-    const {
-      mapData,
-      selectedNodeIds,
-      selectNode,
-      editNode,
-      addChild,
-      addSibling,
-      deleteNode,
-      moveNode,
-      setNodePosition,
-      toggleFolded,
-      undo,
-      redo,
-      copyNode,
-      cutNode,
-      pasteNode,
-      setFont,
-      zoom,
-      panX,
-      panY,
-      setZoom,
-      setPan,
-      resetView,
-      readOnly
-    } = useHtmmStore();
-    const [layoutNodes, setLayoutNodes] = reactExports.useState([]);
-    const [editingNodeId, setEditingNodeId] = reactExports.useState(null);
-    const previousSelectedNodeIdRef = reactExports.useRef(null);
-    const newlyAddedNodeIdRef = reactExports.useRef(null);
-    const containerRef = reactExports.useRef(null);
-    const canvasRef = reactExports.useRef(null);
-    const panStartRef = reactExports.useRef(null);
-    const SCROLL_INTO_VIEW_MARGIN = 24;
-    const PAN_LIMIT_VISIBLE_PX = 20;
-    const handleNodeMove = reactExports.useCallback((draggedNodeId, targetNodeId, position2) => {
-      if (!mapData) return;
-      const draggedNode = findNodeById(mapData.root, draggedNodeId);
-      const targetNode = findNodeById(mapData.root, targetNodeId);
-      if (!draggedNode || !targetNode) return;
-      let current2 = targetNode;
-      while (current2) {
-        if (current2.id === draggedNodeId) {
-          return;
-        }
-        const parent = findParentNode(mapData.root, current2.id);
-        if (!parent) break;
-        current2 = parent;
-      }
-      if (position2 === "child") {
-        moveNode(draggedNodeId, targetNodeId);
-      } else {
-        const targetParent = findParentNode(mapData.root, targetNodeId);
-        if (!targetParent) return;
-        const targetIndex = targetParent.children?.findIndex((c2) => c2.id === targetNodeId) ?? -1;
-        if (targetIndex < 0) return;
-        const newIndex = position2 === "before" ? targetIndex : targetIndex + 1;
-        moveNode(draggedNodeId, targetParent.id, newIndex);
-      }
-    }, [mapData, moveNode]);
-    const {
-      dragState,
-      handleDragStart,
-      handleDragOver,
-      handleDragLeave,
-      handleDrop,
-      handleDragEnd
-    } = useDragAndDrop(handleNodeMove);
-    reactExports.useEffect(() => {
-      if (mapData) {
-        const layout = calculateLayout(mapData.root);
-        setLayoutNodes(layout);
-      }
-    }, [mapData]);
-    const getPanBounds = reactExports.useCallback((contentWidth, contentHeight) => {
-      if (layoutNodes.length === 0) {
-        return { minPanX: -Infinity, maxPanX: Infinity, minPanY: -Infinity, maxPanY: Infinity };
-      }
-      let minLeft = Infinity, maxRight = -Infinity, minTop = Infinity, maxBottom = -Infinity;
-      for (const n2 of layoutNodes) {
-        const left = n2.x - n2.width / 2;
-        const right = n2.x + n2.width / 2;
-        const top = n2.y - n2.height / 2;
-        const bottom = n2.y + n2.height / 2;
-        minLeft = Math.min(minLeft, left);
-        maxRight = Math.max(maxRight, right);
-        minTop = Math.min(minTop, top);
-        maxBottom = Math.max(maxBottom, bottom);
-      }
-      const cx = contentWidth / 2;
-      const cy = contentHeight / 2;
-      return {
-        minPanX: PAN_LIMIT_VISIBLE_PX - cx - maxRight * zoom,
-        maxPanX: contentWidth - PAN_LIMIT_VISIBLE_PX - cx - minLeft * zoom,
-        minPanY: PAN_LIMIT_VISIBLE_PX - cy - maxBottom * zoom,
-        maxPanY: contentHeight - PAN_LIMIT_VISIBLE_PX - cy - minTop * zoom
-      };
-    }, [layoutNodes, zoom]);
-    const clampPan = reactExports.useCallback((panX2, panY2, contentWidth, contentHeight) => {
-      const b2 = getPanBounds(contentWidth, contentHeight);
-      return {
-        panX: Math.max(b2.minPanX, Math.min(b2.maxPanX, panX2)),
-        panY: Math.max(b2.minPanY, Math.min(b2.maxPanY, panY2))
-      };
-    }, [getPanBounds]);
-    reactExports.useEffect(() => {
-      const el = containerRef.current;
-      if (!el || layoutNodes.length === 0) return;
-      const cw = el.clientWidth;
-      const ch = el.clientHeight;
-      if (cw <= 0 || ch <= 0) return;
-      const state = store.getState();
-      const clamped = clampPan(state.panX, state.panY, cw, ch);
-      if (clamped.panX !== state.panX || clamped.panY !== state.panY) {
-        state.setPan(clamped.panX, clamped.panY);
-      }
-    }, [layoutNodes, zoom, clampPan, store]);
-    const enableCulling = shouldEnableViewportCulling(layoutNodes.length);
-    const visibleNodes = useViewportCulling(
-      layoutNodes,
-      width,
-      height,
-      zoom,
-      panX,
-      panY
-    );
-    const { handlers: touchHandlers } = useTouchGestures({
-      initialScale: zoom,
-      minScale: 0.25,
-      maxScale: 4,
-      onPan: (deltaX, deltaY) => {
-        const state = store.getState();
-        const el = containerRef.current;
-        const cw = el?.clientWidth ?? 0;
-        const ch = el?.clientHeight ?? 0;
-        const proposedX = state.panX + deltaX;
-        const proposedY = state.panY + deltaY;
-        const clamped = cw > 0 && ch > 0 ? clampPan(proposedX, proposedY, cw, ch) : { panX: proposedX, panY: proposedY };
-        state.setPan(clamped.panX, clamped.panY);
-      },
-      onPinch: (scale) => {
-        setZoom(scale);
-      }
-    });
-    const handleZoomIn = reactExports.useCallback(() => {
-      setZoom(Math.min(zoom * 1.25, 4));
-    }, [zoom, setZoom]);
-    const handleZoomOut = reactExports.useCallback(() => {
-      setZoom(Math.max(zoom / 1.25, 0.25));
-    }, [zoom, setZoom]);
-    reactExports.useEffect(() => {
-      if (!mapData) return;
-      const el = containerRef.current;
-      if (!el) return;
-      const onWheel = (e2) => {
-        const state = store.getState();
-        const cw = el.clientWidth;
-        const ch = el.clientHeight;
-        if (cw <= 0 || ch <= 0) return;
-        const proposedX = state.panX - e2.deltaX;
-        const proposedY = state.panY - e2.deltaY;
-        const clamped = clampPan(proposedX, proposedY, cw, ch);
-        const atLimit = clamped.panX !== proposedX || clamped.panY !== proposedY;
-        if (atLimit) {
-          return;
-        }
-        e2.preventDefault();
-        state.setPan(clamped.panX, clamped.panY);
-      };
-      el.addEventListener("wheel", onWheel, { passive: false });
-      return () => el.removeEventListener("wheel", onWheel);
-    }, [mapData, clampPan, store]);
-    const handleCanvasMouseDown = reactExports.useCallback((e2) => {
-      if (e2.button !== 0 || e2.target !== e2.currentTarget) return;
-      const state = store.getState();
-      panStartRef.current = {
-        panX: state.panX,
-        panY: state.panY,
-        clientX: e2.clientX,
-        clientY: e2.clientY
-      };
-    }, [store]);
-    reactExports.useEffect(() => {
-      const onMouseMove = (e2) => {
-        const start = panStartRef.current;
-        if (!start) return;
-        e2.preventDefault();
-        document.body.style.cursor = "grabbing";
-        const el = containerRef.current;
-        const cw = el?.clientWidth ?? 0;
-        const ch = el?.clientHeight ?? 0;
-        const proposedX = start.panX + (e2.clientX - start.clientX);
-        const proposedY = start.panY + (e2.clientY - start.clientY);
-        const clamped = cw > 0 && ch > 0 ? clampPan(proposedX, proposedY, cw, ch) : { panX: proposedX, panY: proposedY };
-        store.getState().setPan(clamped.panX, clamped.panY);
-      };
-      const onMouseUp = () => {
-        if (panStartRef.current) document.body.style.cursor = "";
-        panStartRef.current = null;
-      };
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
-      return () => {
-        document.body.style.cursor = "";
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-      };
-    }, [store, clampPan]);
-    const nodesToRender = enableCulling ? visibleNodes : layoutNodes;
-    const handleStartEdit = reactExports.useCallback((nodeId) => {
-      setEditingNodeId(nodeId);
-      if (newlyAddedNodeIdRef.current !== nodeId) {
-        newlyAddedNodeIdRef.current = null;
-      }
-    }, []);
-    const handleEndEdit = reactExports.useCallback((nodeId, text2, cancelled = false) => {
-      if (cancelled && newlyAddedNodeIdRef.current === nodeId) {
-        deleteNode(nodeId);
-        if (previousSelectedNodeIdRef.current) {
-          selectNode(previousSelectedNodeIdRef.current);
-        }
-        previousSelectedNodeIdRef.current = null;
-        newlyAddedNodeIdRef.current = null;
-      } else if (cancelled) {
-        selectNode(nodeId);
-      } else {
-        editNode(nodeId, text2);
-        selectNode(nodeId);
-        newlyAddedNodeIdRef.current = null;
-      }
-      setEditingNodeId(null);
-    }, [editNode, selectNode, deleteNode]);
-    const handleKeyDown = reactExports.useCallback((e2) => {
-      if (editingNodeId) return;
-      if (!mapData) return;
-      const selectedId = Array.from(selectedNodeIds)[0];
-      const isMod = e2.ctrlKey || e2.metaKey;
-      if (!isMod && (e2.key === "ArrowUp" || e2.key === "ArrowDown" || e2.key === "ArrowLeft" || e2.key === "ArrowRight")) {
-        if (!selectedId) return;
-        e2.preventDefault();
-        let nextNode = null;
-        if (e2.key === "ArrowUp") {
-          nextNode = getPreviousSiblingOrAbove(mapData.root, selectedId);
-        } else if (e2.key === "ArrowDown") {
-          nextNode = getNextSiblingOrBelow(mapData.root, selectedId);
-        } else if (e2.key === "ArrowRight" || e2.key === "ArrowLeft") {
-          const currentNode = findNodeById(mapData.root, selectedId);
-          const currentLayoutNode = layoutNodes.find((node2) => node2.id === selectedId);
-          if (!currentNode || !currentLayoutNode) return;
-          const isRightKey = e2.key === "ArrowRight";
-          const isLeftKey = e2.key === "ArrowLeft";
-          if (selectedId === mapData.root.id) {
-            if (isRightKey) {
-              nextNode = getFirstChildByPosition(currentNode, "right");
-            } else {
-              nextNode = getFirstChildByPosition(currentNode, "left");
-            }
-          } else {
-            const side = currentLayoutNode.side;
-            if (side === "left") {
-              if (isLeftKey) {
-                nextNode = getFirstChild(currentNode);
-              } else {
-                nextNode = findParentNode(mapData.root, selectedId);
-              }
-            } else {
-              if (isRightKey) {
-                nextNode = getFirstChild(currentNode);
-              } else {
-                nextNode = findParentNode(mapData.root, selectedId);
-              }
-            }
-          }
-        }
-        if (nextNode) {
-          selectNode(nextNode.id);
-        }
-        return;
-      }
-      if (isMod && (e2.key === "ArrowUp" || e2.key === "ArrowDown" || e2.key === "ArrowLeft" || e2.key === "ArrowRight")) {
-        if (readOnly || !selectedId || selectedId === mapData.root.id) return;
-        e2.preventDefault();
-        if (e2.key === "ArrowUp") {
-          const parent = findParentNode(mapData.root, selectedId);
-          if (parent && parent.children) {
-            const currentNode = findNodeById(mapData.root, selectedId);
-            if (!currentNode) return;
-            const isRootChild = parent.id === mapData.root.id;
-            const siblings = isRootChild && currentNode.position ? parent.children.filter((child) => child.position === currentNode.position) : parent.children;
-            const currentIndex = siblings.findIndex((child) => child.id === selectedId);
-            if (currentIndex > 0) {
-              const targetSibling = siblings[currentIndex - 1];
-              const newIndex = parent.children.findIndex((child) => child.id === targetSibling.id);
-              moveNode(selectedId, parent.id, newIndex);
-            }
-          }
-        } else if (e2.key === "ArrowDown") {
-          const parent = findParentNode(mapData.root, selectedId);
-          if (parent && parent.children) {
-            const currentNode = findNodeById(mapData.root, selectedId);
-            if (!currentNode) return;
-            const isRootChild = parent.id === mapData.root.id;
-            const siblings = isRootChild && currentNode.position ? parent.children.filter((child) => child.position === currentNode.position) : parent.children;
-            const currentIndex = siblings.findIndex((child) => child.id === selectedId);
-            if (currentIndex >= 0 && currentIndex < siblings.length - 1) {
-              const targetSibling = siblings[currentIndex + 1];
-              const newIndex = parent.children.findIndex((child) => child.id === targetSibling.id);
-              moveNode(selectedId, parent.id, newIndex);
-            }
-          }
-        } else if (e2.key === "ArrowLeft" || e2.key === "ArrowRight") {
-          const currentNode = findNodeById(mapData.root, selectedId);
-          const currentLayoutNode = layoutNodes.find((node2) => node2.id === selectedId);
-          if (!currentNode || !currentLayoutNode) return;
-          const isRightKey = e2.key === "ArrowRight";
-          const isLeftKey = e2.key === "ArrowLeft";
-          const parent = findParentNode(mapData.root, selectedId);
-          const side = parent?.id === mapData.root.id ? currentNode.position === "left" ? "left" : "right" : currentLayoutNode.side;
-          if (parent?.id === mapData.root.id) {
-            const onLeft = currentNode.position === "left";
-            if (isLeftKey && !onLeft) {
-              setNodePosition(selectedId, "left");
-              return;
-            }
-            if (isRightKey && onLeft) {
-              setNodePosition(selectedId, "right");
-              return;
-            }
-          }
-          let moveToHigherLevel = false;
-          let moveToLowerLevel = false;
-          if (side === "left") {
-            moveToHigherLevel = isRightKey;
-            moveToLowerLevel = isLeftKey;
-          } else {
-            moveToHigherLevel = isLeftKey;
-            moveToLowerLevel = isRightKey;
-          }
-          if (moveToHigherLevel) {
-            const parent2 = findParentNode(mapData.root, selectedId);
-            if (parent2 && parent2.id !== mapData.root.id) {
-              const grandParent = findParentNode(mapData.root, parent2.id);
-              if (grandParent) {
-                const parentIndex = getNodeIndex(mapData.root, parent2.id);
-                moveNode(selectedId, grandParent.id, parentIndex + 1);
-              }
-            }
-          } else if (moveToLowerLevel) {
-            const prevSibling = getPreviousSibling(mapData.root, selectedId);
-            if (prevSibling) {
-              moveNode(selectedId, prevSibling.id);
-            }
-          }
-        }
-        return;
-      }
-      if (e2.key === "Tab") {
-        if (!readOnly) {
-          e2.preventDefault();
-          previousSelectedNodeIdRef.current = selectedId || mapData.root.id;
-          const newNodeId = selectedId ? addChild(selectedId, "") : addChild(mapData.root.id, "");
-          if (newNodeId) {
-            newlyAddedNodeIdRef.current = newNodeId;
-            setEditingNodeId(newNodeId);
-          }
-        }
-      } else if (e2.key === "Enter") {
-        if (!readOnly) {
-          e2.preventDefault();
-          if (isMod) {
-            if (selectedId) {
-              setEditingNodeId(selectedId);
-            }
-          } else if (selectedId && selectedId !== mapData.root.id) {
-            previousSelectedNodeIdRef.current = selectedId;
-            const newNodeId = addSibling(selectedId, e2.shiftKey);
-            if (newNodeId) {
-              newlyAddedNodeIdRef.current = newNodeId;
-              setEditingNodeId(newNodeId);
-            }
-          }
-        }
-      } else if (e2.key === "Delete" || e2.key === "Backspace") {
-        if (!readOnly && selectedId && selectedId !== mapData.root.id) {
-          e2.preventDefault();
-          deleteNode(selectedId);
-        }
-      } else if (e2.key === " ") {
-        e2.preventDefault();
-        if (selectedId) {
-          toggleFolded(selectedId);
-        }
-      } else if (isMod && e2.key === "z") {
-        if (!readOnly) {
-          e2.preventDefault();
-          undo();
-        }
-      } else if (isMod && (e2.key === "y" || e2.shiftKey && e2.key === "z")) {
-        if (!readOnly) {
-          e2.preventDefault();
-          redo();
-        }
-      } else if (isMod && e2.key === "c") {
-        e2.preventDefault();
-        if (selectedId) {
-          copyNode(selectedId);
-        }
-      } else if (isMod && e2.key === "x") {
-        if (!readOnly) {
-          e2.preventDefault();
-          if (selectedId && selectedId !== mapData.root.id) {
-            cutNode(selectedId);
-          }
-        }
-      } else if (isMod && e2.key === "v") {
-        if (!readOnly) {
-          e2.preventDefault();
-          if (selectedId) {
-            pasteNode(selectedId);
-          }
-        }
-      } else if (isMod && e2.key === "b") {
-        if (!readOnly) {
-          e2.preventDefault();
-          if (selectedId) {
-            const node2 = findNodeById(mapData.root, selectedId);
-            if (node2) {
-              const currentBold = node2.font?.bold || false;
-              setFont(selectedId, { bold: !currentBold });
-            }
-          }
-        }
-      } else if (isMod && e2.key === "i") {
-        if (!readOnly) {
-          e2.preventDefault();
-          if (selectedId) {
-            const node2 = findNodeById(mapData.root, selectedId);
-            if (node2) {
-              const currentItalic = node2.font?.italic || false;
-              setFont(selectedId, { italic: !currentItalic });
-            }
-          }
-        }
-      }
-    }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, setNodePosition, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont, readOnly]);
-    reactExports.useEffect(() => {
-      const container = containerRef.current;
-      if (!container) return;
-      container.addEventListener("keydown", handleKeyDown);
-      return () => {
-        container.removeEventListener("keydown", handleKeyDown);
-      };
-    }, [handleKeyDown]);
-    reactExports.useEffect(() => {
-      if (containerRef.current && selectedNodeIds.size > 0) {
-        containerRef.current.focus();
-      }
-    }, [selectedNodeIds]);
-    reactExports.useEffect(() => {
-      if (editingNodeId || layoutNodes.length === 0) return;
-      const selectedId = Array.from(selectedNodeIds)[0];
-      if (!selectedId) return;
-      const layoutNode = layoutNodes.find((n2) => n2.id === selectedId);
-      if (!layoutNode) return;
-      const el = containerRef.current;
-      if (!el) return;
-      const contentWidth = el.clientWidth;
-      const contentHeight = el.clientHeight;
-      if (contentWidth <= 0 || contentHeight <= 0) return;
-      const state = store.getState();
-      const { panX: currentPanX, panY: currentPanY, zoom: currentZoom } = state;
-      const cx = contentWidth / 2;
-      const cy = contentHeight / 2;
-      const nodeLeft = cx + currentPanX + (layoutNode.x - layoutNode.width / 2) * currentZoom;
-      const nodeTop = cy + currentPanY + (layoutNode.y - layoutNode.height / 2) * currentZoom;
-      const nodeRight = nodeLeft + layoutNode.width * currentZoom;
-      const nodeBottom = nodeTop + layoutNode.height * currentZoom;
-      const m2 = SCROLL_INTO_VIEW_MARGIN;
-      const visibleLeft = m2;
-      const visibleTop = m2;
-      const visibleRight = contentWidth - m2;
-      const visibleBottom = contentHeight - m2;
-      let desiredPanX = currentPanX;
-      let desiredPanY = currentPanY;
-      if (nodeLeft < visibleLeft) desiredPanX = visibleLeft - cx - (layoutNode.x - layoutNode.width / 2) * currentZoom;
-      if (nodeRight > visibleRight) desiredPanX = visibleRight - cx - (layoutNode.x + layoutNode.width / 2) * currentZoom;
-      if (nodeTop < visibleTop) desiredPanY = visibleTop - cy - (layoutNode.y - layoutNode.height / 2) * currentZoom;
-      if (nodeBottom > visibleBottom) desiredPanY = visibleBottom - cy - (layoutNode.y + layoutNode.height / 2) * currentZoom;
-      const clamped = clampPan(desiredPanX, desiredPanY, contentWidth, contentHeight);
-      if (clamped.panX !== currentPanX || clamped.panY !== currentPanY) {
-        setPan(clamped.panX, clamped.panY);
-      }
-    }, [selectedNodeIds, layoutNodes, editingNodeId, setPan, clampPan]);
-    reactExports.useEffect(() => {
-      const el = containerRef.current;
-      if (!el) return;
-      const onTouchMove = (e2) => {
-        touchHandlers.onTouchMove(e2);
-        if (e2.touches.length === 1 || e2.touches.length === 2) e2.preventDefault();
-      };
-      el.addEventListener("touchmove", onTouchMove, { passive: false });
-      return () => el.removeEventListener("touchmove", onTouchMove);
-    }, [touchHandlers.onTouchMove]);
-    if (!mapData) {
-      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-empty", style: { width, height }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: loadError ?? "Loading…" }) });
-    }
-    const edges = [];
-    for (const node2 of layoutNodes) {
-      const parent = findParentNode(mapData.root, node2.id);
-      if (parent) {
-        const parentLayout = layoutNodes.find((n2) => n2.id === parent.id);
-        if (parentLayout) {
-          edges.push({
-            source: parentLayout,
-            target: node2
-          });
-        }
-      }
-    }
-    const arrowLinks = collectAllArrowLinks(mapData.root);
-    const validArrowLinks = arrowLinks.map(({ sourceId, targetId, arrowLink }) => {
-      const sourceLayout = layoutNodes.find((n2) => n2.id === sourceId);
-      const targetLayout = layoutNodes.find((n2) => n2.id === targetId);
-      if (sourceLayout && targetLayout) {
-        return { sourceLayout, targetLayout, arrowLink };
-      }
-      return null;
-    }).filter((link) => link !== null);
-    const viewportStyle = {
-      width,
-      height
-    };
-    const canvasStyle = {
-      transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
-      transformOrigin: "50% 50%"
-    };
-    const mapTitle = mapData?.root.text || "Mind Map";
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
-      "div",
-      {
-        ref: containerRef,
-        className: `htmm-map ${className}`,
-        style: viewportStyle,
-        role: "tree",
-        "aria-label": `Mind map: ${mapTitle}`,
-        "aria-multiselectable": "true",
-        tabIndex: 0,
-        "data-appearance": effectiveAppearance,
-        lang,
-        onTouchStart: touchHandlers.onTouchStart,
-        onTouchEnd: touchHandlers.onTouchEnd,
-        onTouchCancel: touchHandlers.onTouchCancel,
-        children: [
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "div",
-            {
-              ref: canvasRef,
-              className: "htmm-canvas",
-              style: canvasStyle,
-              "aria-live": "polite",
-              "aria-atomic": "false",
-              onMouseDown: handleCanvasMouseDown,
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "edges-layer", "aria-hidden": "true", children: [
-                  edges.map((edge, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    EdgeView,
-                    {
-                      source: edge.source,
-                      target: edge.target,
-                      color: edge.target.edge?.color,
-                      style: edge.target.edge?.style,
-                      width: edge.target.edge?.width ? parseInt(edge.target.edge.width) : 1
-                    },
-                    `edge-${index2}`
-                  )),
-                  validArrowLinks.map(({ sourceLayout, targetLayout, arrowLink }, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                    ArrowLinkView,
-                    {
-                      sourceNode: sourceLayout,
-                      targetNode: targetLayout,
-                      arrowLink
-                    },
-                    `arrow-link-${index2}`
-                  ))
-                ] }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nodes-layer", role: "group", "aria-label": "Mind map nodes", children: nodesToRender.map((node2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
-                  NodeView,
-                  {
-                    node: node2,
-                    isSelected: selectedNodeIds.has(node2.id),
-                    isEditing: editingNodeId === node2.id,
-                    onStartEdit: () => handleStartEdit(node2.id),
-                    onEndEdit: (text2, cancelled) => handleEndEdit(node2.id, text2, cancelled),
-                    onDragStart: handleDragStart,
-                    onDragOver: handleDragOver,
-                    onDragLeave: handleDragLeave,
-                    onDrop: handleDrop,
-                    onDragEnd: handleDragEnd,
-                    dragState
-                  },
-                  node2.id
-                )) })
-              ]
-            }
-          ),
-          /* @__PURE__ */ jsxRuntimeExports.jsxs(
-            "div",
-            {
-              className: "htmm-map-zoom-controls",
-              "aria-label": "Zoom controls",
-              onTouchStart: (e2) => e2.stopPropagation(),
-              onTouchMove: (e2) => e2.stopPropagation(),
-              children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: handleZoomIn, "aria-label": "Zoom in", title: "Zoom in", children: "+" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: handleZoomOut, "aria-label": "Zoom out", title: "Zoom out", children: "−" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: resetView, "aria-label": "Reset view", title: "Reset view", children: "⌂" })
-              ]
-            }
-          )
-        ]
-      }
-    );
-  };
-  function createEmptyMapData() {
-    return {
-      version: "1.0.1",
-      root: createRootNode("New Mind Map")
-    };
-  }
-  const HtmmMap = reactExports.forwardRef(function HtmmMap2({
-    width = "100%",
-    height = "600px",
-    className = "",
-    src,
-    initialMapData,
-    readOnly = false,
-    appearance = "auto",
-    lang = "en",
-    children
-  }, ref) {
-    const storeRef = reactExports.useRef(null);
-    if (storeRef.current === null) {
-      storeRef.current = createHtmmStore({ readOnly });
-    }
-    const internalStore = storeRef.current;
-    const [loadError, setLoadError] = reactExports.useState(null);
-    reactExports.useEffect(() => {
-      if (src) {
-        setLoadError(null);
-        loadMindMapURL(src).then((data) => {
-          internalStore.getState().loadMap(data);
-        }).catch((err) => {
-          setLoadError(err instanceof Error ? err.message : String(err));
-        });
-        return;
-      }
-      if (initialMapData != null) {
-        internalStore.getState().loadMap(initialMapData);
-        setLoadError(null);
-        return;
-      }
-      internalStore.getState().loadMap(createEmptyMapData());
-      setLoadError(null);
-    }, [src, initialMapData, internalStore]);
-    reactExports.useImperativeHandle(ref, () => ({
-      loadMap: (data) => {
-        internalStore.getState().loadMap(data);
-      },
-      getMapData: () => internalStore.getState().mapData
-    }), [internalStore]);
-    const inner = /* @__PURE__ */ jsxRuntimeExports.jsx(
-      HtmmMapInner,
-      {
-        width,
-        height,
-        className,
-        loadError,
-        appearance,
-        lang
-      }
-    );
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(HtmmStoreContext.Provider, { value: internalStore, children: [
-      children,
-      inner
-    ] });
-  });
   var cjs$2 = { exports: {} };
   var cjs$1 = { exports: {} };
   var hasRequiredCjs$1;
@@ -7829,6 +6836,1254 @@ Ctrl+Click to open`,
     const xmlString = generateMindMapXML(data);
     return new Blob([xmlString], { type: "application/xml" });
   }
+  const FONT_SIZES = [10, 12, 14, 16, 18, 20, 24];
+  const MapToolbar = ({
+    isFullscreen,
+    onFullscreenToggle,
+    readOnly
+  }) => {
+    const {
+      mapData,
+      selectedNodeIds,
+      addChild,
+      addSibling,
+      setFont,
+      setNodeColor,
+      loadMap,
+      readOnly: storeReadOnly
+    } = useHtmmStore();
+    const [codeModalOpen, setCodeModalOpen] = reactExports.useState(false);
+    const [codeEditValue, setCodeEditValue] = reactExports.useState("");
+    const [codeEditError, setCodeEditError] = reactExports.useState(null);
+    const selectedId = mapData && selectedNodeIds.size > 0 ? Array.from(selectedNodeIds)[0] : null;
+    const isRoot = selectedId != null && mapData != null && mapData.root.id === selectedId;
+    const selectedNode = selectedId && mapData ? findNodeById(mapData.root, selectedId) : null;
+    const handleAddAbove = reactExports.useCallback(() => {
+      if (readOnly || storeReadOnly || !selectedId || isRoot) return;
+      addSibling(selectedId, true);
+    }, [readOnly, storeReadOnly, selectedId, isRoot, addSibling]);
+    const handleAddBelow = reactExports.useCallback(() => {
+      if (readOnly || storeReadOnly || !selectedId || isRoot) return;
+      addSibling(selectedId, false);
+    }, [readOnly, storeReadOnly, selectedId, isRoot, addSibling]);
+    const handleAddChild = reactExports.useCallback(() => {
+      if (readOnly || storeReadOnly || !mapData) return;
+      const parentId = selectedId ?? mapData.root.id;
+      addChild(parentId, "");
+    }, [readOnly, storeReadOnly, mapData, selectedId, addChild]);
+    const handleBoldToggle = reactExports.useCallback(() => {
+      if (readOnly || storeReadOnly || !selectedId || !selectedNode) return;
+      setFont(selectedId, { bold: !selectedNode.font?.bold });
+    }, [readOnly, storeReadOnly, selectedId, selectedNode, setFont]);
+    const handleItalicToggle = reactExports.useCallback(() => {
+      if (readOnly || storeReadOnly || !selectedId || !selectedNode) return;
+      setFont(selectedId, { italic: !selectedNode.font?.italic });
+    }, [readOnly, storeReadOnly, selectedId, selectedNode, setFont]);
+    const handleColorChange = reactExports.useCallback(
+      (e2) => {
+        if (readOnly || storeReadOnly || !selectedId) return;
+        setNodeColor(selectedId, e2.target.value);
+      },
+      [readOnly, storeReadOnly, selectedId, setNodeColor]
+    );
+    const handleSizeChange = reactExports.useCallback(
+      (e2) => {
+        if (readOnly || storeReadOnly || !selectedId) return;
+        const size = parseInt(e2.target.value, 10);
+        if (!Number.isNaN(size)) setFont(selectedId, { size });
+      },
+      [readOnly, storeReadOnly, selectedId, setFont]
+    );
+    const openCodeModal = reactExports.useCallback(() => {
+      if (readOnly || storeReadOnly || !mapData) return;
+      setCodeEditError(null);
+      setCodeEditValue(generateMindMapXML(mapData));
+      setCodeModalOpen(true);
+    }, [readOnly, storeReadOnly, mapData]);
+    const closeCodeModal = reactExports.useCallback(() => {
+      setCodeModalOpen(false);
+      setCodeEditError(null);
+    }, []);
+    const applyCodeEdit = reactExports.useCallback(() => {
+      try {
+        const data = parseMindMapXML(codeEditValue);
+        loadMap(data);
+        setCodeEditError(null);
+        setCodeModalOpen(false);
+      } catch (err) {
+        setCodeEditError(err instanceof Error ? err.message : String(err));
+      }
+    }, [codeEditValue, loadMap]);
+    const editDisabled = readOnly || storeReadOnly;
+    const formatDisabled = editDisabled || !selectedId;
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-toolbar", role: "toolbar", "aria-label": "Map toolbar", children: [
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-toolbar-group", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: "htmm-map-toolbar-btn",
+              onClick: handleAddAbove,
+              disabled: editDisabled || !selectedId || isRoot,
+              title: "上にノードを追加",
+              "aria-label": "上にノードを追加",
+              children: "上"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: "htmm-map-toolbar-btn",
+              onClick: handleAddBelow,
+              disabled: editDisabled || !selectedId || isRoot,
+              title: "下にノードを追加",
+              "aria-label": "下にノードを追加",
+              children: "下"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: "htmm-map-toolbar-btn",
+              onClick: handleAddChild,
+              disabled: editDisabled,
+              title: "子ノードを追加",
+              "aria-label": "子ノードを追加",
+              children: "子"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-toolbar-divider", "aria-hidden": "true" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-toolbar-group", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: `htmm-map-toolbar-btn ${selectedNode?.font?.bold ? "htmm-map-toolbar-btn-active" : ""}`,
+              onClick: handleBoldToggle,
+              disabled: formatDisabled,
+              title: "太字",
+              "aria-label": "太字",
+              children: "B"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: `htmm-map-toolbar-btn ${selectedNode?.font?.italic ? "htmm-map-toolbar-btn-active" : ""}`,
+              onClick: handleItalicToggle,
+              disabled: formatDisabled,
+              title: "イタリック",
+              "aria-label": "イタリック",
+              children: "I"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-toolbar-divider", "aria-hidden": "true" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-toolbar-group htmm-map-toolbar-group-inline", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "htmm-map-toolbar-label", htmlFor: "htmm-toolbar-color", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "htmm-map-toolbar-label-text", children: "色" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "input",
+              {
+                id: "htmm-toolbar-color",
+                type: "color",
+                className: "htmm-map-toolbar-color",
+                value: selectedNode?.color ?? "#000000",
+                onChange: handleColorChange,
+                disabled: formatDisabled,
+                title: "文字色",
+                "aria-label": "文字色"
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "htmm-map-toolbar-label", htmlFor: "htmm-toolbar-size", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "htmm-map-toolbar-label-text", children: "サイズ" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "select",
+              {
+                id: "htmm-toolbar-size",
+                className: "htmm-map-toolbar-select",
+                value: selectedNode?.font?.size ?? 12,
+                onChange: handleSizeChange,
+                disabled: formatDisabled,
+                title: "文字サイズ",
+                "aria-label": "文字サイズ",
+                children: FONT_SIZES.map((s2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: s2, children: s2 }, s2))
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-toolbar-divider", "aria-hidden": "true" }),
+        /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-toolbar-group", children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: `htmm-map-toolbar-btn ${isFullscreen ? "htmm-map-toolbar-btn-active" : ""}`,
+              onClick: onFullscreenToggle,
+              title: isFullscreen ? "フルスクリーン解除" : "フルスクリーン",
+              "aria-label": isFullscreen ? "フルスクリーン解除" : "フルスクリーン",
+              children: "⛶"
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "button",
+            {
+              type: "button",
+              className: "htmm-map-toolbar-btn",
+              onClick: openCodeModal,
+              disabled: editDisabled,
+              title: "コード直接編集",
+              "aria-label": "コード直接編集",
+              children: "</>"
+            }
+          )
+        ] })
+      ] }),
+      codeModalOpen && /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "div",
+        {
+          className: "htmm-map-code-modal-overlay",
+          role: "dialog",
+          "aria-modal": "true",
+          "aria-labelledby": "htmm-code-modal-title",
+          onClick: (e2) => e2.target === e2.currentTarget && closeCodeModal(),
+          children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-code-modal", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { id: "htmm-code-modal-title", className: "htmm-map-code-modal-title", children: "コード直接編集 (.mm XML)" }),
+            codeEditError && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-code-modal-error", role: "alert", children: codeEditError }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx(
+              "textarea",
+              {
+                className: "htmm-map-code-modal-textarea",
+                value: codeEditValue,
+                onChange: (e2) => setCodeEditValue(e2.target.value),
+                spellCheck: false,
+                "aria-label": "XML 編集"
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-code-modal-actions", children: [
+              /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn", onClick: closeCodeModal, children: "キャンセル" }),
+              /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn htmm-map-code-modal-apply", onClick: applyCodeEdit, children: "適用" })
+            ] })
+          ] })
+        }
+      )
+    ] });
+  };
+  function useDragAndDrop(onNodeMove) {
+    const [dragState, setDragState] = reactExports.useState({
+      isDragging: false,
+      draggedNodeId: null,
+      dropTargetNodeId: null,
+      dropPosition: null
+    });
+    const handleDragStart = reactExports.useCallback((e2, nodeId) => {
+      e2.stopPropagation();
+      e2.dataTransfer.effectAllowed = "move";
+      e2.dataTransfer.setData("text/plain", nodeId);
+      setDragState({
+        isDragging: true,
+        draggedNodeId: nodeId,
+        dropTargetNodeId: null,
+        dropPosition: null
+      });
+      if (e2.currentTarget instanceof HTMLElement) {
+        const rect = e2.currentTarget.getBoundingClientRect();
+        e2.dataTransfer.setDragImage(
+          e2.currentTarget,
+          rect.width / 2,
+          rect.height / 2
+        );
+      }
+    }, []);
+    const handleDragOver = reactExports.useCallback((e2, nodeId) => {
+      e2.preventDefault();
+      e2.stopPropagation();
+      const draggedNodeId = dragState.draggedNodeId;
+      if (draggedNodeId === nodeId) {
+        e2.dataTransfer.dropEffect = "none";
+        return;
+      }
+      e2.dataTransfer.dropEffect = "move";
+      const targetElement = e2.currentTarget;
+      const rect = targetElement.getBoundingClientRect();
+      const mouseY = e2.clientY - rect.top;
+      const height = rect.height;
+      let position2;
+      if (mouseY < height * 0.25) {
+        position2 = "before";
+      } else if (mouseY > height * 0.75) {
+        position2 = "after";
+      } else {
+        position2 = "child";
+      }
+      setDragState((prev) => ({
+        ...prev,
+        dropTargetNodeId: nodeId,
+        dropPosition: position2
+      }));
+    }, [dragState.draggedNodeId]);
+    const handleDragLeave = reactExports.useCallback((e2) => {
+      e2.stopPropagation();
+      setDragState((prev) => ({
+        ...prev,
+        dropTargetNodeId: null,
+        dropPosition: null
+      }));
+    }, []);
+    const handleDrop = reactExports.useCallback((e2, nodeId) => {
+      e2.preventDefault();
+      e2.stopPropagation();
+      const draggedNodeId = e2.dataTransfer.getData("text/plain");
+      if (draggedNodeId === nodeId) {
+        setDragState({
+          isDragging: false,
+          draggedNodeId: null,
+          dropTargetNodeId: null,
+          dropPosition: null
+        });
+        return;
+      }
+      const position2 = dragState.dropPosition || "child";
+      onNodeMove(draggedNodeId, nodeId, position2);
+      setDragState({
+        isDragging: false,
+        draggedNodeId: null,
+        dropTargetNodeId: null,
+        dropPosition: null
+      });
+    }, [dragState.dropPosition, onNodeMove]);
+    const handleDragEnd = reactExports.useCallback(() => {
+      setDragState({
+        isDragging: false,
+        draggedNodeId: null,
+        dropTargetNodeId: null,
+        dropPosition: null
+      });
+    }, []);
+    return {
+      dragState,
+      handleDragStart,
+      handleDragOver,
+      handleDragLeave,
+      handleDrop,
+      handleDragEnd
+    };
+  }
+  const DEFAULT_MAX_RENDERED_NODES = 800;
+  function useViewportCulling(nodes, containerWidth, containerHeight, zoom = 1, panX = 0, panY = 0, padding = 200, maxRenderedNodes = DEFAULT_MAX_RENDERED_NODES) {
+    const visibleNodes = reactExports.useMemo(() => {
+      const width = typeof containerWidth === "number" ? containerWidth : 800;
+      const height = typeof containerHeight === "number" ? containerHeight : 600;
+      const viewportBounds = {
+        left: -panX / zoom - padding,
+        top: -panY / zoom - padding,
+        right: (-panX + width) / zoom + padding,
+        bottom: (-panY + height) / zoom + padding
+      };
+      const viewportCenterX = (viewportBounds.left + viewportBounds.right) / 2;
+      const viewportCenterY = (viewportBounds.top + viewportBounds.bottom) / 2;
+      let filtered = nodes.filter((node2) => {
+        const nodeLeft = node2.x - node2.width / 2;
+        const nodeTop = node2.y - node2.height / 2;
+        const nodeRight = node2.x + node2.width / 2;
+        const nodeBottom = node2.y + node2.height / 2;
+        const intersects = nodeRight >= viewportBounds.left && nodeLeft <= viewportBounds.right && nodeBottom >= viewportBounds.top && nodeTop <= viewportBounds.bottom;
+        return intersects;
+      });
+      if (filtered.length > maxRenderedNodes) {
+        const withDist = filtered.map((node2) => {
+          const dx = node2.x - viewportCenterX;
+          const dy = node2.y - viewportCenterY;
+          return { node: node2, distSq: dx * dx + dy * dy };
+        });
+        withDist.sort((a2, b2) => a2.distSq - b2.distSq);
+        filtered = withDist.slice(0, maxRenderedNodes).map(({ node: node2 }) => node2);
+      }
+      return filtered;
+    }, [nodes, containerWidth, containerHeight, zoom, panX, panY, padding, maxRenderedNodes]);
+    const enhancedVisibleNodes = reactExports.useMemo(() => {
+      const visibleNodeIds = new Set(visibleNodes.map((n2) => n2.id));
+      const additionalNodes = [];
+      for (const node2 of nodes) {
+        if (node2.depth === 0 && !visibleNodeIds.has(node2.id)) {
+          additionalNodes.push(node2);
+        }
+      }
+      return [...visibleNodes, ...additionalNodes];
+    }, [nodes, visibleNodes]);
+    return enhancedVisibleNodes;
+  }
+  function shouldEnableViewportCulling(nodeCount, threshold = 100) {
+    return nodeCount > threshold;
+  }
+  function useTouchGestures(options) {
+    const {
+      onPan,
+      onPinch,
+      onTap,
+      onDoubleTap,
+      minScale = 0.5,
+      maxScale = 3,
+      initialScale = 1
+    } = options || {};
+    const [gestureState, setGestureState] = reactExports.useState({
+      isPanning: false,
+      isPinching: false,
+      scale: 1,
+      translateX: 0,
+      translateY: 0
+    });
+    const touchStartRef = reactExports.useRef(null);
+    const lastTapRef = reactExports.useRef(null);
+    const lastTouchDistanceRef = reactExports.useRef(null);
+    const initialPinchScaleRef = reactExports.useRef(1);
+    const handleTouchStart = reactExports.useCallback((e2) => {
+      const now = Date.now();
+      const touches = e2.touches;
+      if (touches.length === 1) {
+        const touch = touches[0];
+        touchStartRef.current = {
+          x: touch.clientX,
+          y: touch.clientY,
+          time: now
+        };
+        if (lastTapRef.current) {
+          const timeDiff = now - lastTapRef.current.time;
+          const distX = Math.abs(touch.clientX - lastTapRef.current.x);
+          const distY = Math.abs(touch.clientY - lastTapRef.current.y);
+          if (timeDiff < 300 && distX < 20 && distY < 20) {
+            onDoubleTap?.(touch.clientX, touch.clientY);
+            lastTapRef.current = null;
+            touchStartRef.current = null;
+            return;
+          }
+        }
+        setGestureState((prev) => ({
+          ...prev,
+          isPanning: true
+        }));
+      } else if (touches.length === 2) {
+        const touch1 = touches[0];
+        const touch2 = touches[1];
+        const distance2 = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+        lastTouchDistanceRef.current = distance2;
+        initialPinchScaleRef.current = initialScale;
+        setGestureState((prev) => ({
+          ...prev,
+          isPinching: true,
+          isPanning: false
+        }));
+      }
+    }, [onDoubleTap, initialScale]);
+    const handleTouchMove = reactExports.useCallback((e2) => {
+      e2.preventDefault();
+      const touches = e2.touches;
+      if (touches.length === 1 && gestureState.isPanning && touchStartRef.current) {
+        const touch = touches[0];
+        const deltaX = touch.clientX - touchStartRef.current.x;
+        const deltaY = touch.clientY - touchStartRef.current.y;
+        onPan?.(deltaX, deltaY);
+        touchStartRef.current = {
+          x: touch.clientX,
+          y: touch.clientY,
+          time: touchStartRef.current.time
+        };
+      } else if (touches.length === 2 && gestureState.isPinching && lastTouchDistanceRef.current !== null) {
+        const touch1 = touches[0];
+        const touch2 = touches[1];
+        const distance2 = Math.hypot(
+          touch2.clientX - touch1.clientX,
+          touch2.clientY - touch1.clientY
+        );
+        const scaleChange = distance2 / lastTouchDistanceRef.current;
+        const newScale = Math.max(
+          minScale,
+          Math.min(maxScale, initialPinchScaleRef.current * scaleChange)
+        );
+        onPinch?.(newScale);
+        setGestureState((prev) => ({
+          ...prev,
+          scale: newScale
+        }));
+      }
+    }, [gestureState.isPanning, gestureState.isPinching, onPan, onPinch, minScale, maxScale]);
+    const handleTouchEnd = reactExports.useCallback((e2) => {
+      const now = Date.now();
+      if (touchStartRef.current && e2.touches.length === 0) {
+        const timeDiff = now - touchStartRef.current.time;
+        if (timeDiff < 200) {
+          onTap?.(touchStartRef.current.x, touchStartRef.current.y);
+          lastTapRef.current = {
+            x: touchStartRef.current.x,
+            y: touchStartRef.current.y,
+            time: now
+          };
+        }
+      }
+      setGestureState((prev) => ({
+        ...prev,
+        isPanning: false,
+        isPinching: false
+      }));
+      touchStartRef.current = null;
+      lastTouchDistanceRef.current = null;
+    }, [onTap]);
+    const handleTouchCancel = reactExports.useCallback(() => {
+      setGestureState((prev) => ({
+        ...prev,
+        isPanning: false,
+        isPinching: false
+      }));
+      touchStartRef.current = null;
+      lastTouchDistanceRef.current = null;
+    }, []);
+    const handlers = {
+      onTouchStart: handleTouchStart,
+      onTouchMove: handleTouchMove,
+      onTouchEnd: handleTouchEnd,
+      onTouchCancel: handleTouchCancel
+    };
+    return {
+      gestureState,
+      handlers
+    };
+  }
+  const HtmmMapInner = ({
+    width = "100%",
+    height = "600px",
+    className = "",
+    loadError = null,
+    appearance = "auto",
+    lang = "en"
+  }) => {
+    const store = reactExports.useContext(HtmmStoreContext);
+    const [resolvedAppearance, setResolvedAppearance] = reactExports.useState(() => {
+      if (typeof window === "undefined" || appearance !== "auto") return "light";
+      const mq = window.matchMedia?.("(prefers-color-scheme: dark)");
+      return mq?.matches ? "dark" : "light";
+    });
+    reactExports.useEffect(() => {
+      if (appearance !== "auto" || typeof window === "undefined" || !window.matchMedia) return;
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      const handler = () => setResolvedAppearance(mq.matches ? "dark" : "light");
+      handler();
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }, [appearance]);
+    const effectiveAppearance = appearance === "auto" ? resolvedAppearance : appearance;
+    if (store === null) {
+      throw new Error("HtmmMapInner must be rendered inside HtmmStoreContext.Provider.");
+    }
+    const {
+      mapData,
+      selectedNodeIds,
+      selectNode,
+      editNode,
+      addChild,
+      addSibling,
+      deleteNode,
+      moveNode,
+      setNodePosition,
+      toggleFolded,
+      undo,
+      redo,
+      copyNode,
+      cutNode,
+      pasteNode,
+      setFont,
+      zoom,
+      panX,
+      panY,
+      setZoom,
+      setPan,
+      resetView,
+      readOnly
+    } = useHtmmStore();
+    const [layoutNodes, setLayoutNodes] = reactExports.useState([]);
+    const [editingNodeId, setEditingNodeId] = reactExports.useState(null);
+    const [isFullscreen, setIsFullscreen] = reactExports.useState(false);
+    const previousSelectedNodeIdRef = reactExports.useRef(null);
+    const newlyAddedNodeIdRef = reactExports.useRef(null);
+    const containerRef = reactExports.useRef(null);
+    const canvasRef = reactExports.useRef(null);
+    const panStartRef = reactExports.useRef(null);
+    const SCROLL_INTO_VIEW_MARGIN = 24;
+    const PAN_LIMIT_VISIBLE_PX = 20;
+    const handleNodeMove = reactExports.useCallback((draggedNodeId, targetNodeId, position2) => {
+      if (!mapData) return;
+      const draggedNode = findNodeById(mapData.root, draggedNodeId);
+      const targetNode = findNodeById(mapData.root, targetNodeId);
+      if (!draggedNode || !targetNode) return;
+      let current2 = targetNode;
+      while (current2) {
+        if (current2.id === draggedNodeId) {
+          return;
+        }
+        const parent = findParentNode(mapData.root, current2.id);
+        if (!parent) break;
+        current2 = parent;
+      }
+      if (position2 === "child") {
+        moveNode(draggedNodeId, targetNodeId);
+      } else {
+        const targetParent = findParentNode(mapData.root, targetNodeId);
+        if (!targetParent) return;
+        const targetIndex = targetParent.children?.findIndex((c2) => c2.id === targetNodeId) ?? -1;
+        if (targetIndex < 0) return;
+        const newIndex = position2 === "before" ? targetIndex : targetIndex + 1;
+        moveNode(draggedNodeId, targetParent.id, newIndex);
+      }
+    }, [mapData, moveNode]);
+    const {
+      dragState,
+      handleDragStart,
+      handleDragOver,
+      handleDragLeave,
+      handleDrop,
+      handleDragEnd
+    } = useDragAndDrop(handleNodeMove);
+    reactExports.useEffect(() => {
+      if (mapData) {
+        const layout = calculateLayout(mapData.root);
+        setLayoutNodes(layout);
+      }
+    }, [mapData]);
+    const getPanBounds = reactExports.useCallback((contentWidth, contentHeight) => {
+      if (layoutNodes.length === 0) {
+        return { minPanX: -Infinity, maxPanX: Infinity, minPanY: -Infinity, maxPanY: Infinity };
+      }
+      let minLeft = Infinity, maxRight = -Infinity, minTop = Infinity, maxBottom = -Infinity;
+      for (const n2 of layoutNodes) {
+        const left = n2.x - n2.width / 2;
+        const right = n2.x + n2.width / 2;
+        const top = n2.y - n2.height / 2;
+        const bottom = n2.y + n2.height / 2;
+        minLeft = Math.min(minLeft, left);
+        maxRight = Math.max(maxRight, right);
+        minTop = Math.min(minTop, top);
+        maxBottom = Math.max(maxBottom, bottom);
+      }
+      const cx = contentWidth / 2;
+      const cy = contentHeight / 2;
+      return {
+        minPanX: PAN_LIMIT_VISIBLE_PX - cx - maxRight * zoom,
+        maxPanX: contentWidth - PAN_LIMIT_VISIBLE_PX - cx - minLeft * zoom,
+        minPanY: PAN_LIMIT_VISIBLE_PX - cy - maxBottom * zoom,
+        maxPanY: contentHeight - PAN_LIMIT_VISIBLE_PX - cy - minTop * zoom
+      };
+    }, [layoutNodes, zoom]);
+    const clampPan = reactExports.useCallback((panX2, panY2, contentWidth, contentHeight) => {
+      const b2 = getPanBounds(contentWidth, contentHeight);
+      return {
+        panX: Math.max(b2.minPanX, Math.min(b2.maxPanX, panX2)),
+        panY: Math.max(b2.minPanY, Math.min(b2.maxPanY, panY2))
+      };
+    }, [getPanBounds]);
+    reactExports.useEffect(() => {
+      const el = containerRef.current;
+      if (!el || layoutNodes.length === 0) return;
+      const cw = el.clientWidth;
+      const ch = el.clientHeight;
+      if (cw <= 0 || ch <= 0) return;
+      const state = store.getState();
+      const clamped = clampPan(state.panX, state.panY, cw, ch);
+      if (clamped.panX !== state.panX || clamped.panY !== state.panY) {
+        state.setPan(clamped.panX, clamped.panY);
+      }
+    }, [layoutNodes, zoom, clampPan, store]);
+    const enableCulling = shouldEnableViewportCulling(layoutNodes.length);
+    const visibleNodes = useViewportCulling(
+      layoutNodes,
+      width,
+      height,
+      zoom,
+      panX,
+      panY
+    );
+    const { handlers: touchHandlers } = useTouchGestures({
+      initialScale: zoom,
+      minScale: 0.25,
+      maxScale: 4,
+      onPan: (deltaX, deltaY) => {
+        const state = store.getState();
+        const el = containerRef.current;
+        const cw = el?.clientWidth ?? 0;
+        const ch = el?.clientHeight ?? 0;
+        const proposedX = state.panX + deltaX;
+        const proposedY = state.panY + deltaY;
+        const clamped = cw > 0 && ch > 0 ? clampPan(proposedX, proposedY, cw, ch) : { panX: proposedX, panY: proposedY };
+        state.setPan(clamped.panX, clamped.panY);
+      },
+      onPinch: (scale) => {
+        setZoom(scale);
+      }
+    });
+    const handleZoomIn = reactExports.useCallback(() => {
+      setZoom(Math.min(zoom * 1.25, 4));
+    }, [zoom, setZoom]);
+    const handleZoomOut = reactExports.useCallback(() => {
+      setZoom(Math.max(zoom / 1.25, 0.25));
+    }, [zoom, setZoom]);
+    reactExports.useEffect(() => {
+      if (!mapData) return;
+      const el = containerRef.current;
+      if (!el) return;
+      const onWheel = (e2) => {
+        const state = store.getState();
+        const cw = el.clientWidth;
+        const ch = el.clientHeight;
+        if (cw <= 0 || ch <= 0) return;
+        const proposedX = state.panX - e2.deltaX;
+        const proposedY = state.panY - e2.deltaY;
+        const clamped = clampPan(proposedX, proposedY, cw, ch);
+        const atLimit = clamped.panX !== proposedX || clamped.panY !== proposedY;
+        if (atLimit) {
+          return;
+        }
+        e2.preventDefault();
+        state.setPan(clamped.panX, clamped.panY);
+      };
+      el.addEventListener("wheel", onWheel, { passive: false });
+      return () => el.removeEventListener("wheel", onWheel);
+    }, [mapData, clampPan, store]);
+    const handleCanvasMouseDown = reactExports.useCallback((e2) => {
+      if (e2.button !== 0 || e2.target !== e2.currentTarget) return;
+      const state = store.getState();
+      panStartRef.current = {
+        panX: state.panX,
+        panY: state.panY,
+        clientX: e2.clientX,
+        clientY: e2.clientY
+      };
+    }, [store]);
+    reactExports.useEffect(() => {
+      const onMouseMove = (e2) => {
+        const start = panStartRef.current;
+        if (!start) return;
+        e2.preventDefault();
+        document.body.style.cursor = "grabbing";
+        const el = containerRef.current;
+        const cw = el?.clientWidth ?? 0;
+        const ch = el?.clientHeight ?? 0;
+        const proposedX = start.panX + (e2.clientX - start.clientX);
+        const proposedY = start.panY + (e2.clientY - start.clientY);
+        const clamped = cw > 0 && ch > 0 ? clampPan(proposedX, proposedY, cw, ch) : { panX: proposedX, panY: proposedY };
+        store.getState().setPan(clamped.panX, clamped.panY);
+      };
+      const onMouseUp = () => {
+        if (panStartRef.current) document.body.style.cursor = "";
+        panStartRef.current = null;
+      };
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("mouseup", onMouseUp);
+      return () => {
+        document.body.style.cursor = "";
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", onMouseUp);
+      };
+    }, [store, clampPan]);
+    const nodesToRender = enableCulling ? visibleNodes : layoutNodes;
+    const handleStartEdit = reactExports.useCallback((nodeId) => {
+      setEditingNodeId(nodeId);
+      if (newlyAddedNodeIdRef.current !== nodeId) {
+        newlyAddedNodeIdRef.current = null;
+      }
+    }, []);
+    const handleEndEdit = reactExports.useCallback((nodeId, text2, cancelled = false) => {
+      if (cancelled && newlyAddedNodeIdRef.current === nodeId) {
+        deleteNode(nodeId);
+        if (previousSelectedNodeIdRef.current) {
+          selectNode(previousSelectedNodeIdRef.current);
+        }
+        previousSelectedNodeIdRef.current = null;
+        newlyAddedNodeIdRef.current = null;
+      } else if (cancelled) {
+        selectNode(nodeId);
+      } else {
+        editNode(nodeId, text2);
+        selectNode(nodeId);
+        newlyAddedNodeIdRef.current = null;
+      }
+      setEditingNodeId(null);
+    }, [editNode, selectNode, deleteNode]);
+    const handleKeyDown = reactExports.useCallback((e2) => {
+      if (editingNodeId) return;
+      if (!mapData) return;
+      const selectedId = Array.from(selectedNodeIds)[0];
+      const isMod = e2.ctrlKey || e2.metaKey;
+      if (!isMod && (e2.key === "ArrowUp" || e2.key === "ArrowDown" || e2.key === "ArrowLeft" || e2.key === "ArrowRight")) {
+        if (!selectedId) return;
+        e2.preventDefault();
+        let nextNode = null;
+        if (e2.key === "ArrowUp") {
+          nextNode = getPreviousSiblingOrAbove(mapData.root, selectedId);
+        } else if (e2.key === "ArrowDown") {
+          nextNode = getNextSiblingOrBelow(mapData.root, selectedId);
+        } else if (e2.key === "ArrowRight" || e2.key === "ArrowLeft") {
+          const currentNode = findNodeById(mapData.root, selectedId);
+          const currentLayoutNode = layoutNodes.find((node2) => node2.id === selectedId);
+          if (!currentNode || !currentLayoutNode) return;
+          const isRightKey = e2.key === "ArrowRight";
+          const isLeftKey = e2.key === "ArrowLeft";
+          if (selectedId === mapData.root.id) {
+            if (isRightKey) {
+              nextNode = getFirstChildByPosition(currentNode, "right");
+            } else {
+              nextNode = getFirstChildByPosition(currentNode, "left");
+            }
+          } else {
+            const side = currentLayoutNode.side;
+            if (side === "left") {
+              if (isLeftKey) {
+                nextNode = getFirstChild(currentNode);
+              } else {
+                nextNode = findParentNode(mapData.root, selectedId);
+              }
+            } else {
+              if (isRightKey) {
+                nextNode = getFirstChild(currentNode);
+              } else {
+                nextNode = findParentNode(mapData.root, selectedId);
+              }
+            }
+          }
+        }
+        if (nextNode) {
+          selectNode(nextNode.id);
+        }
+        return;
+      }
+      if (isMod && (e2.key === "ArrowUp" || e2.key === "ArrowDown" || e2.key === "ArrowLeft" || e2.key === "ArrowRight")) {
+        if (readOnly || !selectedId || selectedId === mapData.root.id) return;
+        e2.preventDefault();
+        if (e2.key === "ArrowUp") {
+          const parent = findParentNode(mapData.root, selectedId);
+          if (parent && parent.children) {
+            const currentNode = findNodeById(mapData.root, selectedId);
+            if (!currentNode) return;
+            const isRootChild = parent.id === mapData.root.id;
+            const siblings = isRootChild && currentNode.position ? parent.children.filter((child) => child.position === currentNode.position) : parent.children;
+            const currentIndex = siblings.findIndex((child) => child.id === selectedId);
+            if (currentIndex > 0) {
+              const targetSibling = siblings[currentIndex - 1];
+              const newIndex = parent.children.findIndex((child) => child.id === targetSibling.id);
+              moveNode(selectedId, parent.id, newIndex);
+            }
+          }
+        } else if (e2.key === "ArrowDown") {
+          const parent = findParentNode(mapData.root, selectedId);
+          if (parent && parent.children) {
+            const currentNode = findNodeById(mapData.root, selectedId);
+            if (!currentNode) return;
+            const isRootChild = parent.id === mapData.root.id;
+            const siblings = isRootChild && currentNode.position ? parent.children.filter((child) => child.position === currentNode.position) : parent.children;
+            const currentIndex = siblings.findIndex((child) => child.id === selectedId);
+            if (currentIndex >= 0 && currentIndex < siblings.length - 1) {
+              const targetSibling = siblings[currentIndex + 1];
+              const newIndex = parent.children.findIndex((child) => child.id === targetSibling.id);
+              moveNode(selectedId, parent.id, newIndex);
+            }
+          }
+        } else if (e2.key === "ArrowLeft" || e2.key === "ArrowRight") {
+          const currentNode = findNodeById(mapData.root, selectedId);
+          const currentLayoutNode = layoutNodes.find((node2) => node2.id === selectedId);
+          if (!currentNode || !currentLayoutNode) return;
+          const isRightKey = e2.key === "ArrowRight";
+          const isLeftKey = e2.key === "ArrowLeft";
+          const parent = findParentNode(mapData.root, selectedId);
+          const side = parent?.id === mapData.root.id ? currentNode.position === "left" ? "left" : "right" : currentLayoutNode.side;
+          if (parent?.id === mapData.root.id) {
+            const onLeft = currentNode.position === "left";
+            if (isLeftKey && !onLeft) {
+              setNodePosition(selectedId, "left");
+              return;
+            }
+            if (isRightKey && onLeft) {
+              setNodePosition(selectedId, "right");
+              return;
+            }
+          }
+          let moveToHigherLevel = false;
+          let moveToLowerLevel = false;
+          if (side === "left") {
+            moveToHigherLevel = isRightKey;
+            moveToLowerLevel = isLeftKey;
+          } else {
+            moveToHigherLevel = isLeftKey;
+            moveToLowerLevel = isRightKey;
+          }
+          if (moveToHigherLevel) {
+            const parent2 = findParentNode(mapData.root, selectedId);
+            if (parent2 && parent2.id !== mapData.root.id) {
+              const grandParent = findParentNode(mapData.root, parent2.id);
+              if (grandParent) {
+                const parentIndex = getNodeIndex(mapData.root, parent2.id);
+                moveNode(selectedId, grandParent.id, parentIndex + 1);
+              }
+            }
+          } else if (moveToLowerLevel) {
+            const prevSibling = getPreviousSibling(mapData.root, selectedId);
+            if (prevSibling) {
+              moveNode(selectedId, prevSibling.id);
+            }
+          }
+        }
+        return;
+      }
+      if (e2.key === "Tab") {
+        if (!readOnly) {
+          e2.preventDefault();
+          previousSelectedNodeIdRef.current = selectedId || mapData.root.id;
+          const newNodeId = selectedId ? addChild(selectedId, "") : addChild(mapData.root.id, "");
+          if (newNodeId) {
+            newlyAddedNodeIdRef.current = newNodeId;
+            setEditingNodeId(newNodeId);
+          }
+        }
+      } else if (e2.key === "Enter") {
+        if (!readOnly) {
+          e2.preventDefault();
+          if (isMod) {
+            if (selectedId) {
+              setEditingNodeId(selectedId);
+            }
+          } else if (selectedId && selectedId !== mapData.root.id) {
+            previousSelectedNodeIdRef.current = selectedId;
+            const newNodeId = addSibling(selectedId, e2.shiftKey);
+            if (newNodeId) {
+              newlyAddedNodeIdRef.current = newNodeId;
+              setEditingNodeId(newNodeId);
+            }
+          }
+        }
+      } else if (e2.key === "Delete" || e2.key === "Backspace") {
+        if (!readOnly && selectedId && selectedId !== mapData.root.id) {
+          e2.preventDefault();
+          deleteNode(selectedId);
+        }
+      } else if (e2.key === " ") {
+        e2.preventDefault();
+        if (selectedId) {
+          toggleFolded(selectedId);
+        }
+      } else if (isMod && e2.key === "z") {
+        if (!readOnly) {
+          e2.preventDefault();
+          undo();
+        }
+      } else if (isMod && (e2.key === "y" || e2.shiftKey && e2.key === "z")) {
+        if (!readOnly) {
+          e2.preventDefault();
+          redo();
+        }
+      } else if (isMod && e2.key === "c") {
+        e2.preventDefault();
+        if (selectedId) {
+          copyNode(selectedId);
+        }
+      } else if (isMod && e2.key === "x") {
+        if (!readOnly) {
+          e2.preventDefault();
+          if (selectedId && selectedId !== mapData.root.id) {
+            cutNode(selectedId);
+          }
+        }
+      } else if (isMod && e2.key === "v") {
+        if (!readOnly) {
+          e2.preventDefault();
+          if (selectedId) {
+            pasteNode(selectedId);
+          }
+        }
+      } else if (isMod && e2.key === "b") {
+        if (!readOnly) {
+          e2.preventDefault();
+          if (selectedId) {
+            const node2 = findNodeById(mapData.root, selectedId);
+            if (node2) {
+              const currentBold = node2.font?.bold || false;
+              setFont(selectedId, { bold: !currentBold });
+            }
+          }
+        }
+      } else if (isMod && e2.key === "i") {
+        if (!readOnly) {
+          e2.preventDefault();
+          if (selectedId) {
+            const node2 = findNodeById(mapData.root, selectedId);
+            if (node2) {
+              const currentItalic = node2.font?.italic || false;
+              setFont(selectedId, { italic: !currentItalic });
+            }
+          }
+        }
+      }
+    }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, setNodePosition, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont, readOnly]);
+    reactExports.useEffect(() => {
+      const container = containerRef.current;
+      if (!container) return;
+      container.addEventListener("keydown", handleKeyDown);
+      return () => {
+        container.removeEventListener("keydown", handleKeyDown);
+      };
+    }, [handleKeyDown]);
+    reactExports.useEffect(() => {
+      if (containerRef.current && selectedNodeIds.size > 0) {
+        containerRef.current.focus();
+      }
+    }, [selectedNodeIds]);
+    reactExports.useEffect(() => {
+      if (editingNodeId || layoutNodes.length === 0) return;
+      const selectedId = Array.from(selectedNodeIds)[0];
+      if (!selectedId) return;
+      const layoutNode = layoutNodes.find((n2) => n2.id === selectedId);
+      if (!layoutNode) return;
+      const el = containerRef.current;
+      if (!el) return;
+      const contentWidth = el.clientWidth;
+      const contentHeight = el.clientHeight;
+      if (contentWidth <= 0 || contentHeight <= 0) return;
+      const state = store.getState();
+      const { panX: currentPanX, panY: currentPanY, zoom: currentZoom } = state;
+      const cx = contentWidth / 2;
+      const cy = contentHeight / 2;
+      const nodeLeft = cx + currentPanX + (layoutNode.x - layoutNode.width / 2) * currentZoom;
+      const nodeTop = cy + currentPanY + (layoutNode.y - layoutNode.height / 2) * currentZoom;
+      const nodeRight = nodeLeft + layoutNode.width * currentZoom;
+      const nodeBottom = nodeTop + layoutNode.height * currentZoom;
+      const m2 = SCROLL_INTO_VIEW_MARGIN;
+      const visibleLeft = m2;
+      const visibleTop = m2;
+      const visibleRight = contentWidth - m2;
+      const visibleBottom = contentHeight - m2;
+      let desiredPanX = currentPanX;
+      let desiredPanY = currentPanY;
+      if (nodeLeft < visibleLeft) desiredPanX = visibleLeft - cx - (layoutNode.x - layoutNode.width / 2) * currentZoom;
+      if (nodeRight > visibleRight) desiredPanX = visibleRight - cx - (layoutNode.x + layoutNode.width / 2) * currentZoom;
+      if (nodeTop < visibleTop) desiredPanY = visibleTop - cy - (layoutNode.y - layoutNode.height / 2) * currentZoom;
+      if (nodeBottom > visibleBottom) desiredPanY = visibleBottom - cy - (layoutNode.y + layoutNode.height / 2) * currentZoom;
+      const clamped = clampPan(desiredPanX, desiredPanY, contentWidth, contentHeight);
+      if (clamped.panX !== currentPanX || clamped.panY !== currentPanY) {
+        setPan(clamped.panX, clamped.panY);
+      }
+    }, [selectedNodeIds, layoutNodes, editingNodeId, setPan, clampPan]);
+    reactExports.useEffect(() => {
+      const el = containerRef.current;
+      if (!el) return;
+      const onTouchMove = (e2) => {
+        touchHandlers.onTouchMove(e2);
+        if (e2.touches.length === 1 || e2.touches.length === 2) e2.preventDefault();
+      };
+      el.addEventListener("touchmove", onTouchMove, { passive: false });
+      return () => el.removeEventListener("touchmove", onTouchMove);
+    }, [touchHandlers.onTouchMove]);
+    if (!mapData) {
+      return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-empty", style: { width, height }, children: /* @__PURE__ */ jsxRuntimeExports.jsx("p", { children: loadError ?? "Loading…" }) });
+    }
+    const edges = [];
+    for (const node2 of layoutNodes) {
+      const parent = findParentNode(mapData.root, node2.id);
+      if (parent) {
+        const parentLayout = layoutNodes.find((n2) => n2.id === parent.id);
+        if (parentLayout) {
+          edges.push({
+            source: parentLayout,
+            target: node2
+          });
+        }
+      }
+    }
+    const arrowLinks = collectAllArrowLinks(mapData.root);
+    const validArrowLinks = arrowLinks.map(({ sourceId, targetId, arrowLink }) => {
+      const sourceLayout = layoutNodes.find((n2) => n2.id === sourceId);
+      const targetLayout = layoutNodes.find((n2) => n2.id === targetId);
+      if (sourceLayout && targetLayout) {
+        return { sourceLayout, targetLayout, arrowLink };
+      }
+      return null;
+    }).filter((link) => link !== null);
+    const viewportStyle = {
+      width,
+      height
+    };
+    const mapClassName = [
+      "htmm-map",
+      className,
+      isFullscreen ? "htmm-map-fullscreen" : ""
+    ].filter(Boolean).join(" ");
+    const canvasStyle = {
+      transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
+      transformOrigin: "50% 50%"
+    };
+    const mapTitle = mapData?.root.text || "Mind Map";
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+      "div",
+      {
+        ref: containerRef,
+        className: mapClassName,
+        style: viewportStyle,
+        role: "tree",
+        "aria-label": `Mind map: ${mapTitle}`,
+        "aria-multiselectable": "true",
+        tabIndex: 0,
+        "data-appearance": effectiveAppearance,
+        lang,
+        onTouchStart: touchHandlers.onTouchStart,
+        onTouchEnd: touchHandlers.onTouchEnd,
+        onTouchCancel: touchHandlers.onTouchCancel,
+        children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            MapToolbar,
+            {
+              isFullscreen,
+              onFullscreenToggle: () => setIsFullscreen((b2) => !b2),
+              readOnly
+            }
+          ),
+          /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-body", children: [
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                ref: canvasRef,
+                className: "htmm-canvas",
+                style: canvasStyle,
+                "aria-live": "polite",
+                "aria-atomic": "false",
+                onMouseDown: handleCanvasMouseDown,
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsxs("svg", { className: "edges-layer", "aria-hidden": "true", children: [
+                    edges.map((edge, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      EdgeView,
+                      {
+                        source: edge.source,
+                        target: edge.target,
+                        color: edge.target.edge?.color,
+                        style: edge.target.edge?.style,
+                        width: edge.target.edge?.width ? parseInt(edge.target.edge.width) : 1
+                      },
+                      `edge-${index2}`
+                    )),
+                    validArrowLinks.map(({ sourceLayout, targetLayout, arrowLink }, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                      ArrowLinkView,
+                      {
+                        sourceNode: sourceLayout,
+                        targetNode: targetLayout,
+                        arrowLink
+                      },
+                      `arrow-link-${index2}`
+                    ))
+                  ] }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "nodes-layer", role: "group", "aria-label": "Mind map nodes", children: nodesToRender.map((node2) => /* @__PURE__ */ jsxRuntimeExports.jsx(
+                    NodeView,
+                    {
+                      node: node2,
+                      isSelected: selectedNodeIds.has(node2.id),
+                      isEditing: editingNodeId === node2.id,
+                      onStartEdit: () => handleStartEdit(node2.id),
+                      onEndEdit: (text2, cancelled) => handleEndEdit(node2.id, text2, cancelled),
+                      onDragStart: handleDragStart,
+                      onDragOver: handleDragOver,
+                      onDragLeave: handleDragLeave,
+                      onDrop: handleDrop,
+                      onDragEnd: handleDragEnd,
+                      dragState
+                    },
+                    node2.id
+                  )) })
+                ]
+              }
+            ),
+            /* @__PURE__ */ jsxRuntimeExports.jsxs(
+              "div",
+              {
+                className: "htmm-map-zoom-controls",
+                "aria-label": "Zoom controls",
+                onTouchStart: (e2) => e2.stopPropagation(),
+                onTouchMove: (e2) => e2.stopPropagation(),
+                children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: handleZoomIn, "aria-label": "Zoom in", title: "Zoom in", children: "+" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: handleZoomOut, "aria-label": "Zoom out", title: "Zoom out", children: "−" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", onClick: resetView, "aria-label": "Reset view", title: "Reset view", children: "⌂" })
+                ]
+              }
+            )
+          ] })
+        ]
+      }
+    );
+  };
+  function createEmptyMapData() {
+    return {
+      version: "1.0.1",
+      root: createRootNode("New Mind Map")
+    };
+  }
+  const HtmmMap = reactExports.forwardRef(function HtmmMap2({
+    width = "100%",
+    height = "600px",
+    className = "",
+    src,
+    initialMapData,
+    readOnly = false,
+    appearance = "auto",
+    lang = "en",
+    children
+  }, ref) {
+    const storeRef = reactExports.useRef(null);
+    if (storeRef.current === null) {
+      storeRef.current = createHtmmStore({ readOnly });
+    }
+    const internalStore = storeRef.current;
+    const [loadError, setLoadError] = reactExports.useState(null);
+    reactExports.useEffect(() => {
+      if (src) {
+        setLoadError(null);
+        loadMindMapURL(src).then((data) => {
+          internalStore.getState().loadMap(data);
+        }).catch((err) => {
+          setLoadError(err instanceof Error ? err.message : String(err));
+        });
+        return;
+      }
+      if (initialMapData != null) {
+        internalStore.getState().loadMap(initialMapData);
+        setLoadError(null);
+        return;
+      }
+      internalStore.getState().loadMap(createEmptyMapData());
+      setLoadError(null);
+    }, [src, initialMapData, internalStore]);
+    reactExports.useImperativeHandle(ref, () => ({
+      loadMap: (data) => {
+        internalStore.getState().loadMap(data);
+      },
+      getMapData: () => internalStore.getState().mapData
+    }), [internalStore]);
+    const inner = /* @__PURE__ */ jsxRuntimeExports.jsx(
+      HtmmMapInner,
+      {
+        width,
+        height,
+        className,
+        loadError,
+        appearance,
+        lang
+      }
+    );
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(HtmmStoreContext.Provider, { value: internalStore, children: [
+      children,
+      inner
+    ] });
+  });
   function _typeof$1(o2) {
     "@babel/helpers - typeof";
     return _typeof$1 = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(o3) {

@@ -10,6 +10,7 @@ import { calculateLayout } from '../layout/layout-engine';
 import { NodeView } from './NodeView';
 import { EdgeView } from './EdgeView';
 import { ArrowLinkView } from './ArrowLinkView';
+import { MapToolbar } from './MapToolbar';
 import { useDragAndDrop } from '../hooks/useDragAndDrop';
 import { useViewportCulling, shouldEnableViewportCulling } from '../hooks/useViewportCulling';
 import { useTouchGestures } from '../hooks/useTouchGestures';
@@ -98,6 +99,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   } = useHtmmStore();
   const [layoutNodes, setLayoutNodes] = useState<LayoutNode[]>([]);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const previousSelectedNodeIdRef = useRef<string | null>(null);
   const newlyAddedNodeIdRef = useRef<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -746,6 +748,12 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     height,
   };
 
+  const mapClassName = [
+    'htmm-map',
+    className,
+    isFullscreen ? 'htmm-map-fullscreen' : '',
+  ].filter(Boolean).join(' ');
+
   const canvasStyle: React.CSSProperties = {
     transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
     transformOrigin: '50% 50%',
@@ -756,7 +764,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   return (
     <div 
       ref={containerRef}
-      className={`htmm-map ${className}`} 
+      className={mapClassName}
       style={viewportStyle}
       role="tree"
       aria-label={`Mind map: ${mapTitle}`}
@@ -768,9 +776,15 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
       onTouchEnd={touchHandlers.onTouchEnd}
       onTouchCancel={touchHandlers.onTouchCancel}
     >
-      <div
-        ref={canvasRef}
-        className="htmm-canvas"
+      <MapToolbar
+        isFullscreen={isFullscreen}
+        onFullscreenToggle={() => setIsFullscreen((b) => !b)}
+        readOnly={readOnly}
+      />
+      <div className="htmm-map-body">
+        <div
+          ref={canvasRef}
+          className="htmm-canvas"
         style={canvasStyle}
         aria-live="polite"
         aria-atomic="false"
@@ -817,16 +831,17 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
             />
           ))}
         </div>
-      </div>
-      <div
-        className="htmm-map-zoom-controls"
-        aria-label="Zoom controls"
-        onTouchStart={(e) => e.stopPropagation()}
-        onTouchMove={(e) => e.stopPropagation()}
-      >
-        <button type="button" onClick={handleZoomIn} aria-label="Zoom in" title="Zoom in">+</button>
-        <button type="button" onClick={handleZoomOut} aria-label="Zoom out" title="Zoom out">−</button>
-        <button type="button" onClick={resetView} aria-label="Reset view" title="Reset view">⌂</button>
+        </div>
+        <div
+          className="htmm-map-zoom-controls"
+          aria-label="Zoom controls"
+          onTouchStart={(e) => e.stopPropagation()}
+          onTouchMove={(e) => e.stopPropagation()}
+        >
+          <button type="button" onClick={handleZoomIn} aria-label="Zoom in" title="Zoom in">+</button>
+          <button type="button" onClick={handleZoomOut} aria-label="Zoom out" title="Zoom out">−</button>
+          <button type="button" onClick={resetView} aria-label="Reset view" title="Reset view">⌂</button>
+        </div>
       </div>
     </div>
   );
