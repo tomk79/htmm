@@ -188,8 +188,10 @@
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  max-width: 90vw;
-  max-height: 85vh;
+  width: min(95vw, 960px);
+  height: min(90vh, 800px);
+  min-width: 480px;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -224,7 +226,7 @@
 
 .htmm-map-code-modal-textarea {
   flex: 1;
-  min-height: 300px;
+  min-height: 360px;
   margin: 16px;
   padding: 12px;
   font-family: ui-monospace, monospace;

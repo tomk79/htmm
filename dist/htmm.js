@@ -261,7 +261,7 @@
   }
 }
 `;
-  const htmmMapCss = '/* HtmmMap Styles */\n\n.htmm-map {\n  position: relative;\n  overflow: hidden;\n  background-color: #fafafa;\n  border: 1px solid #ddd;\n  outline: none;\n  /* Margins so root can sit at center with space on all sides */\n  padding: 0;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n}\n\n/* Pseudo fullscreen: cover viewport with position fixed */\n.htmm-map.htmm-map-fullscreen {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  min-width: 100%;\n  min-height: 100%;\n  box-sizing: border-box;\n  z-index: 9999;\n  padding: 12px;\n}\n\n.htmm-map-body {\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n\n/* Toolbar above the map area */\n.htmm-map-toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px;\n  padding: 6px 6px;\n  margin: -4px 0 8px 0;\n  border-bottom: 1px solid #e0e0e0;\n  flex-shrink: 0;\n  box-sizing: border-box;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar {\n  border-bottom-color: #444;\n}\n\n.htmm-map-toolbar-group {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n\n.htmm-map-toolbar-group-inline {\n  gap: 8px;\n}\n\n.htmm-map-toolbar-divider {\n  width: 1px;\n  height: 20px;\n  background: #ccc;\n  margin: 0 4px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-divider {\n  background: #555;\n}\n\n.htmm-map-toolbar-btn {\n  min-width: 28px;\n  height: 28px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #f0f0f0;\n}\n\n.htmm-map-toolbar-btn:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-btn-active {\n  background: #e0e8f0;\n  border-color: #4a90e2;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn-active {\n  background: #2a3a50;\n  border-color: #5a9ae2;\n}\n\n.htmm-map-toolbar-label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  font-size: 12px;\n  color: #333;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-label {\n  color: #ccc;\n}\n\n.htmm-map-toolbar-label-text {\n  white-space: nowrap;\n}\n\n.htmm-map-toolbar-color {\n  width: 24px;\n  height: 24px;\n  padding: 0;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  cursor: pointer;\n  background: transparent;\n}\n\n.htmm-map-toolbar-color:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-select {\n  height: 26px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  min-width: 48px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-select {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map-toolbar-select:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n/* Code edit modal */\n.htmm-map-code-modal-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 10000;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 20px;\n  box-sizing: border-box;\n}\n\n.htmm-map-code-modal {\n  background: #fff;\n  border-radius: 8px;\n  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);\n  max-width: 90vw;\n  max-height: 85vh;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal {\n  background: #2d2d2d;\n  border: 1px solid #444;\n}\n\n.htmm-map-code-modal-title {\n  margin: 0;\n  padding: 12px 16px;\n  font-size: 14px;\n  font-weight: 600;\n  border-bottom: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-title {\n  border-bottom-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-error {\n  margin: 8px 16px 0;\n  padding: 8px;\n  background: #fee;\n  color: #c00;\n  font-size: 12px;\n  border-radius: 4px;\n}\n\n.htmm-map-code-modal-textarea {\n  flex: 1;\n  min-height: 300px;\n  margin: 16px;\n  padding: 12px;\n  font-family: ui-monospace, monospace;\n  font-size: 12px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  resize: vertical;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-textarea {\n  background: #1e1e1e;\n  border-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-actions {\n  display: flex;\n  justify-content: flex-end;\n  gap: 8px;\n  padding: 12px 16px;\n  border-top: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-actions {\n  border-top-color: #444;\n}\n\n.htmm-map-code-modal-apply {\n  background: #4a90e2;\n  color: #fff;\n  border-color: #4a90e2;\n}\n\n.htmm-map-code-modal-apply:hover:not(:disabled) {\n  background: #357abd;\n}\n\n.htmm-map:focus {\n  border-color: #4a90e2;\n  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);\n}\n\n/* Dark appearance */\n.htmm-map[data-appearance="dark"] {\n  background-color: #1e1e1e;\n  border-color: #444;\n}\n\n.htmm-map[data-appearance="dark"]:focus {\n  border-color: #5a9ae2;\n  box-shadow: 0 0 0 2px rgba(90, 154, 226, 0.25);\n}\n\n.htmm-map-empty {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: #f5f5f5;\n  border: 1px solid #ddd;\n  color: #999;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-empty {\n  background-color: #2d2d2d;\n  border-color: #444;\n  color: #888;\n}\n\n.htmm-canvas {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform-origin: center center;\n  cursor: grab;\n}\n\n/* Layers */\n.edges-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n  pointer-events: none;\n}\n\n.nodes-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 0;\n  height: 0;\n}\n\n/* Edge styles */\n.edge-view {\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n/* Utilities */\n.htmm-map * {\n  box-sizing: border-box;\n}\n\n/* Mobile / touch-friendly: larger tap targets and zoom controls */\n@media (max-width: 768px), (pointer: coarse) {\n  .htmm-map {\n    -webkit-tap-highlight-color: transparent;\n    touch-action: none; /* pan/zoom handled by gesture hook */\n  }\n\n  .htmm-map .node-view {\n    min-height: 44px;\n    padding: 10px 14px;\n    min-width: 44px;\n  }\n\n  .htmm-map .fold-symbol {\n    width: 28px;\n    height: 28px;\n    min-width: 28px;\n    min-height: 28px;\n    left: -32px;\n    font-size: 12px;\n  }\n}\n\n/* Floating zoom controls */\n.htmm-map-zoom-controls {\n  position: absolute;\n  bottom: 12px;\n  right: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  z-index: 10;\n  pointer-events: auto;\n}\n\n.htmm-map-zoom-controls button {\n  width: 44px;\n  height: 44px;\n  border-radius: 8px;\n  border: 1px solid #ccc;\n  background: #fff;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);\n  font-size: 18px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-zoom-controls button:hover {\n  background: #f5f5f5;\n}\n\n.htmm-map-zoom-controls button:active {\n  background: #e8e8e8;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:hover {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:active {\n  background: #4a4a4a;\n}\n';
+  const htmmMapCss = '/* HtmmMap Styles */\n\n.htmm-map {\n  position: relative;\n  overflow: hidden;\n  background-color: #fafafa;\n  border: 1px solid #ddd;\n  outline: none;\n  /* Margins so root can sit at center with space on all sides */\n  padding: 0;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n}\n\n/* Pseudo fullscreen: cover viewport with position fixed */\n.htmm-map.htmm-map-fullscreen {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  min-width: 100%;\n  min-height: 100%;\n  box-sizing: border-box;\n  z-index: 9999;\n  padding: 12px;\n}\n\n.htmm-map-body {\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n\n/* Toolbar above the map area */\n.htmm-map-toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px;\n  padding: 6px 6px;\n  margin: -4px 0 8px 0;\n  border-bottom: 1px solid #e0e0e0;\n  flex-shrink: 0;\n  box-sizing: border-box;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar {\n  border-bottom-color: #444;\n}\n\n.htmm-map-toolbar-group {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n\n.htmm-map-toolbar-group-inline {\n  gap: 8px;\n}\n\n.htmm-map-toolbar-divider {\n  width: 1px;\n  height: 20px;\n  background: #ccc;\n  margin: 0 4px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-divider {\n  background: #555;\n}\n\n.htmm-map-toolbar-btn {\n  min-width: 28px;\n  height: 28px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #f0f0f0;\n}\n\n.htmm-map-toolbar-btn:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-btn-active {\n  background: #e0e8f0;\n  border-color: #4a90e2;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn-active {\n  background: #2a3a50;\n  border-color: #5a9ae2;\n}\n\n.htmm-map-toolbar-label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  font-size: 12px;\n  color: #333;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-label {\n  color: #ccc;\n}\n\n.htmm-map-toolbar-label-text {\n  white-space: nowrap;\n}\n\n.htmm-map-toolbar-color {\n  width: 24px;\n  height: 24px;\n  padding: 0;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  cursor: pointer;\n  background: transparent;\n}\n\n.htmm-map-toolbar-color:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-select {\n  height: 26px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  min-width: 48px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-select {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map-toolbar-select:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n/* Code edit modal */\n.htmm-map-code-modal-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 10000;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 20px;\n  box-sizing: border-box;\n}\n\n.htmm-map-code-modal {\n  background: #fff;\n  border-radius: 8px;\n  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);\n  width: min(95vw, 960px);\n  height: min(90vh, 800px);\n  min-width: 480px;\n  min-height: 400px;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal {\n  background: #2d2d2d;\n  border: 1px solid #444;\n}\n\n.htmm-map-code-modal-title {\n  margin: 0;\n  padding: 12px 16px;\n  font-size: 14px;\n  font-weight: 600;\n  border-bottom: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-title {\n  border-bottom-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-error {\n  margin: 8px 16px 0;\n  padding: 8px;\n  background: #fee;\n  color: #c00;\n  font-size: 12px;\n  border-radius: 4px;\n}\n\n.htmm-map-code-modal-textarea {\n  flex: 1;\n  min-height: 360px;\n  margin: 16px;\n  padding: 12px;\n  font-family: ui-monospace, monospace;\n  font-size: 12px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  resize: vertical;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-textarea {\n  background: #1e1e1e;\n  border-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-actions {\n  display: flex;\n  justify-content: flex-end;\n  gap: 8px;\n  padding: 12px 16px;\n  border-top: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-actions {\n  border-top-color: #444;\n}\n\n.htmm-map-code-modal-apply {\n  background: #4a90e2;\n  color: #fff;\n  border-color: #4a90e2;\n}\n\n.htmm-map-code-modal-apply:hover:not(:disabled) {\n  background: #357abd;\n}\n\n.htmm-map:focus {\n  border-color: #4a90e2;\n  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);\n}\n\n/* Dark appearance */\n.htmm-map[data-appearance="dark"] {\n  background-color: #1e1e1e;\n  border-color: #444;\n}\n\n.htmm-map[data-appearance="dark"]:focus {\n  border-color: #5a9ae2;\n  box-shadow: 0 0 0 2px rgba(90, 154, 226, 0.25);\n}\n\n.htmm-map-empty {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: #f5f5f5;\n  border: 1px solid #ddd;\n  color: #999;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-empty {\n  background-color: #2d2d2d;\n  border-color: #444;\n  color: #888;\n}\n\n.htmm-canvas {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform-origin: center center;\n  cursor: grab;\n}\n\n/* Layers */\n.edges-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n  pointer-events: none;\n}\n\n.nodes-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 0;\n  height: 0;\n}\n\n/* Edge styles */\n.edge-view {\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n/* Utilities */\n.htmm-map * {\n  box-sizing: border-box;\n}\n\n/* Mobile / touch-friendly: larger tap targets and zoom controls */\n@media (max-width: 768px), (pointer: coarse) {\n  .htmm-map {\n    -webkit-tap-highlight-color: transparent;\n    touch-action: none; /* pan/zoom handled by gesture hook */\n  }\n\n  .htmm-map .node-view {\n    min-height: 44px;\n    padding: 10px 14px;\n    min-width: 44px;\n  }\n\n  .htmm-map .fold-symbol {\n    width: 28px;\n    height: 28px;\n    min-width: 28px;\n    min-height: 28px;\n    left: -32px;\n    font-size: 12px;\n  }\n}\n\n/* Floating zoom controls */\n.htmm-map-zoom-controls {\n  position: absolute;\n  bottom: 12px;\n  right: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  z-index: 10;\n  pointer-events: auto;\n}\n\n.htmm-map-zoom-controls button {\n  width: 44px;\n  height: 44px;\n  border-radius: 8px;\n  border: 1px solid #ccc;\n  background: #fff;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);\n  font-size: 18px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-zoom-controls button:hover {\n  background: #f5f5f5;\n}\n\n.htmm-map-zoom-controls button:active {\n  background: #e8e8e8;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:hover {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:active {\n  background: #4a4a4a;\n}\n';
   const attributesPanelCss = ".attributes-panel {\n  display: flex;\n  flex-direction: column;\n  background: #fff;\n  border: 1px solid #ddd;\n  border-radius: 4px;\n  padding: 12px;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n}\n\n.attributes-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 12px;\n}\n\n.attributes-header h3 {\n  margin: 0;\n  font-size: 16px;\n  font-weight: 600;\n  color: #333;\n}\n\n.btn-add-attribute {\n  padding: 4px 12px;\n  border: 1px solid #0066cc;\n  border-radius: 3px;\n  background: #0066cc;\n  color: #fff;\n  font-size: 13px;\n  cursor: pointer;\n  transition: background 0.2s;\n}\n\n.btn-add-attribute:hover:not(:disabled) {\n  background: #0052a3;\n}\n\n.btn-add-attribute:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.attributes-list {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n\n.attributes-empty {\n  padding: 16px;\n  text-align: center;\n  color: #999;\n  font-size: 14px;\n}\n\n.attribute-item {\n  border: 1px solid #e0e0e0;\n  border-radius: 3px;\n  padding: 8px;\n  background: #fafafa;\n}\n\n.attribute-display {\n  display: grid;\n  grid-template-columns: 1fr 2fr auto;\n  gap: 8px;\n  align-items: center;\n}\n\n.attribute-edit {\n  display: grid;\n  grid-template-columns: 1fr 2fr auto;\n  gap: 8px;\n  align-items: center;\n}\n\n.attribute-key {\n  font-weight: 600;\n  color: #555;\n  font-size: 13px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.attribute-value {\n  color: #333;\n  font-size: 13px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.attribute-key-input,\n.attribute-value-input {\n  padding: 4px 8px;\n  border: 1px solid #ccc;\n  border-radius: 3px;\n  font-size: 13px;\n  outline: none;\n}\n\n.attribute-key-input:focus,\n.attribute-value-input:focus {\n  border-color: #0066cc;\n  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);\n}\n\n.attribute-actions {\n  display: flex;\n  gap: 4px;\n}\n\n.btn-edit,\n.btn-delete,\n.btn-save,\n.btn-cancel {\n  padding: 4px 8px;\n  border: 1px solid #d0d0d0;\n  border-radius: 3px;\n  background: #fff;\n  cursor: pointer;\n  font-size: 14px;\n  transition: all 0.2s;\n  min-width: 28px;\n  height: 28px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.btn-edit:hover,\n.btn-delete:hover,\n.btn-save:hover,\n.btn-cancel:hover {\n  background: #f0f0f0;\n  border-color: #b0b0b0;\n}\n\n.btn-delete:hover {\n  background: #fee;\n  border-color: #fcc;\n}\n\n.btn-save {\n  color: #0a0;\n  border-color: #0a0;\n}\n\n.btn-save:hover {\n  background: #efe;\n  border-color: #0a0;\n}\n\n.btn-cancel {\n  color: #c00;\n  border-color: #c00;\n}\n\n.btn-cancel:hover {\n  background: #fee;\n  border-color: #c00;\n}\n";
   const richContentEditorCss = "._rich-content-editor_1ep5h_1 {\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n}\n\n._rich-content-toolbar_1ep5h_12 {\n  display: flex;\n  gap: 4px;\n  padding: 8px;\n  border-bottom: 1px solid #e0e0e0;\n  background: #f5f5f5;\n  flex-wrap: wrap;\n}\n\n._toolbar-group_1ep5h_21 {\n  display: flex;\n  gap: 2px;\n}\n\n._toolbar-divider_1ep5h_26 {\n  width: 1px;\n  background: #d0d0d0;\n  margin: 0 4px;\n}\n\n._toolbar-button_1ep5h_32 {\n  padding: 6px 10px;\n  border: 1px solid #d0d0d0;\n  border-radius: 3px;\n  background: #fff;\n  cursor: pointer;\n  font-weight: bold;\n  font-size: 14px;\n  transition: all 0.2s;\n  min-width: 32px;\n  height: 32px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n._toolbar-button_1ep5h_32:hover:not(:disabled) {\n  background: #e8e8e8;\n  border-color: #b0b0b0;\n}\n\n._toolbar-button_1ep5h_32:active:not(:disabled) {\n  background: #d8d8d8;\n}\n\n._toolbar-button_1ep5h_32:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n._rich-content-editable_1ep5h_62 {\n  padding: 12px;\n  min-height: 100px;\n  max-height: 400px;\n  overflow-y: auto;\n  outline: none;\n  line-height: 1.5;\n  font-size: 14px;\n}\n\n._rich-content-editable_1ep5h_62:focus {\n  background: #fafafa;\n}\n\n._rich-content-editable_1ep5h_62:empty::before {\n  content: attr(data-placeholder);\n  color: #999;\n  pointer-events: none;\n}\n\n/* Rich content formatting */\n._rich-content-editable_1ep5h_62 b,\n._rich-content-editable_1ep5h_62 strong {\n  font-weight: bold;\n}\n\n._rich-content-editable_1ep5h_62 i,\n._rich-content-editable_1ep5h_62 em {\n  font-style: italic;\n}\n\n._rich-content-editable_1ep5h_62 u {\n  text-decoration: underline;\n}\n\n._rich-content-editable_1ep5h_62 strike,\n._rich-content-editable_1ep5h_62 del {\n  text-decoration: line-through;\n}\n\n._rich-content-editable_1ep5h_62 ul,\n._rich-content-editable_1ep5h_62 ol {\n  margin: 8px 0;\n  padding-left: 24px;\n}\n\n._rich-content-editable_1ep5h_62 li {\n  margin: 4px 0;\n}\n\n._rich-content-editable_1ep5h_62 a {\n  color: #0066cc;\n  text-decoration: underline;\n}\n\n._rich-content-editable_1ep5h_62 a:hover {\n  color: #0052a3;\n}\n\n._rich-content-editable_1ep5h_62 img {\n  max-width: 100%;\n  height: auto;\n  display: block;\n  margin: 8px 0;\n}\n";
   const printCss = '/**\n * Print-specific styles\n * Applied when printing or print preview\n */\n\n@media print {\n  /* Reset page margins */\n  @page {\n    margin: 1cm;\n    size: A4 landscape;\n  }\n\n  /* Hide UI elements */\n  body {\n    margin: 0;\n    padding: 0;\n  }\n\n  /* Hide non-printable elements */\n  .no-print,\n  .toolbar,\n  .sidebar,\n  button,\n  input,\n  select,\n  textarea,\n  .attributes-panel,\n  .rich-content-toolbar {\n    display: none !important;\n  }\n\n  /* Ensure mind map is visible */\n  .htmm-map {\n    position: relative !important;\n    width: 100% !important;\n    height: auto !important;\n    overflow: visible !important;\n    page-break-inside: avoid;\n  }\n\n  /* Node styling for print */\n  .node-view {\n    page-break-inside: avoid;\n    break-inside: avoid;\n  }\n\n  /* Ensure text is readable */\n  .node-text {\n    color: #000 !important;\n    background: transparent !important;\n  }\n\n  /* Remove interactive states */\n  .node-view.selected {\n    border-color: #999 !important;\n    border-width: 1px !important;\n    box-shadow: none !important;\n  }\n\n  .node-view:hover {\n    box-shadow: none !important;\n  }\n\n  /* Simplify edges for print */\n  .edge-path {\n    stroke: #666 !important;\n  }\n\n  /* Hide fold symbols in print */\n  .fold-symbol {\n    display: none !important;\n  }\n\n  /* Ensure links are visible */\n  .node-link-indicator {\n    display: inline-block !important;\n  }\n\n  a[href]:after {\n    content: " (" attr(href) ")";\n    font-size: 0.8em;\n    color: #666;\n  }\n\n  /* Cloud borders */\n  .node-cloud {\n    border: 2px solid #999 !important;\n  }\n\n  /* Rich content */\n  .node-rich-content {\n    max-height: none !important;\n    overflow: visible !important;\n  }\n\n  /* Icons */\n  .node-icons,\n  .node-icon {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n\n  /* Preserve colors */\n  * {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n}\n\n/* Print preview mode */\n.print-preview {\n  background: #eee;\n  padding: 20px;\n}\n\n.print-preview .htmm-map {\n  background: white;\n  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n  margin: 0 auto;\n  max-width: 297mm; /* A4 landscape width */\n  min-height: 210mm; /* A4 landscape height */\n}\n';
@@ -7053,24 +7053,36 @@ Ctrl+Click to open`,
           "aria-modal": "true",
           "aria-labelledby": "htmm-code-modal-title",
           onClick: (e2) => e2.target === e2.currentTarget && closeCodeModal(),
-          children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-code-modal", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { id: "htmm-code-modal-title", className: "htmm-map-code-modal-title", children: "コード直接編集 (.mm XML)" }),
-            codeEditError && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-code-modal-error", role: "alert", children: codeEditError }),
-            /* @__PURE__ */ jsxRuntimeExports.jsx(
-              "textarea",
-              {
-                className: "htmm-map-code-modal-textarea",
-                value: codeEditValue,
-                onChange: (e2) => setCodeEditValue(e2.target.value),
-                spellCheck: false,
-                "aria-label": "XML 編集"
-              }
-            ),
-            /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-code-modal-actions", children: [
-              /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn", onClick: closeCodeModal, children: "キャンセル" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn htmm-map-code-modal-apply", onClick: applyCodeEdit, children: "適用" })
-            ] })
-          ] })
+          onKeyDown: (e2) => e2.stopPropagation(),
+          onKeyUp: (e2) => e2.stopPropagation(),
+          children: /* @__PURE__ */ jsxRuntimeExports.jsxs(
+            "div",
+            {
+              className: "htmm-map-code-modal",
+              onKeyDown: (e2) => e2.stopPropagation(),
+              onKeyUp: (e2) => e2.stopPropagation(),
+              children: [
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { id: "htmm-code-modal-title", className: "htmm-map-code-modal-title", children: "コード直接編集 (.mm XML)" }),
+                codeEditError && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-code-modal-error", role: "alert", children: codeEditError }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx(
+                  "textarea",
+                  {
+                    className: "htmm-map-code-modal-textarea",
+                    value: codeEditValue,
+                    onChange: (e2) => setCodeEditValue(e2.target.value),
+                    onKeyDown: (e2) => e2.stopPropagation(),
+                    onKeyUp: (e2) => e2.stopPropagation(),
+                    spellCheck: false,
+                    "aria-label": "XML 編集"
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-code-modal-actions", children: [
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn", onClick: closeCodeModal, children: "キャンセル" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn htmm-map-code-modal-apply", onClick: applyCodeEdit, children: "適用" })
+                ] })
+              ]
+            }
+          )
         }
       )
     ] });
@@ -7616,6 +7628,7 @@ Ctrl+Click to open`,
       setEditingNodeId(null);
     }, [editNode, selectNode, deleteNode]);
     const handleKeyDown = reactExports.useCallback((e2) => {
+      if (e2.target instanceof Element && e2.target.closest(".htmm-map-code-modal-overlay")) return;
       if (editingNodeId) return;
       if (!mapData) return;
       const selectedId = Array.from(selectedNodeIds)[0];
@@ -34063,7 +34076,7 @@ Ctrl+Click to open`,
     skewX: SkewX,
     skewY: SkewY
   };
-  class Element {
+  let Element$1 = class Element2 {
     constructor(document2, node2) {
       var captureTextNodes = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
       this.document = document2;
@@ -34209,9 +34222,9 @@ Ctrl+Click to open`,
       });
     }
     addChild(childNode) {
-      var child = childNode instanceof Element ? childNode : this.document.createElement(childNode);
+      var child = childNode instanceof Element2 ? childNode : this.document.createElement(childNode);
       child.parent = this;
-      if (!Element.ignoreChildTypes.includes(child.type)) {
+      if (!Element2.ignoreChildTypes.includes(child.type)) {
         this.children.push(child);
       }
     }
@@ -34275,9 +34288,9 @@ Ctrl+Click to open`,
       var _this$parent;
       return ((_this$parent = this.parent) === null || _this$parent === void 0 ? void 0 : _this$parent.children.indexOf(this)) === 0;
     }
-  }
-  Element.ignoreChildTypes = ["title"];
-  class UnknownElement extends Element {
+  };
+  Element$1.ignoreChildTypes = ["title"];
+  class UnknownElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
     }
@@ -34660,7 +34673,7 @@ Ctrl+Click to open`,
       return angles;
     }
   }
-  class RenderedElement extends Element {
+  class RenderedElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.modifiedEmSizeStack = false;
@@ -35938,7 +35951,7 @@ Ctrl+Click to open`,
       return boundingBox;
     }
   }
-  class PatternElement extends Element {
+  class PatternElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "pattern";
@@ -35977,7 +35990,7 @@ Ctrl+Click to open`,
       return pattern;
     }
   }
-  class MarkerElement extends Element {
+  class MarkerElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "marker";
@@ -36022,7 +36035,7 @@ Ctrl+Click to open`,
       ctx.translate(-x2, -y2);
     }
   }
-  class DefsElement extends Element {
+  class DefsElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "defs";
@@ -36043,7 +36056,7 @@ Ctrl+Click to open`,
       return boundingBox;
     }
   }
-  class GradientElement extends Element {
+  class GradientElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
       this.attributesToInherit = ["gradientUnits"];
@@ -36187,7 +36200,7 @@ Ctrl+Click to open`,
       return ctx.createRadialGradient(fx, fy, fr, cx, cy, r2);
     }
   }
-  class StopElement extends Element {
+  class StopElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
       this.type = "stop";
@@ -36204,7 +36217,7 @@ Ctrl+Click to open`,
       this.color = stopColor.getColor();
     }
   }
-  class AnimateElement extends Element {
+  class AnimateElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
       this.type = "animate";
@@ -36349,7 +36362,7 @@ Ctrl+Click to open`,
       return newValue;
     }
   }
-  class FontElement extends Element {
+  class FontElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
       this.type = "font";
@@ -36394,7 +36407,7 @@ Ctrl+Click to open`,
     render() {
     }
   }
-  class FontFaceElement extends Element {
+  class FontFaceElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
       this.type = "font-face";
@@ -37266,7 +37279,7 @@ Ctrl+Click to open`,
       })();
     }
   }
-  class StyleElement extends Element {
+  class StyleElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
       this.type = "style";
@@ -37407,7 +37420,7 @@ Ctrl+Click to open`,
   function c(a2, m1, m2, m3) {
     return m1 + Math.cos(a2) * m2 + Math.sin(a2) * m3;
   }
-  class FeColorMatrixElement extends Element {
+  class FeColorMatrixElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
       this.type = "feColorMatrix";
@@ -37463,7 +37476,7 @@ Ctrl+Click to open`,
       ctx.putImageData(srcData, 0, 0);
     }
   }
-  class MaskElement extends Element {
+  class MaskElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "mask";
@@ -37519,7 +37532,7 @@ Ctrl+Click to open`,
   MaskElement.ignoreStyles = ["mask", "transform", "clip-path"];
   var noop = () => {
   };
-  class ClipPathElement extends Element {
+  class ClipPathElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "clipPath";
@@ -37567,7 +37580,7 @@ Ctrl+Click to open`,
     render(_2) {
     }
   }
-  class FilterElement extends Element {
+  class FilterElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "filter";
@@ -37615,7 +37628,7 @@ Ctrl+Click to open`,
     }
   }
   FilterElement.ignoreStyles = ["filter", "transform", "clip-path"];
-  class FeDropShadowElement extends Element {
+  class FeDropShadowElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
       this.type = "feDropShadow";
@@ -37624,7 +37637,7 @@ Ctrl+Click to open`,
     apply(_2, _x, _y, _width, _height) {
     }
   }
-  class FeMorphologyElement extends Element {
+  class FeMorphologyElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "feMorphology";
@@ -37632,7 +37645,7 @@ Ctrl+Click to open`,
     apply(_2, _x, _y, _width, _height) {
     }
   }
-  class FeCompositeElement extends Element {
+  class FeCompositeElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "feComposite";
@@ -37640,7 +37653,7 @@ Ctrl+Click to open`,
     apply(_2, _x, _y, _width, _height) {
     }
   }
-  class FeGaussianBlurElement extends Element {
+  class FeGaussianBlurElement extends Element$1 {
     constructor(document2, node2, captureTextNodes) {
       super(document2, node2, captureTextNodes);
       this.type = "feGaussianBlur";
@@ -37665,13 +37678,13 @@ Ctrl+Click to open`,
       }
     }
   }
-  class TitleElement extends Element {
+  class TitleElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "title";
     }
   }
-  class DescElement extends Element {
+  class DescElement extends Element$1 {
     constructor() {
       super(...arguments);
       this.type = "desc";
@@ -38051,7 +38064,7 @@ Ctrl+Click to open`,
     DefsElement,
     DescElement,
     Document,
-    Element,
+    Element: Element$1,
     EllipseElement,
     FeColorMatrixElement,
     FeCompositeElement,

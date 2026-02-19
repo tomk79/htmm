@@ -239,8 +239,14 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
           aria-modal="true"
           aria-labelledby="htmm-code-modal-title"
           onClick={(e) => e.target === e.currentTarget && closeCodeModal()}
+          onKeyDown={(e) => e.stopPropagation()}
+          onKeyUp={(e) => e.stopPropagation()}
         >
-          <div className="htmm-map-code-modal">
+          <div
+            className="htmm-map-code-modal"
+            onKeyDown={(e) => e.stopPropagation()}
+            onKeyUp={(e) => e.stopPropagation()}
+          >
             <h2 id="htmm-code-modal-title" className="htmm-map-code-modal-title">
               コード直接編集 (.mm XML)
             </h2>
@@ -253,6 +259,8 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
               className="htmm-map-code-modal-textarea"
               value={codeEditValue}
               onChange={(e) => setCodeEditValue(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
+              onKeyUp={(e) => e.stopPropagation()}
               spellCheck={false}
               aria-label="XML 編集"
             />

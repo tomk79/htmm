@@ -354,6 +354,8 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   
   // Keyboard shortcut handler
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    // Skip if focus is inside the code-edit modal (textarea etc.)
+    if (e.target instanceof Element && e.target.closest('.htmm-map-code-modal-overlay')) return;
     // Skip if editing
     if (editingNodeId) return;
     
