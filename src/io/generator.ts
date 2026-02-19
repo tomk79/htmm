@@ -3,6 +3,8 @@
  * Generates .mm (FreeMind-compatible) files from MindMapData objects
  */
 
+import xmlFormat from 'xml-formatter';
+
 import type {
   MindMapData,
   MindMapNode,
@@ -35,6 +37,12 @@ export function generateMindMapXML(data: MindMapData): string {
   
   // Add XML declaration
   xmlString = '<?xml version="1.0" encoding="UTF-8"?>\n' + xmlString;
+  
+  // Format with indentation using xml-formatter
+  xmlString = xmlFormat(xmlString, {
+    indentation: '  ',
+    lineSeparator: '\n',
+  });
   
   return xmlString;
 }
