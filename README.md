@@ -355,6 +355,7 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 - 読み込み専用（ReadOnly）モードを追加。`<HtmmMap readOnly />` または `createHtmmStore({ readOnly: true })` で、ノードの追加・変更・削除・並び替え・ペーストなどを無効にしつつ、選択・開閉・ズーム・コピーは利用可能。
 - `lang` と `appearance` オプションを追加。
 - 長いノードのコンテンツを、改行してすべて表示するようになった。
+- ノードに含まれる改行を反映するようになった。
 - その他UIの改善、不具合の修正など。
 
 ### @tomk79/htmm v0.0.1 (2026年2月15日)

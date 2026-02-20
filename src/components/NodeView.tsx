@@ -169,7 +169,7 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
       e.preventDefault();
       e.stopPropagation();
       if (inputRef.current) {
-        onEndEdit(inputRef.current.textContent || '');
+        onEndEdit(inputRef.current.innerText ?? inputRef.current.textContent ?? '');
       }
     } else if (e.key === 'Escape') {
       e.preventDefault();
@@ -192,7 +192,7 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
       return;
     }
     if (isEditing && inputRef.current) {
-      onEndEdit(inputRef.current.textContent || '');
+      onEndEdit(inputRef.current.innerText ?? inputRef.current.textContent ?? '');
     }
   };
   
@@ -305,20 +305,35 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
           role="region"
           aria-label="Rich content"
         />
-      ) : (
+      ) : isEditing && !editingRichContent ? (
         <div
           ref={inputRef}
           className="node-text"
-          contentEditable={isEditing && !editingRichContent}
+          contentEditable={true}
           suppressContentEditableWarning
           onKeyDown={handleKeyDown}
           onBlur={handleBlur}
           role="textbox"
           aria-label="Node text"
-          aria-readonly={!isEditing}
+          aria-readonly={false}
           aria-multiline="true"
         >
           {node.text || ''}
+        </div>
+      ) : (
+        <div
+          className="node-text"
+          role="textbox"
+          aria-label="Node text"
+          aria-readonly={true}
+          aria-multiline="true"
+        >
+          {(node.text || '').split('\n').map((line, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <br />}
+              {line}
+            </React.Fragment>
+          ))}
         </div>
       )}
       

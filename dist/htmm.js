@@ -6011,7 +6011,7 @@
         e2.preventDefault();
         e2.stopPropagation();
         if (inputRef.current) {
-          onEndEdit(inputRef.current.textContent || "");
+          onEndEdit(inputRef.current.innerText ?? inputRef.current.textContent ?? "");
         }
       } else if (e2.key === "Escape") {
         e2.preventDefault();
@@ -6029,7 +6029,7 @@
         return;
       }
       if (isEditing && inputRef.current) {
-        onEndEdit(inputRef.current.textContent || "");
+        onEndEdit(inputRef.current.innerText ?? inputRef.current.textContent ?? "");
       }
     };
     const style = {
@@ -6126,20 +6126,33 @@ Ctrl+Click to open`,
               role: "region",
               "aria-label": "Rich content"
             }
-          ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+          ) : isEditing && !editingRichContent ? /* @__PURE__ */ jsxRuntimeExports.jsx(
             "div",
             {
               ref: inputRef,
               className: "node-text",
-              contentEditable: isEditing && !editingRichContent,
+              contentEditable: true,
               suppressContentEditableWarning: true,
               onKeyDown: handleKeyDown,
               onBlur: handleBlur,
               role: "textbox",
               "aria-label": "Node text",
-              "aria-readonly": !isEditing,
+              "aria-readonly": false,
               "aria-multiline": "true",
               children: node2.text || ""
+            }
+          ) : /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              className: "node-text",
+              role: "textbox",
+              "aria-label": "Node text",
+              "aria-readonly": true,
+              "aria-multiline": "true",
+              children: (node2.text || "").split("\n").map((line, i2) => /* @__PURE__ */ jsxRuntimeExports.jsxs(React.Fragment, { children: [
+                i2 > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("br", {}),
+                line
+              ] }, i2))
             }
           ),
           node2.cloud && /* @__PURE__ */ jsxRuntimeExports.jsx(
