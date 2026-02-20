@@ -9,7 +9,7 @@
   /* レイアウト */
   position: absolute;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 4px;
   padding: 4px 8px;
   box-sizing: border-box;
@@ -116,10 +116,10 @@
 /* Text（ノードのデフォルトを継承するが、必要ならここでも明示可能） */
 .node-text {
   flex: 1;
+  min-width: 0;
   outline: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  word-break: break-word;
   /* 継承されがちなため明示 */
   color: inherit;
   font-size: inherit;

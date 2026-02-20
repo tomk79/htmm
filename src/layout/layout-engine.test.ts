@@ -3,6 +3,7 @@ import { createRootNode, createNode } from '../models/MindMapNode';
 import {
   LAYOUT_CONSTANTS,
   calculateTextDimensions,
+  calculateWrappedTextDimensions,
   calculateNodeDimensions,
   calculateLayout,
   getBoundingBox,
@@ -14,10 +15,11 @@ describe('Layout Engine', () => {
   describe('LAYOUT_CONSTANTS', () => {
     it('should have expected constant values', () => {
       expect(LAYOUT_CONSTANTS.DEFAULT_HGAP).toBe(20);
-      expect(LAYOUT_CONSTANTS.SIBLING_VGAP).toBe(3);
-      expect(LAYOUT_CONSTANTS.SUBTREE_VGAP).toBe(12);
+      expect(LAYOUT_CONSTANTS.SIBLING_VGAP).toBe(9);
+      expect(LAYOUT_CONSTANTS.SUBTREE_VGAP).toBe(15);
       expect(LAYOUT_CONSTANTS.MIN_NODE_WIDTH).toBe(150);
       expect(LAYOUT_CONSTANTS.MIN_NODE_HEIGHT).toBe(20);
+      expect(LAYOUT_CONSTANTS.MAX_NODE_TEXT_WIDTH).toBe(280);
       expect(LAYOUT_CONSTANTS.ICON_SIZE).toBe(16);
       expect(LAYOUT_CONSTANTS.TEXT_PADDING_H).toBe(8);
       expect(LAYOUT_CONSTANTS.TEXT_PADDING_V).toBe(4);
@@ -50,6 +52,35 @@ describe('Layout Engine', () => {
     });
   });
 
+  describe('calculateWrappedTextDimensions', () => {
+    it('should return single-line dimensions for empty or short text', () => {
+      const empty = calculateWrappedTextDimensions('', 12, 'Arial', 280);
+      expect(empty.width).toBe(0);
+      expect(empty.height).toBe(12 * 1.2);
+
+      const short = calculateWrappedTextDimensions('Hello', 12, 'Arial', 280);
+      expect(short.width).toBeGreaterThan(0);
+      expect(short.width).toBeLessThanOrEqual(280);
+      expect(short.height).toBe(12 * 1.2);
+    });
+
+    it('should wrap long text and return dimensions with width capped', () => {
+      const longLine = 'A'.repeat(200);
+      const result = calculateWrappedTextDimensions(longLine, 12, 'Arial', 280);
+      expect(result.width).toBeLessThanOrEqual(280);
+      expect(result.height).toBeGreaterThanOrEqual(12 * 1.2);
+      const lineHeight = 12 * 1.2;
+      expect(result.height).toBeCloseTo(Math.round(result.height / lineHeight) * lineHeight, 10);
+    });
+
+    it('should respect explicit newlines when canvas available', () => {
+      const twoLines = 'Line1\nLine2';
+      const result = calculateWrappedTextDimensions(twoLines, 12, 'Arial', 280);
+      expect(result.height).toBeGreaterThanOrEqual(12 * 1.2);
+      expect(result.width).toBeGreaterThanOrEqual(0);
+    });
+  });
+
   describe('calculateNodeDimensions', () => {
     it('should respect MIN_NODE_WIDTH and MIN_NODE_HEIGHT for short text', () => {
       const node = createNode('A');
@@ -75,6 +106,16 @@ describe('Layout Engine', () => {
       const result = calculateNodeDimensions(node);
       expect(result.width).toBeGreaterThanOrEqual(LAYOUT_CONSTANTS.MIN_NODE_WIDTH);
       expect(result.height).toBeGreaterThanOrEqual(LAYOUT_CONSTANTS.MIN_NODE_HEIGHT);
+    });
+
+    it('should produce multi-line height for long text without exceeding max width', () => {
+      const longText = 'This is a very long node text that should wrap onto multiple lines when rendered.';
+      const node = createNode(longText);
+      const result = calculateNodeDimensions(node);
+      expect(result.width).toBeLessThanOrEqual(
+        LAYOUT_CONSTANTS.MAX_NODE_TEXT_WIDTH + LAYOUT_CONSTANTS.TEXT_PADDING_H * 2
+      );
+      expect(result.height).toBeGreaterThan(LAYOUT_CONSTANTS.MIN_NODE_HEIGHT);
     });
   });
 

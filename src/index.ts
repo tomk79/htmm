@@ -42,7 +42,12 @@ export {
 } from './models/MindMapNode';
 
 // Layout
-export { calculateLayout, getBoundingBox, getEdgePoints } from './layout/layout-engine';
+export {
+  calculateLayout,
+  getBoundingBox,
+  getEdgePoints,
+} from './layout/layout-engine';
+export type { CalculateLayoutOptions, GetNodeDimensions } from './layout/layout-engine';
 
 // Utils
 export { getIconEmoji, isValidIcon, getAvailableIcons, ICON_MAP, ICON_CATEGORIES } from './utils/icons';

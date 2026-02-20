@@ -7,6 +7,7 @@ import React, { useEffect, useState, useCallback, useRef, useContext, forwardRef
 import { useHtmmStore, HtmmStoreContext, createHtmmStore } from '../store/htmm-store';
 import { loadMindMapURL } from '../io/parser';
 import { calculateLayout } from '../layout/layout-engine';
+import { measureNodeWithDom } from '../layout/measure-node-dom';
 import { NodeView } from './NodeView';
 import { EdgeView } from './EdgeView';
 import { ArrowLinkView } from './ArrowLinkView';
@@ -14,7 +15,7 @@ import { MapToolbar } from './MapToolbar';
 import { useDragAndDrop } from '../hooks/useDragAndDrop';
 import { useViewportCulling, shouldEnableViewportCulling } from '../hooks/useViewportCulling';
 import { useTouchGestures } from '../hooks/useTouchGestures';
-import type { LayoutNode, MindMapData } from '../types/mindmap';
+import type { LayoutNode, MindMapData, MindMapNode } from '../types/mindmap';
 import { createRootNode } from '../models/MindMapNode';
 import {
   findParentNode,
@@ -104,6 +105,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   const newlyAddedNodeIdRef = useRef<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const measureContainerRef = useRef<HTMLDivElement>(null);
   const panStartRef = useRef<{ panX: number; panY: number; clientX: number; clientY: number } | null>(null);
 
   const SCROLL_INTO_VIEW_MARGIN = 24;
@@ -155,12 +157,19 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     handleDragEnd,
   } = useDragAndDrop(handleNodeMove);
   
-  // Recalculate layout when map data changes
+  // Recalculate layout when map data changes (use DOM measurement when available)
   useEffect(() => {
-    if (mapData) {
-      const layout = calculateLayout(mapData.root);
-      setLayoutNodes(layout);
-    }
+    if (!mapData) return;
+    const measureEl = measureContainerRef.current;
+    const useDomMeasure = typeof document !== 'undefined' && measureEl;
+    const getNodeDimensions = useDomMeasure
+      ? (node: MindMapNode) => measureNodeWithDom(node, measureEl)
+      : undefined;
+    const layout = calculateLayout(mapData.root, { getNodeDimensions });
+    setLayoutNodes(layout);
+    // Clear measurement div text so it does not appear in accessibility / getByText
+    const measureDiv = measureEl?.querySelector('.htmm-measure-node');
+    if (measureDiv) measureDiv.textContent = '';
   }, [mapData]);
 
   // Pan bounds: from each edge node's edge, negative margin of (viewport size - PAN_LIMIT_VISIBLE_PX). At limit, only 20px of content visible.
@@ -778,6 +787,17 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
       onTouchEnd={touchHandlers.onTouchEnd}
       onTouchCancel={touchHandlers.onTouchCancel}
     >
+      <div
+        ref={measureContainerRef}
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          top: 0,
+          visibility: 'hidden',
+          pointerEvents: 'none',
+        }}
+      />
       <MapToolbar
         isFullscreen={isFullscreen}
         onFullscreenToggle={() => setIsFullscreen((b) => !b)}

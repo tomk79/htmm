@@ -13,7 +13,7 @@
   /* レイアウト */
   position: absolute;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 4px;
   padding: 4px 8px;
   box-sizing: border-box;
@@ -120,10 +120,10 @@
 /* Text（ノードのデフォルトを継承するが、必要ならここでも明示可能） */
 .node-text {
   flex: 1;
+  min-width: 0;
   outline: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: pre-wrap;
+  word-break: break-word;
   /* 継承されがちなため明示 */
   color: inherit;
   font-size: inherit;
@@ -4161,6 +4161,8 @@
     // Minimum node width
     MIN_NODE_HEIGHT: 20,
     // Minimum node height
+    MAX_NODE_TEXT_WIDTH: 280,
+    // Max width for text before wrapping (text area only)
     ICON_SIZE: 16,
     // Icon dimensions
     ICON_PADDING: 2,
@@ -4196,47 +4198,88 @@
       // Approximate line height
     };
   }
+  const LINE_HEIGHT_RATIO = 1.2;
+  function calculateWrappedTextDimensions(text2 = "", fontSize2 = 12, fontFamily2 = "Arial", maxWidth = LAYOUT_CONSTANTS.MAX_NODE_TEXT_WIDTH) {
+    const lineHeight2 = fontSize2 * LINE_HEIGHT_RATIO;
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    if (!context || maxWidth <= 0) {
+      const fallback = calculateTextDimensions(text2, fontSize2, fontFamily2);
+      const width2 = maxWidth > 0 ? Math.min(fallback.width, maxWidth) : fallback.width;
+      return { width: width2, height: fallback.height };
+    }
+    context.font = `${fontSize2}px ${fontFamily2}`;
+    const measure = (s2) => s2 ? context.measureText(s2).width : 0;
+    const lineWidths = [];
+    for (const paragraph of text2.split("\n")) {
+      let currentLine = "";
+      for (const char of paragraph) {
+        const testLine = currentLine + char;
+        const w2 = measure(testLine);
+        if (w2 > maxWidth && currentLine !== "") {
+          lineWidths.push(measure(currentLine));
+          currentLine = char;
+        } else {
+          currentLine = testLine;
+        }
+      }
+      if (currentLine !== "") {
+        lineWidths.push(measure(currentLine));
+      }
+    }
+    if (lineWidths.length === 0) {
+      return { width: 0, height: lineHeight2 };
+    }
+    const width = Math.min(maxWidth, Math.max(...lineWidths));
+    const height = lineWidths.length * lineHeight2;
+    return { width, height };
+  }
   function calculateNodeDimensions(node2) {
     const fontSize2 = node2.font?.size || 12;
     const fontFamily2 = node2.font?.name || "Arial";
-    const textDims = calculateTextDimensions(node2.text || "", fontSize2, fontFamily2);
+    const textDims = calculateWrappedTextDimensions(
+      node2.text || "",
+      fontSize2,
+      fontFamily2,
+      LAYOUT_CONSTANTS.MAX_NODE_TEXT_WIDTH
+    );
     let iconWidth = 0;
     if (node2.icons && node2.icons.length > 0) {
       iconWidth = node2.icons.length * (LAYOUT_CONSTANTS.ICON_SIZE + LAYOUT_CONSTANTS.ICON_PADDING);
     }
     const width = Math.max(
       LAYOUT_CONSTANTS.MIN_NODE_WIDTH,
-      textDims.width + iconWidth + LAYOUT_CONSTANTS.TEXT_PADDING_H * 2
+      Math.ceil(textDims.width + iconWidth + LAYOUT_CONSTANTS.TEXT_PADDING_H * 2)
     );
     const height = Math.max(
       LAYOUT_CONSTANTS.MIN_NODE_HEIGHT,
-      textDims.height + LAYOUT_CONSTANTS.TEXT_PADDING_V * 2
+      Math.ceil(textDims.height + LAYOUT_CONSTANTS.TEXT_PADDING_V * 2)
     );
     return { width, height };
   }
-  function calculateSubtreeHeight(node2) {
+  function calculateSubtreeHeight(node2, getDims) {
     if (!node2.children || node2.children.length === 0 || isFolded(node2)) {
-      const dims2 = calculateNodeDimensions(node2);
+      const dims2 = getDims(node2);
       return dims2.height;
     }
     let totalHeight = 0;
     for (let i2 = 0; i2 < node2.children.length; i2++) {
-      const childHeight = calculateSubtreeHeight(node2.children[i2]);
+      const childHeight = calculateSubtreeHeight(node2.children[i2], getDims);
       totalHeight += childHeight;
       if (i2 < node2.children.length - 1) {
         totalHeight += getVgapAfterChild(node2.children[i2]);
       }
     }
-    const dims = calculateNodeDimensions(node2);
+    const dims = getDims(node2);
     return Math.max(dims.height, totalHeight);
   }
-  function calculateSubtreeHeightForChildren(children) {
+  function calculateSubtreeHeightForChildren(children, getDims) {
     if (children.length === 0) {
       return 0;
     }
     let totalHeight = 0;
     for (let i2 = 0; i2 < children.length; i2++) {
-      const childHeight = calculateSubtreeHeight(children[i2]);
+      const childHeight = calculateSubtreeHeight(children[i2], getDims);
       totalHeight += childHeight;
       if (i2 < children.length - 1) {
         totalHeight += getVgapAfterChild(children[i2]);
@@ -4244,21 +4287,21 @@
     }
     return totalHeight;
   }
-  function layoutChildren(node2, parentX, parentY, side, depth) {
+  function layoutChildren(node2, parentX, parentY, side, depth, getDims) {
     const result = [];
     if (!node2.children || node2.children.length === 0 || isFolded(node2)) {
       return result;
     }
-    const nodeDims = calculateNodeDimensions(node2);
+    const nodeDims = getDims(node2);
     if (depth === 0) {
       const leftChildren = node2.children.filter((child) => child.position === "left");
       const rightChildren = node2.children.filter((child) => child.position !== "left");
       if (leftChildren.length > 0) {
-        const leftSubtreeHeight = calculateSubtreeHeightForChildren(leftChildren);
+        const leftSubtreeHeight = calculateSubtreeHeightForChildren(leftChildren, getDims);
         let currentY = parentY - leftSubtreeHeight / 2 + nodeDims.height / 2;
         for (const child of leftChildren) {
-          const childDims = calculateNodeDimensions(child);
-          const childSubtreeHeight = calculateSubtreeHeight(child);
+          const childDims = getDims(child);
+          const childSubtreeHeight = calculateSubtreeHeight(child, getDims);
           const hgap = child.layout?.hgap !== void 0 ? child.layout.hgap : LAYOUT_CONSTANTS.DEFAULT_HGAP;
           const childX = parentX - nodeDims.width / 2 - hgap - childDims.width / 2;
           const childY = currentY + childSubtreeHeight / 2 - childDims.height / 2;
@@ -4278,7 +4321,8 @@
             childX,
             childY + vshift,
             "left",
-            depth + 1
+            depth + 1,
+            getDims
           );
           result.push(...grandchildren);
           currentY += childSubtreeHeight;
@@ -4286,11 +4330,11 @@
         }
       }
       if (rightChildren.length > 0) {
-        const rightSubtreeHeight = calculateSubtreeHeightForChildren(rightChildren);
+        const rightSubtreeHeight = calculateSubtreeHeightForChildren(rightChildren, getDims);
         let currentY = parentY - rightSubtreeHeight / 2 + nodeDims.height / 2;
         for (const child of rightChildren) {
-          const childDims = calculateNodeDimensions(child);
-          const childSubtreeHeight = calculateSubtreeHeight(child);
+          const childDims = getDims(child);
+          const childSubtreeHeight = calculateSubtreeHeight(child, getDims);
           const hgap = child.layout?.hgap !== void 0 ? child.layout.hgap : LAYOUT_CONSTANTS.DEFAULT_HGAP;
           const childX = parentX + nodeDims.width / 2 + hgap + childDims.width / 2;
           const childY = currentY + childSubtreeHeight / 2 - childDims.height / 2;
@@ -4310,7 +4354,8 @@
             childX,
             childY + vshift,
             "right",
-            depth + 1
+            depth + 1,
+            getDims
           );
           result.push(...grandchildren);
           currentY += childSubtreeHeight;
@@ -4318,11 +4363,11 @@
         }
       }
     } else {
-      const subtreeHeight = calculateSubtreeHeight(node2);
+      const subtreeHeight = calculateSubtreeHeight(node2, getDims);
       let currentY = parentY - subtreeHeight / 2 + nodeDims.height / 2;
       for (const child of node2.children) {
-        const childDims = calculateNodeDimensions(child);
-        const childSubtreeHeight = calculateSubtreeHeight(child);
+        const childDims = getDims(child);
+        const childSubtreeHeight = calculateSubtreeHeight(child, getDims);
         const hgap = child.layout?.hgap !== void 0 ? child.layout.hgap : LAYOUT_CONSTANTS.DEFAULT_HGAP;
         const childX = side === "left" ? parentX - nodeDims.width / 2 - hgap - childDims.width / 2 : parentX + nodeDims.width / 2 + hgap + childDims.width / 2;
         const childY = currentY + childSubtreeHeight / 2 - childDims.height / 2;
@@ -4342,7 +4387,8 @@
           childX,
           childY + vshift,
           side,
-          depth + 1
+          depth + 1,
+          getDims
         );
         result.push(...grandchildren);
         currentY += childSubtreeHeight;
@@ -4351,9 +4397,10 @@
     }
     return result;
   }
-  function calculateLayout(root) {
+  function calculateLayout(root, options) {
+    const getDims = options?.getNodeDimensions ?? ((n2) => calculateNodeDimensions(n2));
     const result = [];
-    const rootDims = calculateNodeDimensions(root);
+    const rootDims = getDims(root);
     const rootLayout = {
       ...root,
       x: LAYOUT_CONSTANTS.ROOT_X,
@@ -4370,7 +4417,8 @@
         LAYOUT_CONSTANTS.ROOT_X,
         LAYOUT_CONSTANTS.ROOT_Y,
         "center",
-        0
+        0,
+        getDims
       );
       result.push(...children);
     }
@@ -4409,6 +4457,66 @@
     const targetX = targetNode.x < sourceNode.x ? targetNode.x + targetNode.width / 2 : targetNode.x - targetNode.width / 2;
     const targetY = targetNode.y;
     return { sourceX, sourceY, targetX, targetY };
+  }
+  function getOrCreateMeasureDiv(container) {
+    let div = container.querySelector(".htmm-measure-node");
+    if (!div) {
+      div = document.createElement("div");
+      div.className = "htmm-measure-node";
+      div.setAttribute("aria-hidden", "true");
+      container.appendChild(div);
+    }
+    return div;
+  }
+  function measureNodeWithDom(node2, measureContainer) {
+    if (!measureContainer || typeof document === "undefined") {
+      return calculateNodeDimensions(node2);
+    }
+    const hasRichContent = node2.richContent?.some((rc) => rc.type === "NODE" && rc.html);
+    if (hasRichContent) {
+      return calculateNodeDimensions(node2);
+    }
+    const div = getOrCreateMeasureDiv(measureContainer);
+    const fontSize2 = node2.font?.size ?? 12;
+    const fontFamily2 = node2.font?.name ?? "Arial, Helvetica, sans-serif";
+    Object.assign(div.style, {
+      position: "absolute",
+      left: "-9999px",
+      visibility: "hidden",
+      pointerEvents: "none",
+      boxSizing: "border-box",
+      maxWidth: `${LAYOUT_CONSTANTS.MAX_NODE_TEXT_WIDTH}px`,
+      padding: "0",
+      margin: "0",
+      border: "none",
+      outline: "none",
+      whiteSpace: "pre-wrap",
+      wordBreak: "break-word",
+      lineHeight: "1.4",
+      fontSize: `${fontSize2}px`,
+      fontFamily: fontFamily2,
+      fontWeight: node2.font?.bold ? "bold" : "normal",
+      fontStyle: node2.font?.italic ? "italic" : "normal",
+      textDecoration: node2.font?.strikethrough ? "line-through" : "none"
+    });
+    div.textContent = node2.text ?? "";
+    void div.offsetHeight;
+    const rect = div.getBoundingClientRect();
+    const textWidth = Math.min(rect.width, LAYOUT_CONSTANTS.MAX_NODE_TEXT_WIDTH);
+    const textHeight = Math.max(rect.height, div.scrollHeight);
+    let iconWidth = 0;
+    if (node2.icons && node2.icons.length > 0) {
+      iconWidth = node2.icons.length * (LAYOUT_CONSTANTS.ICON_SIZE + LAYOUT_CONSTANTS.ICON_PADDING);
+    }
+    const width = Math.max(
+      LAYOUT_CONSTANTS.MIN_NODE_WIDTH,
+      Math.ceil(textWidth + iconWidth + LAYOUT_CONSTANTS.TEXT_PADDING_H * 2)
+    );
+    const height = Math.max(
+      LAYOUT_CONSTANTS.MIN_NODE_HEIGHT,
+      Math.ceil(textHeight + LAYOUT_CONSTANTS.TEXT_PADDING_V * 2)
+    );
+    return { width, height };
   }
   const ICON_MAP = {
     // Status & Actions
@@ -5928,7 +6036,7 @@
       left: `${node2.x - node2.width / 2}px`,
       top: `${node2.y - node2.height / 2}px`,
       width: `${node2.width}px`,
-      minHeight: `${node2.height}px`,
+      height: `${node2.height}px`,
       color: node2.color ?? NODE_DEFAULT_STYLE.color,
       backgroundColor: node2.backgroundColor ?? NODE_DEFAULT_STYLE.backgroundColor,
       fontSize: `${node2.font?.size ?? NODE_DEFAULT_STYLE.fontSize}px`,
@@ -7453,6 +7561,7 @@ Ctrl+Click to open`,
     const newlyAddedNodeIdRef = reactExports.useRef(null);
     const containerRef = reactExports.useRef(null);
     const canvasRef = reactExports.useRef(null);
+    const measureContainerRef = reactExports.useRef(null);
     const panStartRef = reactExports.useRef(null);
     const SCROLL_INTO_VIEW_MARGIN = 24;
     const PAN_LIMIT_VISIBLE_PX = 20;
@@ -7490,10 +7599,14 @@ Ctrl+Click to open`,
       handleDragEnd
     } = useDragAndDrop(handleNodeMove);
     reactExports.useEffect(() => {
-      if (mapData) {
-        const layout = calculateLayout(mapData.root);
-        setLayoutNodes(layout);
-      }
+      if (!mapData) return;
+      const measureEl = measureContainerRef.current;
+      const useDomMeasure = typeof document !== "undefined" && measureEl;
+      const getNodeDimensions = useDomMeasure ? (node2) => measureNodeWithDom(node2, measureEl) : void 0;
+      const layout = calculateLayout(mapData.root, { getNodeDimensions });
+      setLayoutNodes(layout);
+      const measureDiv = measureEl?.querySelector(".htmm-measure-node");
+      if (measureDiv) measureDiv.textContent = "";
     }, [mapData]);
     const getPanBounds = reactExports.useCallback((contentWidth, contentHeight) => {
       if (layoutNodes.length === 0) {
@@ -7980,6 +8093,20 @@ Ctrl+Click to open`,
         onTouchEnd: touchHandlers.onTouchEnd,
         onTouchCancel: touchHandlers.onTouchCancel,
         children: [
+          /* @__PURE__ */ jsxRuntimeExports.jsx(
+            "div",
+            {
+              ref: measureContainerRef,
+              "aria-hidden": "true",
+              style: {
+                position: "absolute",
+                left: "-9999px",
+                top: 0,
+                visibility: "hidden",
+                pointerEvents: "none"
+              }
+            }
+          ),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
             MapToolbar,
             {

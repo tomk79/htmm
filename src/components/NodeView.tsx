@@ -201,7 +201,7 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
     left: `${node.x - node.width / 2}px`,
     top: `${node.y - node.height / 2}px`,
     width: `${node.width}px`,
-    minHeight: `${node.height}px`,
+    height: `${node.height}px`,
     color: node.color ?? NODE_DEFAULT_STYLE.color,
     backgroundColor: node.backgroundColor ?? NODE_DEFAULT_STYLE.backgroundColor,
     fontSize: `${node.font?.size ?? NODE_DEFAULT_STYLE.fontSize}px`,
