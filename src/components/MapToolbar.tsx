@@ -119,30 +119,30 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
             className="htmm-map-toolbar-btn"
             onClick={handleAddAbove}
             disabled={editDisabled || !selectedId || isRoot}
-            title="上にノードを追加"
-            aria-label="上にノードを追加"
+            title="Add node above"
+            aria-label="Add node above"
           >
-            上
+            Above
           </button>
           <button
             type="button"
             className="htmm-map-toolbar-btn"
             onClick={handleAddBelow}
             disabled={editDisabled || !selectedId || isRoot}
-            title="下にノードを追加"
-            aria-label="下にノードを追加"
+            title="Add node below"
+            aria-label="Add node below"
           >
-            下
+            Below
           </button>
           <button
             type="button"
             className="htmm-map-toolbar-btn"
             onClick={handleAddChild}
             disabled={editDisabled}
-            title="子ノードを追加"
-            aria-label="子ノードを追加"
+            title="Add child node"
+            aria-label="Add child node"
           >
-            子
+            Child
           </button>
         </div>
 
@@ -154,8 +154,8 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
             className={`htmm-map-toolbar-btn ${selectedNode?.font?.bold ? 'htmm-map-toolbar-btn-active' : ''}`}
             onClick={handleBoldToggle}
             disabled={formatDisabled}
-            title="太字"
-            aria-label="太字"
+            title="Bold"
+            aria-label="Bold"
           >
             B
           </button>
@@ -164,8 +164,8 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
             className={`htmm-map-toolbar-btn ${selectedNode?.font?.italic ? 'htmm-map-toolbar-btn-active' : ''}`}
             onClick={handleItalicToggle}
             disabled={formatDisabled}
-            title="イタリック"
-            aria-label="イタリック"
+            title="Italic"
+            aria-label="Italic"
           >
             I
           </button>
@@ -175,7 +175,7 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
 
         <div className="htmm-map-toolbar-group htmm-map-toolbar-group-inline">
           <label className="htmm-map-toolbar-label" htmlFor="htmm-toolbar-color">
-            <span className="htmm-map-toolbar-label-text">色</span>
+            <span className="htmm-map-toolbar-label-text">Color</span>
             <input
               id="htmm-toolbar-color"
               type="color"
@@ -183,20 +183,20 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
               value={selectedNode?.color ?? '#000000'}
               onChange={handleColorChange}
               disabled={formatDisabled}
-              title="文字色"
-              aria-label="文字色"
+              title="Text color"
+              aria-label="Text color"
             />
           </label>
           <label className="htmm-map-toolbar-label" htmlFor="htmm-toolbar-size">
-            <span className="htmm-map-toolbar-label-text">サイズ</span>
+            <span className="htmm-map-toolbar-label-text">Size</span>
             <select
               id="htmm-toolbar-size"
               className="htmm-map-toolbar-select"
               value={selectedNode?.font?.size ?? 12}
               onChange={handleSizeChange}
               disabled={formatDisabled}
-              title="文字サイズ"
-              aria-label="文字サイズ"
+              title="Font size"
+              aria-label="Font size"
             >
               {FONT_SIZES.map((s) => (
                 <option key={s} value={s}>
@@ -214,8 +214,8 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
             type="button"
             className={`htmm-map-toolbar-btn ${isFullscreen ? 'htmm-map-toolbar-btn-active' : ''}`}
             onClick={onFullscreenToggle}
-            title={isFullscreen ? 'フルスクリーン解除' : 'フルスクリーン'}
-            aria-label={isFullscreen ? 'フルスクリーン解除' : 'フルスクリーン'}
+            title={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+            aria-label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
           >
             ⛶
           </button>
@@ -224,8 +224,8 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
             className="htmm-map-toolbar-btn"
             onClick={openCodeModal}
             disabled={editDisabled}
-            title="コード直接編集"
-            aria-label="コード直接編集"
+            title="Edit code"
+            aria-label="Edit code"
           >
             &lt;/&gt;
           </button>
@@ -248,7 +248,7 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
             onKeyUp={(e) => e.stopPropagation()}
           >
             <h2 id="htmm-code-modal-title" className="htmm-map-code-modal-title">
-              コード直接編集 (.mm XML)
+              Edit code (.mm XML)
             </h2>
             {codeEditError && (
               <div className="htmm-map-code-modal-error" role="alert">
@@ -262,14 +262,14 @@ export const MapToolbar: React.FC<MapToolbarProps> = ({
               onKeyDown={(e) => e.stopPropagation()}
               onKeyUp={(e) => e.stopPropagation()}
               spellCheck={false}
-              aria-label="XML 編集"
+              aria-label="Edit XML"
             />
             <div className="htmm-map-code-modal-actions">
               <button type="button" className="htmm-map-toolbar-btn" onClick={closeCodeModal}>
-                キャンセル
+                Cancel
               </button>
               <button type="button" className="htmm-map-toolbar-btn htmm-map-code-modal-apply" onClick={applyCodeEdit}>
-                適用
+                Apply
               </button>
             </div>
           </div>

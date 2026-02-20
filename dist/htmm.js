@@ -7073,9 +7073,9 @@ Ctrl+Click to open`,
               className: "htmm-map-toolbar-btn",
               onClick: handleAddAbove,
               disabled: editDisabled || !selectedId || isRoot,
-              title: "上にノードを追加",
-              "aria-label": "上にノードを追加",
-              children: "上"
+              title: "Add node above",
+              "aria-label": "Add node above",
+              children: "Above"
             }
           ),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -7085,9 +7085,9 @@ Ctrl+Click to open`,
               className: "htmm-map-toolbar-btn",
               onClick: handleAddBelow,
               disabled: editDisabled || !selectedId || isRoot,
-              title: "下にノードを追加",
-              "aria-label": "下にノードを追加",
-              children: "下"
+              title: "Add node below",
+              "aria-label": "Add node below",
+              children: "Below"
             }
           ),
           /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -7097,9 +7097,9 @@ Ctrl+Click to open`,
               className: "htmm-map-toolbar-btn",
               onClick: handleAddChild,
               disabled: editDisabled,
-              title: "子ノードを追加",
-              "aria-label": "子ノードを追加",
-              children: "子"
+              title: "Add child node",
+              "aria-label": "Add child node",
+              children: "Child"
             }
           )
         ] }),
@@ -7112,8 +7112,8 @@ Ctrl+Click to open`,
               className: `htmm-map-toolbar-btn ${selectedNode?.font?.bold ? "htmm-map-toolbar-btn-active" : ""}`,
               onClick: handleBoldToggle,
               disabled: formatDisabled,
-              title: "太字",
-              "aria-label": "太字",
+              title: "Bold",
+              "aria-label": "Bold",
               children: "B"
             }
           ),
@@ -7124,8 +7124,8 @@ Ctrl+Click to open`,
               className: `htmm-map-toolbar-btn ${selectedNode?.font?.italic ? "htmm-map-toolbar-btn-active" : ""}`,
               onClick: handleItalicToggle,
               disabled: formatDisabled,
-              title: "イタリック",
-              "aria-label": "イタリック",
+              title: "Italic",
+              "aria-label": "Italic",
               children: "I"
             }
           )
@@ -7133,7 +7133,7 @@ Ctrl+Click to open`,
         /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-toolbar-divider", "aria-hidden": "true" }),
         /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-toolbar-group htmm-map-toolbar-group-inline", children: [
           /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "htmm-map-toolbar-label", htmlFor: "htmm-toolbar-color", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "htmm-map-toolbar-label-text", children: "色" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "htmm-map-toolbar-label-text", children: "Color" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "input",
               {
@@ -7143,13 +7143,13 @@ Ctrl+Click to open`,
                 value: selectedNode?.color ?? "#000000",
                 onChange: handleColorChange,
                 disabled: formatDisabled,
-                title: "文字色",
-                "aria-label": "文字色"
+                title: "Text color",
+                "aria-label": "Text color"
               }
             )
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("label", { className: "htmm-map-toolbar-label", htmlFor: "htmm-toolbar-size", children: [
-            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "htmm-map-toolbar-label-text", children: "サイズ" }),
+            /* @__PURE__ */ jsxRuntimeExports.jsx("span", { className: "htmm-map-toolbar-label-text", children: "Size" }),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               "select",
               {
@@ -7158,8 +7158,8 @@ Ctrl+Click to open`,
                 value: selectedNode?.font?.size ?? 12,
                 onChange: handleSizeChange,
                 disabled: formatDisabled,
-                title: "文字サイズ",
-                "aria-label": "文字サイズ",
+                title: "Font size",
+                "aria-label": "Font size",
                 children: FONT_SIZES.map((s2) => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: s2, children: s2 }, s2))
               }
             )
@@ -7173,8 +7173,8 @@ Ctrl+Click to open`,
               type: "button",
               className: `htmm-map-toolbar-btn ${isFullscreen ? "htmm-map-toolbar-btn-active" : ""}`,
               onClick: onFullscreenToggle,
-              title: isFullscreen ? "フルスクリーン解除" : "フルスクリーン",
-              "aria-label": isFullscreen ? "フルスクリーン解除" : "フルスクリーン",
+              title: isFullscreen ? "Exit fullscreen" : "Fullscreen",
+              "aria-label": isFullscreen ? "Exit fullscreen" : "Fullscreen",
               children: "⛶"
             }
           ),
@@ -7185,8 +7185,8 @@ Ctrl+Click to open`,
               className: "htmm-map-toolbar-btn",
               onClick: openCodeModal,
               disabled: editDisabled,
-              title: "コード直接編集",
-              "aria-label": "コード直接編集",
+              title: "Edit code",
+              "aria-label": "Edit code",
               children: "</>"
             }
           )
@@ -7209,7 +7209,7 @@ Ctrl+Click to open`,
               onKeyDown: (e2) => e2.stopPropagation(),
               onKeyUp: (e2) => e2.stopPropagation(),
               children: [
-                /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { id: "htmm-code-modal-title", className: "htmm-map-code-modal-title", children: "コード直接編集 (.mm XML)" }),
+                /* @__PURE__ */ jsxRuntimeExports.jsx("h2", { id: "htmm-code-modal-title", className: "htmm-map-code-modal-title", children: "Edit code (.mm XML)" }),
                 codeEditError && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "htmm-map-code-modal-error", role: "alert", children: codeEditError }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(
                   "textarea",
@@ -7220,12 +7220,12 @@ Ctrl+Click to open`,
                     onKeyDown: (e2) => e2.stopPropagation(),
                     onKeyUp: (e2) => e2.stopPropagation(),
                     spellCheck: false,
-                    "aria-label": "XML 編集"
+                    "aria-label": "Edit XML"
                   }
                 ),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "htmm-map-code-modal-actions", children: [
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn", onClick: closeCodeModal, children: "キャンセル" }),
-                  /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn htmm-map-code-modal-apply", onClick: applyCodeEdit, children: "適用" })
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn", onClick: closeCodeModal, children: "Cancel" }),
+                  /* @__PURE__ */ jsxRuntimeExports.jsx("button", { type: "button", className: "htmm-map-toolbar-btn htmm-map-code-modal-apply", onClick: applyCodeEdit, children: "Apply" })
                 ] })
               ]
             }
