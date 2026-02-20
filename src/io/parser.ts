@@ -20,6 +20,14 @@ import type {
   ArrowType,
   RichContentType,
 } from '../types/mindmap';
+import { createRootNode } from '../models/MindMapNode';
+
+function createFallbackMapData(rootText: string): MindMapData {
+  return {
+    version: '1.0.1',
+    root: createRootNode(rootText),
+  };
+}
 
 /**
  * Parse a .mm mind map file from XML string
@@ -316,20 +324,42 @@ function isEdgeWidth(value: string): value is EdgeWidth {
 
 /**
  * Load .mm file from File object
+ * Returns a fallback blank map (empty root or error message in root) on empty file or parse failure.
  */
 export async function loadMindMapFile(file: File): Promise<MindMapData> {
   const text = await file.text();
-  return parseMindMapXML(text);
+  const trimmed = text.trim();
+  if (trimmed === '') {
+    return createFallbackMapData('');
+  }
+  try {
+    return parseMindMapXML(text);
+  } catch (e) {
+    return createFallbackMapData('Error: ' + (e instanceof Error ? e.message : String(e)));
+  }
 }
 
 /**
  * Load .mm file from URL
+ * Returns a fallback blank map (empty root or error message in root) on fetch/parse failure.
  */
 export async function loadMindMapURL(url: string): Promise<MindMapData> {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed to load mind map: ${response.statusText}`);
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      return createFallbackMapData('Failed to load mind map: ' + response.statusText);
+    }
+    const text = await response.text();
+    const trimmed = text.trim();
+    if (trimmed === '') {
+      return createFallbackMapData('');
+    }
+    try {
+      return parseMindMapXML(text);
+    } catch (e) {
+      return createFallbackMapData('Error: ' + (e instanceof Error ? e.message : String(e)));
+    }
+  } catch (e) {
+    return createFallbackMapData('Failed to load mind map: ' + (e instanceof Error ? e.message : String(e)));
   }
-  const text = await response.text();
-  return parseMindMapXML(text);
 }

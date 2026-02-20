@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { parseMindMapXML } from '../io/parser';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { parseMindMapXML, loadMindMapFile, loadMindMapURL } from '../io/parser';
 import { generateMindMapXML } from '../io/generator';
 import type { MindMapData } from '../types/mindmap';
 
@@ -203,6 +203,78 @@ describe('XML Parser and Generator', () => {
       expect(parsed.root.font?.name).toBe(original.root.font?.name);
       expect(parsed.root.font?.size).toBe(original.root.font?.size);
       expect(parsed.root.edge?.style).toBe(original.root.edge?.style);
+    });
+  });
+
+  describe('loadMindMapFile', () => {
+    it('should return fallback map with empty root for blank file', async () => {
+      const file = { text: () => Promise.resolve('') } as File;
+      const result = await loadMindMapFile(file);
+      expect(result.root.text).toBe('');
+      expect(result.root.children).toHaveLength(0);
+      expect(result.version).toBe('1.0.1');
+    });
+
+    it('should return fallback map with error message in root for invalid XML', async () => {
+      const file = { text: () => Promise.resolve('<invalid>') } as File;
+      const result = await loadMindMapFile(file);
+      expect(result.root.text).toContain('Error:');
+      expect(result.root.children).toHaveLength(0);
+    });
+  });
+
+  describe('loadMindMapURL', () => {
+    const originalFetch = globalThis.fetch;
+
+    beforeEach(() => {
+      vi.stubGlobal(
+        'fetch',
+        vi.fn((url: string) => {
+          if (url === 'https://example.com/empty.mm') {
+            return Promise.resolve({
+              ok: true,
+              text: () => Promise.resolve(''),
+            } as Response);
+          }
+          if (url === 'https://example.com/invalid.mm') {
+            return Promise.resolve({
+              ok: true,
+              text: () => Promise.resolve('<invalid>'),
+            } as Response);
+          }
+          if (url === 'https://example.com/notfound.mm') {
+            return Promise.resolve({
+              ok: false,
+              statusText: 'Not Found',
+              text: () => Promise.resolve(''),
+            } as Response);
+          }
+          return originalFetch(url);
+        }),
+      );
+    });
+
+    afterEach(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it('should return fallback map with empty root for blank response', async () => {
+      const result = await loadMindMapURL('https://example.com/empty.mm');
+      expect(result.root.text).toBe('');
+      expect(result.root.children).toHaveLength(0);
+    });
+
+    it('should return fallback map with error message in root for invalid XML response', async () => {
+      const result = await loadMindMapURL('https://example.com/invalid.mm');
+      expect(result.root.text).toContain('Error:');
+      expect(result.root.children).toHaveLength(0);
+    });
+
+    it('should return fallback map with error message when response is not ok', async () => {
+      const result = await loadMindMapURL('https://example.com/notfound.mm');
+      expect(result.root.text).toContain('Failed to load mind map:');
+      expect(result.root.text).toContain('Not Found');
+      expect(result.root.children).toHaveLength(0);
     });
   });
 });

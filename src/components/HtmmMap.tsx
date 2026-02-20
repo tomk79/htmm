@@ -902,13 +902,9 @@ export const HtmmMap = forwardRef<HtmmMapHandle, HtmmMapProps>(function HtmmMap(
   useEffect(() => {
     if (src) {
       setLoadError(null);
-      loadMindMapURL(src)
-        .then((data) => {
-          internalStore.getState().loadMap(data);
-        })
-        .catch((err) => {
-          setLoadError(err instanceof Error ? err.message : String(err));
-        });
+      loadMindMapURL(src).then((data) => {
+        internalStore.getState().loadMap(data);
+      });
       return;
     }
     if (initialMapData != null) {

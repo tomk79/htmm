@@ -3919,6 +3919,12 @@
   const useHtmmStore = Object.assign(useHtmmStoreHook, {
     getState: () => defaultStore.getState()
   });
+  function createFallbackMapData(rootText) {
+    return {
+      version: "1.0.1",
+      root: createRootNode(rootText)
+    };
+  }
   function parseMindMapXML(xmlString) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(xmlString, "text/xml");
@@ -4114,15 +4120,35 @@
   }
   async function loadMindMapFile(file) {
     const text2 = await file.text();
-    return parseMindMapXML(text2);
+    const trimmed = text2.trim();
+    if (trimmed === "") {
+      return createFallbackMapData("");
+    }
+    try {
+      return parseMindMapXML(text2);
+    } catch (e2) {
+      return createFallbackMapData("Error: " + (e2 instanceof Error ? e2.message : String(e2)));
+    }
   }
   async function loadMindMapURL(url) {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Failed to load mind map: ${response.statusText}`);
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        return createFallbackMapData("Failed to load mind map: " + response.statusText);
+      }
+      const text2 = await response.text();
+      const trimmed = text2.trim();
+      if (trimmed === "") {
+        return createFallbackMapData("");
+      }
+      try {
+        return parseMindMapXML(text2);
+      } catch (e2) {
+        return createFallbackMapData("Error: " + (e2 instanceof Error ? e2.message : String(e2)));
+      }
+    } catch (e2) {
+      return createFallbackMapData("Failed to load mind map: " + (e2 instanceof Error ? e2.message : String(e2)));
     }
-    const text2 = await response.text();
-    return parseMindMapXML(text2);
   }
   const LAYOUT_CONSTANTS = {
     DEFAULT_HGAP: 20,
@@ -8062,8 +8088,6 @@ Ctrl+Click to open`,
         setLoadError(null);
         loadMindMapURL(src).then((data) => {
           internalStore.getState().loadMap(data);
-        }).catch((err) => {
-          setLoadError(err instanceof Error ? err.message : String(err));
         });
         return;
       }

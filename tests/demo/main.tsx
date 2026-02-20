@@ -224,12 +224,8 @@ const DemoApp: React.FC = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      try {
-        const data = await loadMindMapFile(file);
-        mapRef.current?.loadMap(data);
-      } catch (err) {
-        console.error('Failed to load .mm file', err);
-      }
+      const data = await loadMindMapFile(file);
+      mapRef.current?.loadMap(data);
       e.target.value = '';
     }
   };
