@@ -2,7 +2,9 @@
 vite.config.ts
 tsconfig.node.json
 
-# テスト・デモ
+# テスト・デモ（src内のユニットテストも公開しない）
+**/*.test.ts
+**/*.test.tsx
 tests/
 vitest.config.ts
 playwright.config.ts
