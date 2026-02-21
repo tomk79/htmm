@@ -346,7 +346,7 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 
 ## 更新履歴
 
-### @tomk79/htmm v0.0.2 (リリース日未定)
+### @tomk79/htmm v0.0.2 (2026年2月21日)
 
 - npm のエントリーポイントを修正。
 - 公開ファイルリストの不備を修正。
