@@ -220,9 +220,15 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
   `.trim();
   
   const hasFoldableChildren = hasChildren(node);
+  const isLeftSide = node.side === 'left';
   
   // Determine if this node can be dragged (not root node)
   const isDraggable = node.depth > 0 && editable && !readOnly;
+  
+  // 開閉トグルの矢印: 左側ノードは閉じ時は左向き(◀)、右側は閉じ時は右向き(▶)。開いているときは下向き(▼)
+  const foldArrow = node.folded
+    ? (isLeftSide ? '◀' : '▶')
+    : '▼';
   
   return (
     <div
@@ -245,17 +251,17 @@ export const NodeView: React.FC<NodeViewProps> = React.memo(({
       aria-label={`${node.text || 'Untitled node'}${node.folded ? ' (collapsed)' : ''}${node.link ? ' (has link)' : ''}`}
       tabIndex={0}
     >
-      {/* Folding symbol */}
+      {/* Folding symbol（ルートより左のノードは左側に表示・閉じ時は左向き矢印） */}
       {hasFoldableChildren && (
         <div
-          className={`fold-symbol ${node.folded ? 'folded' : 'unfolded'}`}
+          className={`fold-symbol ${node.folded ? 'folded' : 'unfolded'} ${isLeftSide ? 'fold-symbol-left' : ''}`}
           onClick={handleFoldClick}
           role="button"
           aria-label={node.folded ? 'Expand' : 'Collapse'}
           aria-pressed={!node.folded}
           tabIndex={-1}
         >
-          {node.folded ? '▶' : '▼'}
+          {foldArrow}
         </div>
       )}
       

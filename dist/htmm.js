@@ -68,10 +68,11 @@
   border-width: 2px;
 }
 
-/* Folding symbol */
+/* Folding symbol（右側ノードはノードの右側、左側ノードはノードの左側に表示） */
 .fold-symbol {
   position: absolute;
-  left: -20px;
+  left: auto;
+  right: -20px;
   width: 16px;
   height: 16px;
   display: flex;
@@ -83,6 +84,12 @@
   background-color: white;
   border: 1px solid #999;
   border-radius: 3px;
+}
+
+/* ルートより左のノード: トグルをノードの左側に表示 */
+.fold-symbol.fold-symbol-left {
+  left: -20px;
+  right: auto;
 }
 
 .fold-symbol:hover {
@@ -241,7 +248,12 @@
     width: 24px;
     height: 24px;
     font-size: 14px;
+    right: -28px;
+  }
+
+  .fold-symbol.fold-symbol-left {
     left: -28px;
+    right: auto;
   }
   
   .node-icon {
@@ -6053,7 +6065,9 @@
     ${dragState?.dropTargetNodeId === node2.id ? `drop-target drop-${dragState.dropPosition}` : ""}
   `.trim();
     const hasFoldableChildren = hasChildren(node2);
+    const isLeftSide = node2.side === "left";
     const isDraggable = node2.depth > 0 && editable && !readOnly;
+    const foldArrow = node2.folded ? isLeftSide ? "◀" : "▶" : "▼";
     return /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
@@ -6079,13 +6093,13 @@
           hasFoldableChildren && /* @__PURE__ */ jsxRuntimeExports.jsx(
             "div",
             {
-              className: `fold-symbol ${node2.folded ? "folded" : "unfolded"}`,
+              className: `fold-symbol ${node2.folded ? "folded" : "unfolded"} ${isLeftSide ? "fold-symbol-left" : ""}`,
               onClick: handleFoldClick,
               role: "button",
               "aria-label": node2.folded ? "Expand" : "Collapse",
               "aria-pressed": !node2.folded,
               tabIndex: -1,
-              children: node2.folded ? "▶" : "▼"
+              children: foldArrow
             }
           ),
           node2.icons && node2.icons.length > 0 && /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "node-icons", role: "group", "aria-label": "Node icons", children: node2.icons.map((icon, index2) => /* @__PURE__ */ jsxRuntimeExports.jsx(

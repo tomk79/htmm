@@ -64,10 +64,11 @@
   border-width: 2px;
 }
 
-/* Folding symbol */
+/* Folding symbol（右側ノードはノードの右側、左側ノードはノードの左側に表示） */
 .fold-symbol {
   position: absolute;
-  left: -20px;
+  left: auto;
+  right: -20px;
   width: 16px;
   height: 16px;
   display: flex;
@@ -79,6 +80,12 @@
   background-color: white;
   border: 1px solid #999;
   border-radius: 3px;
+}
+
+/* ルートより左のノード: トグルをノードの左側に表示 */
+.fold-symbol.fold-symbol-left {
+  left: -20px;
+  right: auto;
 }
 
 .fold-symbol:hover {
@@ -237,7 +244,12 @@
     width: 24px;
     height: 24px;
     font-size: 14px;
+    right: -28px;
+  }
+
+  .fold-symbol.fold-symbol-left {
     left: -28px;
+    right: auto;
   }
   
   .node-icon {
