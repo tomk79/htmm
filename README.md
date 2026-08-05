@@ -346,6 +346,10 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 
 ## 更新履歴
 
+### @tomk79/htmm v0.1.0 (2026年8月5日)
+
+- ライセンスを GNU GPL v2 から MIT License に変更。
+
 ### @tomk79/htmm v0.0.2 (2026年2月21日)
 
 - npm のエントリーポイントを修正。
@@ -421,7 +425,7 @@ MIT License
 
 本プロジェクトは [FreeMind](http://freemind.sourceforge.net/) の `.mm` 形式に対応していますが、独自に実装されたものです。
 
-なお、v0.0.2 までは GNU GPL v2 として公開していましたが、v0.0.3 以降は MIT License に変更しています。
+なお、v0.0.2 までは GNU GPL v2 として公開していましたが、v0.1.0 以降は MIT License に変更しています。
 
 ## 謝辞
 
