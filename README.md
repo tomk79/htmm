@@ -2,7 +2,7 @@
 
 FreeMind互換の .mm 形式を扱う、軽量で埋め込み可能なマインドマップUIコンポーネント
 
-[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19-blue)](https://react.dev/)
 
@@ -417,9 +417,11 @@ htmm/
 
 ## ライセンス
 
-GNU GPL v2 - FreeMindと同じライセンス
+MIT License
 
-本プロジェクトは [FreeMind](http://freemind.sourceforge.net/) をベースにしています。
+本プロジェクトは [FreeMind](http://freemind.sourceforge.net/) の `.mm` 形式に対応していますが、独自に実装されたものです。
+
+なお、v0.0.2 までは GNU GPL v2 として公開していましたが、v0.0.3 以降は MIT License に変更しています。
 
 ## 謝辞
 

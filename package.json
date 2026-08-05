@@ -60,5 +60,5 @@
   "types": "src/index.ts",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "MIT"
 }
