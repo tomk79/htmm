@@ -3838,6 +3838,16 @@
     return arrowLinks;
   }
   enableMapSet();
+  function recordHistory(state) {
+    if (state.readOnly || !state.mapData) return;
+    state.history = state.history.slice(0, state.historyIndex + 1);
+    state.history.push(JSON.parse(JSON.stringify(state.mapData)));
+    if (state.history.length > state.maxHistorySize) {
+      state.history.shift();
+    } else {
+      state.historyIndex++;
+    }
+  }
   function createHtmmStoreSlice(set2, get2, initialOverrides) {
     const readOnlyInitial = initialOverrides?.readOnly ?? false;
     return {
@@ -3904,7 +3914,7 @@
           state.selectedNodeIds.clear();
           state.selectedNodeIds.add(newNode.id);
           newNodeId = newNode.id;
-          get2().pushHistory();
+          recordHistory(state);
         });
         return newNodeId;
       },
@@ -3932,7 +3942,7 @@
           state.selectedNodeIds.clear();
           state.selectedNodeIds.add(newNode.id);
           newNodeId = newNode.id;
-          get2().pushHistory();
+          recordHistory(state);
         });
         return newNodeId;
       },
@@ -3958,7 +3968,7 @@
             state.selectedNodeIds.clear();
             state.selectedNodeIds.add(newSelectedNodeId);
           }
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       editNode: (nodeId, text2) => {
@@ -3969,7 +3979,7 @@
           if (!node2) return;
           node2.text = text2;
           node2.modified = Date.now();
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       moveNode: (nodeId, newParentId, index2) => {
@@ -3987,7 +3997,7 @@
           }
           const insertIndex = index2 !== void 0 ? index2 : newParent.children.length;
           newParent.children.splice(insertIndex, 0, node2);
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       setNodePosition: (nodeId, position2) => {
@@ -3999,7 +4009,7 @@
           const node2 = findNodeById(state.mapData.root, nodeId);
           if (!node2) return;
           node2.position = position2;
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       // Folding
@@ -4044,7 +4054,7 @@
           const node2 = findNodeById(state.mapData.root, nodeId);
           if (!node2) return;
           node2.color = color2;
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       setNodeBackgroundColor: (nodeId, color2) => {
@@ -4054,7 +4064,7 @@
           const node2 = findNodeById(state.mapData.root, nodeId);
           if (!node2) return;
           node2.backgroundColor = color2;
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       setFont: (nodeId, font) => {
@@ -4067,7 +4077,7 @@
             node2.font = {};
           }
           Object.assign(node2.font, font);
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       setNodeStyle: (nodeId, style) => {
@@ -4077,7 +4087,7 @@
           const node2 = findNodeById(state.mapData.root, nodeId);
           if (!node2) return;
           node2.style = style;
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       // Icons
@@ -4093,7 +4103,7 @@
           if (!node2.icons.some((icon) => icon.builtin === iconName)) {
             node2.icons.push({ builtin: iconName });
           }
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       removeIcon: (nodeId, iconName) => {
@@ -4106,7 +4116,7 @@
           if (node2.icons.length === 0) {
             delete node2.icons;
           }
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       clearIcons: (nodeId) => {
@@ -4116,7 +4126,7 @@
           const node2 = findNodeById(state.mapData.root, nodeId);
           if (!node2) return;
           delete node2.icons;
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       // Links
@@ -4127,7 +4137,7 @@
           const node2 = findNodeById(state.mapData.root, nodeId);
           if (!node2) return;
           node2.link = url;
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       removeLink: (nodeId) => {
@@ -4137,7 +4147,7 @@
           const node2 = findNodeById(state.mapData.root, nodeId);
           if (!node2) return;
           delete node2.link;
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       // Arrow Links
@@ -4161,7 +4171,7 @@
             endInclination: arrowLink?.endInclination
           };
           sourceNode.arrowLinks.push(newArrowLink);
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       removeArrowLink: (sourceId, targetId) => {
@@ -4173,7 +4183,7 @@
           const index2 = sourceNode.arrowLinks.findIndex((link) => link.destination === targetId);
           if (index2 >= 0) {
             sourceNode.arrowLinks.splice(index2, 1);
-            get2().pushHistory();
+            recordHistory(state);
           }
         });
       },
@@ -4190,7 +4200,7 @@
             if (arrowLink.endArrow !== void 0) link.endArrow = arrowLink.endArrow;
             if (arrowLink.startInclination !== void 0) link.startInclination = arrowLink.startInclination;
             if (arrowLink.endInclination !== void 0) link.endInclination = arrowLink.endInclination;
-            get2().pushHistory();
+            recordHistory(state);
           }
         });
       },
@@ -4202,7 +4212,7 @@
           const node2 = findNodeById(state.mapData.root, nodeId);
           if (!node2) return;
           node2.cloud = color2 ? { color: color2 } : {};
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       removeCloud: (nodeId) => {
@@ -4212,7 +4222,7 @@
           const node2 = findNodeById(state.mapData.root, nodeId);
           if (!node2) return;
           delete node2.cloud;
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       // Selection
@@ -4253,7 +4263,7 @@
           }
           const cloned = cloneNode(state.clipboard, true);
           parent.children.push(cloned);
-          get2().pushHistory();
+          recordHistory(state);
         });
       },
       // History
@@ -4278,14 +4288,7 @@
       pushHistory: () => {
         if (get2().readOnly) return;
         set2((state) => {
-          if (!state.mapData) return;
-          state.history = state.history.slice(0, state.historyIndex + 1);
-          state.history.push(JSON.parse(JSON.stringify(state.mapData)));
-          if (state.history.length > state.maxHistorySize) {
-            state.history.shift();
-          } else {
-            state.historyIndex++;
-          }
+          recordHistory(state);
         });
       },
       // View

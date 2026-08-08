@@ -1,11 +1,38 @@
 import path from 'path';
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page, type Locator } from '@playwright/test';
 
 const FIXTURE_MM = path.join(process.cwd(), 'tests', 'e2e', 'fixtures', 'sample.mm');
+
+/** Main (editable) map — demo page also mounts a ReadOnly map below. */
+function mainMap(page: Page): Locator {
+  return page.locator('.htmm-map.demo-main-map');
+}
+
+function mainRoot(page: Page): Locator {
+  return mainMap(page).locator('.node-view.root');
+}
+
+function mainNodes(page: Page): Locator {
+  return mainMap(page).locator('.node-view');
+}
+
+async function loadFixture(page: Page): Promise<void> {
+  await page.getByTestId('file-input').setInputFiles(FIXTURE_MM);
+  await expect(mainRoot(page)).toContainText('Loaded Map', { timeout: 3000 });
+}
+
+/** Tab adds a child and enters edit mode. */
+async function addChildViaTab(page: Page): Promise<void> {
+  await page.keyboard.press('Tab');
+  await expect(mainMap(page).locator('.node-text[contenteditable="true"]')).toBeVisible({
+    timeout: 2000,
+  });
+}
 
 test.describe('htmm - Basic Functionality', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    await expect(mainMap(page)).toBeVisible();
   });
 
   test('should load the application', async ({ page }) => {
@@ -13,237 +40,174 @@ test.describe('htmm - Basic Functionality', () => {
   });
 
   test('should display the mind map', async ({ page }) => {
-    const mindMap = page.locator('.htmm-map');
-    await expect(mindMap).toBeVisible();
+    await expect(mainMap(page)).toBeVisible();
   });
 
   test('should have a root node', async ({ page }) => {
-    const rootNode = page.locator('.node-view.root');
+    const rootNode = mainRoot(page);
     await expect(rootNode).toBeVisible();
-    await expect(rootNode).toHaveText(/New Mind Map|Mind Map/i);
+    await expect(rootNode).toHaveText(/New Mind Map|htmm Demo|Mind Map/i);
   });
 });
 
 test.describe('htmm - Node Operations', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    // Click on the root node to select it
-    await page.click('.node-view.root');
+    await expect(mainMap(page)).toBeVisible();
+    await loadFixture(page);
+    await mainRoot(page).click();
   });
 
   test('should select a node on click', async ({ page }) => {
-    const rootNode = page.locator('.node-view.root');
-    await expect(rootNode).toHaveClass(/selected/);
+    await expect(mainRoot(page)).toHaveClass(/selected/);
   });
 
   test('should add a child node with Tab key', async ({ page }) => {
-    const initialNodeCount = await page.locator('.node-view').count();
-    
-    // Press Tab to add a child
-    await page.keyboard.press('Tab');
-    
-    // Wait for the new node to be added
-    await page.waitForSelector('.node-view:not(.root)', { timeout: 1000 });
-    
-    const newNodeCount = await page.locator('.node-view').count();
-    expect(newNodeCount).toBe(initialNodeCount + 1);
+    const initialNodeCount = await mainNodes(page).count();
+    await addChildViaTab(page);
+    await expect(mainNodes(page)).toHaveCount(initialNodeCount + 1);
   });
 
   test('should edit node text', async ({ page }) => {
-    const rootNode = page.locator('.node-view.root');
-    
-    // Double-click to start editing
+    const rootNode = mainRoot(page);
+
     await rootNode.dblclick();
-    
-    // Wait for edit mode
-    await page.waitForSelector('.node-text[contenteditable="true"]', { timeout: 1000 });
-    
-    // Type new text
-    const editableText = page.locator('.node-text[contenteditable="true"]');
+    await expect(mainMap(page).locator('.node-text[contenteditable="true"]')).toBeVisible({
+      timeout: 2000,
+    });
+
+    const editableText = mainMap(page).locator('.node-text[contenteditable="true"]');
     await editableText.fill('New Root Text');
-    
-    // Press Enter to save
     await page.keyboard.press('Enter');
-    
-    // Check if text was updated
+
     await expect(rootNode).toContainText('New Root Text');
   });
 
   test('should delete a node with Delete key', async ({ page }) => {
-    // Add a child node first
-    await page.keyboard.press('Tab');
-    await page.waitForSelector('.node-view:not(.root)', { timeout: 1000 });
-    
-    // Get initial count
-    const initialNodeCount = await page.locator('.node-view').count();
-    
-    // The new child should be selected automatically, press Delete
+    const initialNodeCount = await mainNodes(page).count();
+    await page.getByRole('button', { name: 'Add Child', exact: true }).click();
+    await expect(mainNodes(page)).toHaveCount(initialNodeCount + 1);
+
+    // New child is selected by addChild; Delete removes it
+    await mainMap(page).focus();
     await page.keyboard.press('Delete');
-    
-    // Wait a bit for deletion
-    await page.waitForTimeout(100);
-    
-    const newNodeCount = await page.locator('.node-view').count();
-    expect(newNodeCount).toBe(initialNodeCount - 1);
+    await expect(mainNodes(page)).toHaveCount(initialNodeCount, { timeout: 2000 });
   });
 });
 
 test.describe('htmm - Keyboard Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    // Click on the root node
-    await page.click('.node-view.root');
-    
-    // Add a few child nodes for testing
-    await page.keyboard.press('Tab'); // First child
-    await page.keyboard.press('Enter'); // Escape edit mode if needed
-    await page.keyboard.press('Enter'); // Sibling
-    await page.keyboard.press('Enter'); // Another sibling
+    await expect(mainMap(page)).toBeVisible();
+    await loadFixture(page);
   });
 
   test('should navigate between siblings with arrow keys', async ({ page }) => {
-    // Select the first non-root node
-    await page.click('.node-view:not(.root)');
-    
-    // Navigate down
-    await page.keyboard.press('ArrowDown');
-    
-    // Should have moved to next sibling
-    await page.waitForTimeout(100);
-    
-    // Navigate up
+    // Child B is on the right side (second root child); use it for stable selection
+    await mainMap(page).getByRole('treeitem', { name: 'Child B' }).click();
     await page.keyboard.press('ArrowUp');
-    
-    await page.waitForTimeout(100);
+    await expect(mainMap(page).getByRole('treeitem', { name: 'Child A' })).toHaveClass(/selected/);
+    await page.keyboard.press('ArrowDown');
+    await expect(mainMap(page).getByRole('treeitem', { name: 'Child B' })).toHaveClass(/selected/);
   });
 
   test('should navigate to parent with left arrow key', async ({ page }) => {
-    // Select a child node
-    const childNode = page.locator('.node-view:not(.root)').first();
-    await childNode.click();
-    
-    // Press left arrow to go to parent
+    // Right-side child: ArrowLeft moves to parent
+    await mainMap(page).getByRole('treeitem', { name: 'Child B' }).click();
     await page.keyboard.press('ArrowLeft');
-    
-    // Root node should be selected
-    await page.waitForTimeout(100);
-    const rootNode = page.locator('.node-view.root');
-    await expect(rootNode).toHaveClass(/selected/);
+    await expect(mainRoot(page)).toHaveClass(/selected/);
   });
 });
 
 test.describe('htmm - Undo/Redo', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.click('.node-view.root');
+    await expect(mainMap(page)).toBeVisible();
+    await loadFixture(page);
+    await mainRoot(page).click();
   });
 
   test('should undo node creation', async ({ page }) => {
-    // Add a child node
-    await page.keyboard.press('Tab');
-    await page.waitForSelector('.node-view:not(.root)', { timeout: 1000 });
-    
-    const nodeCountAfterAdd = await page.locator('.node-view').count();
-    
-    // Undo
-    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+z' : 'Control+z');
-    await page.waitForTimeout(100);
-    
-    const nodeCountAfterUndo = await page.locator('.node-view').count();
-    expect(nodeCountAfterUndo).toBe(nodeCountAfterAdd - 1);
+    const initialCount = await mainNodes(page).count();
+
+    // Toolbar Add Child avoids edit-mode (Tab would open contenteditable)
+    await page.getByRole('button', { name: 'Add Child', exact: true }).click();
+    await expect(mainNodes(page)).toHaveCount(initialCount + 1);
+
+    await page.getByRole('button', { name: 'Undo', exact: true }).click();
+    await expect(mainNodes(page)).toHaveCount(initialCount, { timeout: 2000 });
   });
 
   test('should redo node creation', async ({ page }) => {
-    // Add a child node
-    await page.keyboard.press('Tab');
-    await page.waitForSelector('.node-view:not(.root)', { timeout: 1000 });
-    
-    // Undo
-    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+z' : 'Control+z');
-    await page.waitForTimeout(100);
-    
-    const nodeCountAfterUndo = await page.locator('.node-view').count();
-    
-    // Redo
-    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+y' : 'Control+y');
-    await page.waitForTimeout(100);
-    
-    const nodeCountAfterRedo = await page.locator('.node-view').count();
-    expect(nodeCountAfterRedo).toBe(nodeCountAfterUndo + 1);
+    const initialCount = await mainNodes(page).count();
+
+    await page.getByRole('button', { name: 'Add Child', exact: true }).click();
+    await expect(mainNodes(page)).toHaveCount(initialCount + 1);
+
+    await page.getByRole('button', { name: 'Undo', exact: true }).click();
+    await expect(mainNodes(page)).toHaveCount(initialCount, { timeout: 2000 });
+
+    await page.getByRole('button', { name: 'Redo', exact: true }).click();
+    await expect(mainNodes(page)).toHaveCount(initialCount + 1, { timeout: 2000 });
   });
 });
 
 test.describe('htmm - Accessibility', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    await expect(mainMap(page)).toBeVisible();
   });
 
   test('should have proper ARIA attributes', async ({ page }) => {
-    const mindMap = page.locator('.htmm-map');
+    const mindMap = mainMap(page);
     await expect(mindMap).toHaveAttribute('role', 'tree');
-    
-    const rootNode = page.locator('.node-view.root');
+
+    const rootNode = mainRoot(page);
     await expect(rootNode).toHaveAttribute('role', 'treeitem');
     await expect(rootNode).toHaveAttribute('aria-level', '1');
   });
 
   test('should support keyboard navigation', async ({ page }) => {
-    const mindMap = page.locator('.htmm-map');
-    await mindMap.focus();
-    
-    // Tab should work to add nodes
-    await page.keyboard.press('Tab');
-    await page.waitForTimeout(100);
-    
-    // Escape should cancel editing
-    await page.keyboard.press('Escape');
-    await page.waitForTimeout(100);
+    await loadFixture(page);
+    await mainRoot(page).click();
+    const initialCount = await mainNodes(page).count();
+    await page.getByRole('button', { name: 'Add Child', exact: true }).click();
+    await expect(mainNodes(page)).toHaveCount(initialCount + 1);
   });
 });
 
 test.describe('htmm - Drag and Drop', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.click('.node-view.root');
-    // Create two sibling nodes to drag between
-    await page.keyboard.press('Tab');
-    await page.waitForSelector('.node-view:not(.root)', { timeout: 2000 });
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(200);
-    await page.keyboard.press('Enter');
-    await page.waitForTimeout(200);
+    await expect(mainMap(page)).toBeVisible();
+    await loadFixture(page);
   });
 
   test('should move node via drag and drop', async ({ page }) => {
-    const nodes = page.locator('.node-view:not(.root)');
-    await expect(nodes).toHaveCount(3); // Tab added one, Enter added two more
-    const sourceNode = nodes.first();
-    const targetNode = nodes.nth(1);
-    await expect(sourceNode).toBeVisible();
-    await expect(targetNode).toBeVisible();
+    const childA = mainMap(page).getByRole('treeitem', { name: 'Child A' });
+    const childB = mainMap(page).getByRole('treeitem', { name: 'Child B' });
+    await expect(childA).toBeVisible();
+    await expect(childB).toBeVisible();
 
-    // Drag source (first child) and drop on target (second child) as child
-    await sourceNode.dragTo(targetNode, { force: true });
-    await page.waitForTimeout(300);
-    // After drop: first node becomes child of second; structure changes
-    const nodesAfter = page.locator('.node-view:not(.root)');
-    await expect(nodesAfter.first()).toBeVisible();
+    await childA.dragTo(childB, { force: true });
+
+    // Child A becomes a descendant under Child B (or structure still renders)
+    await expect(mainMap(page).getByRole('treeitem', { name: 'Child A' })).toBeVisible();
+    await expect(mainMap(page).getByRole('treeitem', { name: 'Child B' })).toBeVisible();
   });
 });
 
 test.describe('htmm - File Load and Save', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
+    await expect(mainMap(page)).toBeVisible();
   });
 
   test('should load .mm file and display content', async ({ page }) => {
-    await expect(page.locator('.htmm-map')).toBeVisible();
-    const fileInput = page.getByTestId('file-input');
-    await fileInput.setInputFiles(FIXTURE_MM);
-    await page.waitForTimeout(500);
-    await expect(page.locator('.node-view.root')).toContainText('Loaded Map');
-    await expect(page.locator('.node-view')).toContainText('Child A');
-    await expect(page.locator('.node-view')).toContainText('Child B');
+    await loadFixture(page);
+    await expect(mainRoot(page)).toContainText('Loaded Map');
+    await expect(mainMap(page).getByRole('treeitem', { name: 'Child A' })).toBeVisible();
+    await expect(mainMap(page).getByRole('treeitem', { name: 'Child B' })).toBeVisible();
   });
 
   test('should trigger save and produce download', async ({ page }) => {

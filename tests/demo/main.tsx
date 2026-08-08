@@ -252,7 +252,12 @@ const DemoApp: React.FC = () => {
         data-testid="file-input"
       />
 
-      <HtmmMap ref={mapRef} width="100%" height="calc(100vh - 200px)">
+      <HtmmMap
+        ref={mapRef}
+        className="demo-main-map"
+        width="100%"
+        height="calc(100vh - 200px)"
+      >
         <DemoMapInitializer />
         <DemoToolbar mapRef={mapRef} fileInputRef={fileInputRef} />
       </HtmmMap>

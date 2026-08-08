@@ -115,12 +115,15 @@ describe('Htmm Store', () => {
   });
 
   describe('History', () => {
-    it('undo should be no-op when at first history entry', () => {
+    it('undo should remove a newly added child', () => {
       const { getState } = useHtmmStore;
       const rootId = getState().mapData!.root.id;
       getState().addChild(rootId, 'Child');
+      expect(getState().mapData!.root.children).toHaveLength(1);
+      expect(getState().historyIndex).toBe(1);
       getState().undo();
-      expect(getState().mapData).not.toBeNull();
+      expect(getState().mapData!.root.children ?? []).toHaveLength(0);
+      expect(getState().historyIndex).toBe(0);
     });
 
     it('redo should reapply undone state when redo is available', () => {
@@ -138,7 +141,7 @@ describe('Htmm Store', () => {
       const rootId = getState().mapData!.root.id;
       const initialLength = getState().history.length;
       getState().addChild(rootId, 'A');
-      expect(getState().history.length).toBeGreaterThanOrEqual(initialLength);
+      expect(getState().history.length).toBe(initialLength + 1);
     });
   });
 

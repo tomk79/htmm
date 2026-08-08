@@ -127,6 +127,24 @@ export interface HtmmStoreInitialOptions {
 }
 
 /**
+ * Record current mapData onto the history stack.
+ * Must mutate the Immer draft directly — calling set() from inside another set()
+ * is overwritten when the outer draft is applied.
+ */
+function recordHistory(state: HtmmState): void {
+  if (state.readOnly || !state.mapData) return;
+
+  state.history = state.history.slice(0, state.historyIndex + 1);
+  state.history.push(JSON.parse(JSON.stringify(state.mapData)) as MindMapData);
+
+  if (state.history.length > state.maxHistorySize) {
+    state.history.shift();
+  } else {
+    state.historyIndex++;
+  }
+}
+
+/**
  * Store slice creator - shared by default store and createHtmmStore()
  */
 function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, initialOverrides?: HtmmStoreInitialOptions): HtmmState & HtmmActions {
@@ -206,7 +224,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
         state.selectedNodeIds.add(newNode.id);
         newNodeId = newNode.id;
         
-        get().pushHistory();
+        recordHistory(state);
       });
       return newNodeId;
     },
@@ -240,7 +258,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
         state.selectedNodeIds.add(newNode.id);
         newNodeId = newNode.id;
         
-        get().pushHistory();
+        recordHistory(state);
       });
       return newNodeId;
     },
@@ -283,7 +301,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
         state.selectedNodeIds.add(newSelectedNodeId);
       }
       
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -298,7 +316,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       node.text = text;
       node.modified = Date.now();
       
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -326,7 +344,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       const insertIndex = index !== undefined ? index : newParent.children.length;
       newParent.children.splice(insertIndex, 0, node);
       
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -339,7 +357,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
         const node = findNodeById(state.mapData.root, nodeId);
         if (!node) return;
         node.position = position;
-        get().pushHistory();
+        recordHistory(state);
       });
     },
     
@@ -399,7 +417,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       if (!node) return;
       
       node.color = color;
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -412,7 +430,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       if (!node) return;
       
       node.backgroundColor = color;
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -429,7 +447,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       }
       
       Object.assign(node.font, font);
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -442,7 +460,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       if (!node) return;
       
       node.style = style;
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -464,7 +482,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
         node.icons.push({ builtin: iconName });
       }
       
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -483,7 +501,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
         delete node.icons;
       }
       
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -496,7 +514,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       if (!node) return;
       
       delete node.icons;
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -510,7 +528,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       if (!node) return;
       
       node.link = url;
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -523,7 +541,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       if (!node) return;
       
       delete node.link;
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -556,7 +574,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       };
       
       sourceNode.arrowLinks.push(newArrowLink);
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -572,7 +590,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       const index = sourceNode.arrowLinks.findIndex(link => link.destination === targetId);
       if (index >= 0) {
         sourceNode.arrowLinks.splice(index, 1);
-        get().pushHistory();
+        recordHistory(state);
       }
     });
     },
@@ -593,7 +611,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
         if (arrowLink.endArrow !== undefined) link.endArrow = arrowLink.endArrow;
         if (arrowLink.startInclination !== undefined) link.startInclination = arrowLink.startInclination;
         if (arrowLink.endInclination !== undefined) link.endInclination = arrowLink.endInclination;
-        get().pushHistory();
+        recordHistory(state);
       }
     });
     },
@@ -608,7 +626,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       if (!node) return;
       
       node.cloud = color ? { color } : {};
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -621,7 +639,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       if (!node) return;
       
       delete node.cloud;
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -675,7 +693,7 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
       const cloned = cloneNode(state.clipboard, true);
       parent.children.push(cloned);
       
-      get().pushHistory();
+      recordHistory(state);
     });
     },
     
@@ -703,21 +721,8 @@ function createHtmmStoreSlice(set: SetStateInternal, get: GetStateInternal, init
     pushHistory: () => {
       if (get().readOnly) return;
       set((state) => {
-      if (!state.mapData) return;
-      
-      // Remove any history after current index
-      state.history = state.history.slice(0, state.historyIndex + 1);
-      
-      // Add new state
-      state.history.push(JSON.parse(JSON.stringify(state.mapData)));
-      
-      // Limit history size
-      if (state.history.length > state.maxHistorySize) {
-        state.history.shift();
-      } else {
-        state.historyIndex++;
-      }
-    });
+        recordHistory(state);
+      });
     },
     
     // View
