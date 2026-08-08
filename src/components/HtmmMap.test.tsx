@@ -3,8 +3,9 @@
  */
 
 import React from 'react';
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { describe, it, expect, vi, afterEach } from 'vitest';
+import { render, screen, waitFor, fireEvent, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { HtmmMap, type HtmmMapHandle } from './HtmmMap';
 import { createRootNode } from '../models/MindMapNode';
 import type { MindMapData } from '../types/mindmap';
@@ -97,6 +98,88 @@ describe('HtmmMap', () => {
       const secondTree = trees[1];
       expect(firstTree).toHaveAttribute('aria-label', expect.stringContaining('Instance A'));
       expect(secondTree).toHaveAttribute('aria-label', expect.stringContaining('Instance B'));
+    });
+  });
+
+  describe('fullscreen', () => {
+    afterEach(() => {
+      document.body.style.overflow = '';
+    });
+
+    it('portals map to document.body and keeps a placeholder in place', async () => {
+      const user = userEvent.setup();
+      const mapData = makeMapData('Fullscreen Map');
+      const { container } = render(
+        <div data-testid="embed-parent" style={{ transform: 'translateZ(0)' }}>
+          <HtmmMap initialMapData={mapData} width={400} height={300} />
+        </div>
+      );
+
+      const tree = screen.getByRole('tree', { name: /Mind map: Fullscreen Map/i });
+      expect(tree).toHaveClass('htmm-map');
+      expect(tree).not.toHaveClass('htmm-map-fullscreen');
+      expect(container.querySelector('[data-testid="embed-parent"]')?.contains(tree)).toBe(true);
+
+      await user.click(screen.getByRole('button', { name: 'Fullscreen' }));
+
+      const fullscreenTree = screen.getByRole('tree', { name: /Mind map: Fullscreen Map/i });
+      expect(fullscreenTree).toHaveClass('htmm-map-fullscreen');
+      expect(fullscreenTree.parentElement).toBe(document.body);
+      expect(document.body.style.overflow).toBe('hidden');
+
+      const placeholder = container.querySelector('.htmm-map-placeholder');
+      expect(placeholder).toBeTruthy();
+      expect(placeholder).toHaveStyle({ width: '400px', height: '300px' });
+    });
+
+    it('restores body scroll position when exiting fullscreen', async () => {
+      const user = userEvent.setup();
+      Object.defineProperty(window, 'scrollX', { configurable: true, value: 12 });
+      Object.defineProperty(window, 'scrollY', { configurable: true, value: 150 });
+      const scrollToSpy = vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+
+      render(<HtmmMap initialMapData={makeMapData('Scroll Map')} width={400} height={300} />);
+
+      await user.click(screen.getByRole('button', { name: 'Fullscreen' }));
+      expect(document.body.style.overflow).toBe('hidden');
+
+      await user.click(screen.getByRole('button', { name: 'Exit fullscreen' }));
+      expect(document.body.style.overflow).toBe('');
+      expect(scrollToSpy).toHaveBeenCalledWith(12, 150);
+      scrollToSpy.mockRestore();
+    });
+
+    it('keeps wheel pan working after entering and exiting fullscreen', async () => {
+      const user = userEvent.setup();
+      render(<HtmmMap initialMapData={makeMapData('Wheel Pan Map')} width={400} height={300} />);
+
+      const mockSize = (el: HTMLElement) => {
+        Object.defineProperty(el, 'clientWidth', { configurable: true, value: 400 });
+        Object.defineProperty(el, 'clientHeight', { configurable: true, value: 300 });
+      };
+
+      const readTransform = () => {
+        const canvas = screen.getByRole('tree').querySelector('.htmm-canvas') as HTMLElement;
+        return canvas.style.transform;
+      };
+
+      await user.click(screen.getByRole('button', { name: 'Fullscreen' }));
+      let tree = screen.getByRole('tree', { name: /Mind map: Wheel Pan Map/i });
+      mockSize(tree);
+      const afterEnter = readTransform();
+      await act(async () => {
+        fireEvent.wheel(tree, { deltaX: 0, deltaY: 40 });
+      });
+      expect(readTransform()).not.toBe(afterEnter);
+
+      await user.click(screen.getByRole('button', { name: 'Exit fullscreen' }));
+      tree = screen.getByRole('tree', { name: /Mind map: Wheel Pan Map/i });
+      mockSize(tree);
+      const afterExit = readTransform();
+      await act(async () => {
+        fireEvent.wheel(tree, { deltaX: 0, deltaY: 40 });
+      });
+      expect(readTransform()).not.toBe(afterExit);
     });
   });
 });

@@ -273,7 +273,7 @@
   }
 }
 `;
-  const htmmMapCss = '/* HtmmMap Styles */\n\n.htmm-map {\n  position: relative;\n  overflow: hidden;\n  background-color: #fafafa;\n  border: 1px solid #ddd;\n  outline: none;\n  /* Margins so root can sit at center with space on all sides */\n  padding: 0;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n}\n\n/* Pseudo fullscreen: cover viewport with position fixed */\n.htmm-map.htmm-map-fullscreen {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  min-width: 100%;\n  min-height: 100%;\n  box-sizing: border-box;\n  z-index: 9999;\n  padding: 12px;\n}\n\n.htmm-map-body {\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n\n/* Toolbar above the map area */\n.htmm-map-toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px;\n  padding: 6px 6px;\n  margin: -4px 0 8px 0;\n  border-bottom: 1px solid #e0e0e0;\n  flex-shrink: 0;\n  box-sizing: border-box;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar {\n  border-bottom-color: #444;\n}\n\n.htmm-map-toolbar-group {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n\n.htmm-map-toolbar-group-inline {\n  gap: 8px;\n}\n\n.htmm-map-toolbar-divider {\n  width: 1px;\n  height: 20px;\n  background: #ccc;\n  margin: 0 4px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-divider {\n  background: #555;\n}\n\n.htmm-map-toolbar-btn {\n  min-width: 28px;\n  height: 28px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #f0f0f0;\n}\n\n.htmm-map-toolbar-btn:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-btn-active {\n  background: #e0e8f0;\n  border-color: #4a90e2;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn-active {\n  background: #2a3a50;\n  border-color: #5a9ae2;\n}\n\n.htmm-map-toolbar-label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  font-size: 12px;\n  color: #333;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-label {\n  color: #ccc;\n}\n\n.htmm-map-toolbar-label-text {\n  white-space: nowrap;\n}\n\n.htmm-map-toolbar-color {\n  width: 24px;\n  height: 24px;\n  padding: 0;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  cursor: pointer;\n  background: transparent;\n}\n\n.htmm-map-toolbar-color:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-select {\n  height: 26px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  min-width: 48px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-select {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map-toolbar-select:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n/* Code edit modal */\n.htmm-map-code-modal-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 10000;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 20px;\n  box-sizing: border-box;\n}\n\n.htmm-map-code-modal {\n  background: #fff;\n  border-radius: 8px;\n  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);\n  width: min(95vw, 960px);\n  height: min(90vh, 800px);\n  min-width: 480px;\n  min-height: 400px;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal {\n  background: #2d2d2d;\n  border: 1px solid #444;\n}\n\n.htmm-map-code-modal-title {\n  margin: 0;\n  padding: 12px 16px;\n  font-size: 14px;\n  font-weight: 600;\n  border-bottom: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-title {\n  border-bottom-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-error {\n  margin: 8px 16px 0;\n  padding: 8px;\n  background: #fee;\n  color: #c00;\n  font-size: 12px;\n  border-radius: 4px;\n}\n\n.htmm-map-code-modal-textarea {\n  flex: 1;\n  min-height: 360px;\n  margin: 16px;\n  padding: 12px;\n  font-family: ui-monospace, monospace;\n  font-size: 12px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  resize: vertical;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-textarea {\n  background: #1e1e1e;\n  border-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-actions {\n  display: flex;\n  justify-content: flex-end;\n  gap: 8px;\n  padding: 12px 16px;\n  border-top: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-actions {\n  border-top-color: #444;\n}\n\n.htmm-map-code-modal-apply {\n  background: #4a90e2;\n  color: #fff;\n  border-color: #4a90e2;\n}\n\n.htmm-map-code-modal-apply:hover:not(:disabled) {\n  background: #357abd;\n}\n\n.htmm-map:focus {\n  border-color: #4a90e2;\n  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);\n}\n\n/* Dark appearance */\n.htmm-map[data-appearance="dark"] {\n  background-color: #1e1e1e;\n  border-color: #444;\n}\n\n.htmm-map[data-appearance="dark"]:focus {\n  border-color: #5a9ae2;\n  box-shadow: 0 0 0 2px rgba(90, 154, 226, 0.25);\n}\n\n.htmm-map-empty {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: #f5f5f5;\n  border: 1px solid #ddd;\n  color: #999;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-empty {\n  background-color: #2d2d2d;\n  border-color: #444;\n  color: #888;\n}\n\n.htmm-canvas {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform-origin: center center;\n  cursor: grab;\n}\n\n/* Layers */\n.edges-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n  pointer-events: none;\n}\n\n.nodes-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 0;\n  height: 0;\n}\n\n/* Edge styles */\n.edge-view {\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n/* Utilities */\n.htmm-map * {\n  box-sizing: border-box;\n}\n\n/* Mobile / touch-friendly: larger tap targets and zoom controls */\n@media (max-width: 768px), (pointer: coarse) {\n  .htmm-map {\n    -webkit-tap-highlight-color: transparent;\n    touch-action: none; /* pan/zoom handled by gesture hook */\n  }\n\n  .htmm-map .node-view {\n    min-height: 44px;\n    padding: 10px 14px;\n    min-width: 44px;\n  }\n\n  .htmm-map .fold-symbol {\n    width: 28px;\n    height: 28px;\n    min-width: 28px;\n    min-height: 28px;\n    left: -32px;\n    font-size: 12px;\n  }\n}\n\n/* Floating zoom controls */\n.htmm-map-zoom-controls {\n  position: absolute;\n  bottom: 12px;\n  right: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  z-index: 10;\n  pointer-events: auto;\n}\n\n.htmm-map-zoom-controls button {\n  width: 44px;\n  height: 44px;\n  border-radius: 8px;\n  border: 1px solid #ccc;\n  background: #fff;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);\n  font-size: 18px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-zoom-controls button:hover {\n  background: #f5f5f5;\n}\n\n.htmm-map-zoom-controls button:active {\n  background: #e8e8e8;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:hover {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:active {\n  background: #4a4a4a;\n}\n';
+  const htmmMapCss = '/* HtmmMap Styles */\n\n.htmm-map {\n  position: relative;\n  overflow: hidden;\n  background-color: #fafafa;\n  border: 1px solid #ddd;\n  outline: none;\n  /* Margins so root can sit at center with space on all sides */\n  padding: 0;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n}\n\n/* Host keeps layout space; map is portaled into it (or into document.body when fullscreen) */\n.htmm-map-host {\n  box-sizing: border-box;\n}\n\n.htmm-map-placeholder {\n  box-sizing: border-box;\n  visibility: hidden;\n  pointer-events: none;\n}\n\n/* Fullscreen: portaled to document.body so ancestor transform cannot clip/contain it */\n.htmm-map.htmm-map-fullscreen {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  width: auto;\n  height: auto;\n  min-width: 0;\n  min-height: 0;\n  box-sizing: border-box;\n  z-index: 9999;\n  padding: 12px;\n  margin: 0;\n}\n\n.htmm-map-body {\n  flex: 1;\n  min-height: 0;\n  overflow: hidden;\n  position: relative;\n}\n\n/* Toolbar above the map area */\n.htmm-map-toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 6px;\n  padding: 6px 6px;\n  margin: -4px 0 8px 0;\n  border-bottom: 1px solid #e0e0e0;\n  flex-shrink: 0;\n  box-sizing: border-box;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar {\n  border-bottom-color: #444;\n}\n\n.htmm-map-toolbar-group {\n  display: flex;\n  align-items: center;\n  gap: 2px;\n}\n\n.htmm-map-toolbar-group-inline {\n  gap: 8px;\n}\n\n.htmm-map-toolbar-divider {\n  width: 1px;\n  height: 20px;\n  background: #ccc;\n  margin: 0 4px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-divider {\n  background: #555;\n}\n\n.htmm-map-toolbar-btn {\n  min-width: 28px;\n  height: 28px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #f0f0f0;\n}\n\n.htmm-map-toolbar-btn:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-btn-active {\n  background: #e0e8f0;\n  border-color: #4a90e2;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn:hover:not(:disabled) {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-btn-active {\n  background: #2a3a50;\n  border-color: #5a9ae2;\n}\n\n.htmm-map-toolbar-label {\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n  font-size: 12px;\n  color: #333;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-label {\n  color: #ccc;\n}\n\n.htmm-map-toolbar-label-text {\n  white-space: nowrap;\n}\n\n.htmm-map-toolbar-color {\n  width: 24px;\n  height: 24px;\n  padding: 0;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  cursor: pointer;\n  background: transparent;\n}\n\n.htmm-map-toolbar-color:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.htmm-map-toolbar-select {\n  height: 26px;\n  padding: 0 6px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-size: 12px;\n  min-width: 48px;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-toolbar-select {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map-toolbar-select:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n/* Code edit modal */\n.htmm-map-code-modal-overlay {\n  position: fixed;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  z-index: 10000;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 20px;\n  box-sizing: border-box;\n}\n\n.htmm-map-code-modal {\n  background: #fff;\n  border-radius: 8px;\n  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);\n  width: min(95vw, 960px);\n  height: min(90vh, 800px);\n  min-width: 480px;\n  min-height: 400px;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal {\n  background: #2d2d2d;\n  border: 1px solid #444;\n}\n\n.htmm-map-code-modal-title {\n  margin: 0;\n  padding: 12px 16px;\n  font-size: 14px;\n  font-weight: 600;\n  border-bottom: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-title {\n  border-bottom-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-error {\n  margin: 8px 16px 0;\n  padding: 8px;\n  background: #fee;\n  color: #c00;\n  font-size: 12px;\n  border-radius: 4px;\n}\n\n.htmm-map-code-modal-textarea {\n  flex: 1;\n  min-height: 360px;\n  margin: 16px;\n  padding: 12px;\n  font-family: ui-monospace, monospace;\n  font-size: 12px;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  resize: vertical;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-textarea {\n  background: #1e1e1e;\n  border-color: #444;\n  color: #e0e0e0;\n}\n\n.htmm-map-code-modal-actions {\n  display: flex;\n  justify-content: flex-end;\n  gap: 8px;\n  padding: 12px 16px;\n  border-top: 1px solid #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-code-modal-actions {\n  border-top-color: #444;\n}\n\n.htmm-map-code-modal-apply {\n  background: #4a90e2;\n  color: #fff;\n  border-color: #4a90e2;\n}\n\n.htmm-map-code-modal-apply:hover:not(:disabled) {\n  background: #357abd;\n}\n\n.htmm-map:focus {\n  border-color: #4a90e2;\n  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);\n}\n\n/* Dark appearance */\n.htmm-map[data-appearance="dark"] {\n  background-color: #1e1e1e;\n  border-color: #444;\n}\n\n.htmm-map[data-appearance="dark"]:focus {\n  border-color: #5a9ae2;\n  box-shadow: 0 0 0 2px rgba(90, 154, 226, 0.25);\n}\n\n.htmm-map-empty {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  background-color: #f5f5f5;\n  border: 1px solid #ddd;\n  color: #999;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-empty {\n  background-color: #2d2d2d;\n  border-color: #444;\n  color: #888;\n}\n\n.htmm-canvas {\n  position: relative;\n  width: 100%;\n  height: 100%;\n  transform-origin: center center;\n  cursor: grab;\n}\n\n/* Layers */\n.edges-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n  pointer-events: none;\n}\n\n.nodes-layer {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 0;\n  height: 0;\n}\n\n/* Edge styles */\n.edge-view {\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n\n/* Utilities */\n.htmm-map * {\n  box-sizing: border-box;\n}\n\n/* Mobile / touch-friendly: larger tap targets and zoom controls */\n@media (max-width: 768px), (pointer: coarse) {\n  .htmm-map {\n    -webkit-tap-highlight-color: transparent;\n    touch-action: none; /* pan/zoom handled by gesture hook */\n  }\n\n  .htmm-map .node-view {\n    min-height: 44px;\n    padding: 10px 14px;\n    min-width: 44px;\n  }\n\n  .htmm-map .fold-symbol {\n    width: 28px;\n    height: 28px;\n    min-width: 28px;\n    min-height: 28px;\n    left: -32px;\n    font-size: 12px;\n  }\n}\n\n/* Floating zoom controls */\n.htmm-map-zoom-controls {\n  position: absolute;\n  bottom: 12px;\n  right: 12px;\n  display: flex;\n  flex-direction: column;\n  gap: 4px;\n  z-index: 10;\n  pointer-events: auto;\n}\n\n.htmm-map-zoom-controls button {\n  width: 44px;\n  height: 44px;\n  border-radius: 8px;\n  border: 1px solid #ccc;\n  background: #fff;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);\n  font-size: 18px;\n  cursor: pointer;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  -webkit-tap-highlight-color: transparent;\n}\n\n.htmm-map-zoom-controls button:hover {\n  background: #f5f5f5;\n}\n\n.htmm-map-zoom-controls button:active {\n  background: #e8e8e8;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button {\n  border-color: #555;\n  background: #333;\n  color: #e0e0e0;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:hover {\n  background: #404040;\n}\n\n.htmm-map[data-appearance="dark"] .htmm-map-zoom-controls button:active {\n  background: #4a4a4a;\n}\n';
   const attributesPanelCss = ".attributes-panel {\n  display: flex;\n  flex-direction: column;\n  background: #fff;\n  border: 1px solid #ddd;\n  border-radius: 4px;\n  padding: 12px;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n}\n\n.attributes-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 12px;\n}\n\n.attributes-header h3 {\n  margin: 0;\n  font-size: 16px;\n  font-weight: 600;\n  color: #333;\n}\n\n.btn-add-attribute {\n  padding: 4px 12px;\n  border: 1px solid #0066cc;\n  border-radius: 3px;\n  background: #0066cc;\n  color: #fff;\n  font-size: 13px;\n  cursor: pointer;\n  transition: background 0.2s;\n}\n\n.btn-add-attribute:hover:not(:disabled) {\n  background: #0052a3;\n}\n\n.btn-add-attribute:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n.attributes-list {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n}\n\n.attributes-empty {\n  padding: 16px;\n  text-align: center;\n  color: #999;\n  font-size: 14px;\n}\n\n.attribute-item {\n  border: 1px solid #e0e0e0;\n  border-radius: 3px;\n  padding: 8px;\n  background: #fafafa;\n}\n\n.attribute-display {\n  display: grid;\n  grid-template-columns: 1fr 2fr auto;\n  gap: 8px;\n  align-items: center;\n}\n\n.attribute-edit {\n  display: grid;\n  grid-template-columns: 1fr 2fr auto;\n  gap: 8px;\n  align-items: center;\n}\n\n.attribute-key {\n  font-weight: 600;\n  color: #555;\n  font-size: 13px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.attribute-value {\n  color: #333;\n  font-size: 13px;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n}\n\n.attribute-key-input,\n.attribute-value-input {\n  padding: 4px 8px;\n  border: 1px solid #ccc;\n  border-radius: 3px;\n  font-size: 13px;\n  outline: none;\n}\n\n.attribute-key-input:focus,\n.attribute-value-input:focus {\n  border-color: #0066cc;\n  box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);\n}\n\n.attribute-actions {\n  display: flex;\n  gap: 4px;\n}\n\n.btn-edit,\n.btn-delete,\n.btn-save,\n.btn-cancel {\n  padding: 4px 8px;\n  border: 1px solid #d0d0d0;\n  border-radius: 3px;\n  background: #fff;\n  cursor: pointer;\n  font-size: 14px;\n  transition: all 0.2s;\n  min-width: 28px;\n  height: 28px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n.btn-edit:hover,\n.btn-delete:hover,\n.btn-save:hover,\n.btn-cancel:hover {\n  background: #f0f0f0;\n  border-color: #b0b0b0;\n}\n\n.btn-delete:hover {\n  background: #fee;\n  border-color: #fcc;\n}\n\n.btn-save {\n  color: #0a0;\n  border-color: #0a0;\n}\n\n.btn-save:hover {\n  background: #efe;\n  border-color: #0a0;\n}\n\n.btn-cancel {\n  color: #c00;\n  border-color: #c00;\n}\n\n.btn-cancel:hover {\n  background: #fee;\n  border-color: #c00;\n}\n";
   const richContentEditorCss = "._rich-content-editor_1ep5h_1 {\n  display: flex;\n  flex-direction: column;\n  border: 1px solid #ccc;\n  border-radius: 4px;\n  background: #fff;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif;\n}\n\n._rich-content-toolbar_1ep5h_12 {\n  display: flex;\n  gap: 4px;\n  padding: 8px;\n  border-bottom: 1px solid #e0e0e0;\n  background: #f5f5f5;\n  flex-wrap: wrap;\n}\n\n._toolbar-group_1ep5h_21 {\n  display: flex;\n  gap: 2px;\n}\n\n._toolbar-divider_1ep5h_26 {\n  width: 1px;\n  background: #d0d0d0;\n  margin: 0 4px;\n}\n\n._toolbar-button_1ep5h_32 {\n  padding: 6px 10px;\n  border: 1px solid #d0d0d0;\n  border-radius: 3px;\n  background: #fff;\n  cursor: pointer;\n  font-weight: bold;\n  font-size: 14px;\n  transition: all 0.2s;\n  min-width: 32px;\n  height: 32px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n}\n\n._toolbar-button_1ep5h_32:hover:not(:disabled) {\n  background: #e8e8e8;\n  border-color: #b0b0b0;\n}\n\n._toolbar-button_1ep5h_32:active:not(:disabled) {\n  background: #d8d8d8;\n}\n\n._toolbar-button_1ep5h_32:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}\n\n._rich-content-editable_1ep5h_62 {\n  padding: 12px;\n  min-height: 100px;\n  max-height: 400px;\n  overflow-y: auto;\n  outline: none;\n  line-height: 1.5;\n  font-size: 14px;\n}\n\n._rich-content-editable_1ep5h_62:focus {\n  background: #fafafa;\n}\n\n._rich-content-editable_1ep5h_62:empty::before {\n  content: attr(data-placeholder);\n  color: #999;\n  pointer-events: none;\n}\n\n/* Rich content formatting */\n._rich-content-editable_1ep5h_62 b,\n._rich-content-editable_1ep5h_62 strong {\n  font-weight: bold;\n}\n\n._rich-content-editable_1ep5h_62 i,\n._rich-content-editable_1ep5h_62 em {\n  font-style: italic;\n}\n\n._rich-content-editable_1ep5h_62 u {\n  text-decoration: underline;\n}\n\n._rich-content-editable_1ep5h_62 strike,\n._rich-content-editable_1ep5h_62 del {\n  text-decoration: line-through;\n}\n\n._rich-content-editable_1ep5h_62 ul,\n._rich-content-editable_1ep5h_62 ol {\n  margin: 8px 0;\n  padding-left: 24px;\n}\n\n._rich-content-editable_1ep5h_62 li {\n  margin: 4px 0;\n}\n\n._rich-content-editable_1ep5h_62 a {\n  color: #0066cc;\n  text-decoration: underline;\n}\n\n._rich-content-editable_1ep5h_62 a:hover {\n  color: #0052a3;\n}\n\n._rich-content-editable_1ep5h_62 img {\n  max-width: 100%;\n  height: auto;\n  display: block;\n  margin: 8px 0;\n}\n";
   const printCss = '/**\n * Print-specific styles\n * Applied when printing or print preview\n */\n\n@media print {\n  /* Reset page margins */\n  @page {\n    margin: 1cm;\n    size: A4 landscape;\n  }\n\n  /* Hide UI elements */\n  body {\n    margin: 0;\n    padding: 0;\n  }\n\n  /* Hide non-printable elements */\n  .no-print,\n  .toolbar,\n  .sidebar,\n  button,\n  input,\n  select,\n  textarea,\n  .attributes-panel,\n  .rich-content-toolbar {\n    display: none !important;\n  }\n\n  /* Ensure mind map is visible */\n  .htmm-map {\n    position: relative !important;\n    width: 100% !important;\n    height: auto !important;\n    overflow: visible !important;\n    page-break-inside: avoid;\n  }\n\n  /* Node styling for print */\n  .node-view {\n    page-break-inside: avoid;\n    break-inside: avoid;\n  }\n\n  /* Ensure text is readable */\n  .node-text {\n    color: #000 !important;\n    background: transparent !important;\n  }\n\n  /* Remove interactive states */\n  .node-view.selected {\n    border-color: #999 !important;\n    border-width: 1px !important;\n    box-shadow: none !important;\n  }\n\n  .node-view:hover {\n    box-shadow: none !important;\n  }\n\n  /* Simplify edges for print */\n  .edge-path {\n    stroke: #666 !important;\n  }\n\n  /* Hide fold symbols in print */\n  .fold-symbol {\n    display: none !important;\n  }\n\n  /* Ensure links are visible */\n  .node-link-indicator {\n    display: inline-block !important;\n  }\n\n  a[href]:after {\n    content: " (" attr(href) ")";\n    font-size: 0.8em;\n    color: #666;\n  }\n\n  /* Cloud borders */\n  .node-cloud {\n    border: 2px solid #999 !important;\n  }\n\n  /* Rich content */\n  .node-rich-content {\n    max-height: none !important;\n    overflow: visible !important;\n  }\n\n  /* Icons */\n  .node-icons,\n  .node-icon {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n\n  /* Preserve colors */\n  * {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n}\n\n/* Print preview mode */\n.print-preview {\n  background: #eee;\n  padding: 20px;\n}\n\n.print-preview .htmm-map {\n  background: white;\n  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);\n  margin: 0 auto;\n  max-width: 297mm; /* A4 landscape width */\n  min-height: 210mm; /* A4 landscape height */\n}\n';
@@ -2010,6 +2010,425 @@
   var jsxRuntimeExports = requireJsxRuntime();
   var reactExports = requireReact();
   const React = /* @__PURE__ */ getDefaultExportFromCjs(reactExports);
+  var reactDom = { exports: {} };
+  var reactDom_production = {};
+  var hasRequiredReactDom_production;
+  function requireReactDom_production() {
+    if (hasRequiredReactDom_production) return reactDom_production;
+    hasRequiredReactDom_production = 1;
+    var React2 = requireReact();
+    function formatProdErrorMessage(code) {
+      var url = "https://react.dev/errors/" + code;
+      if (1 < arguments.length) {
+        url += "?args[]=" + encodeURIComponent(arguments[1]);
+        for (var i2 = 2; i2 < arguments.length; i2++)
+          url += "&args[]=" + encodeURIComponent(arguments[i2]);
+      }
+      return "Minified React error #" + code + "; visit " + url + " for the full message or use the non-minified dev environment for full errors and additional helpful warnings.";
+    }
+    function noop2() {
+    }
+    var Internals = {
+      d: {
+        f: noop2,
+        r: function() {
+          throw Error(formatProdErrorMessage(522));
+        },
+        D: noop2,
+        C: noop2,
+        L: noop2,
+        m: noop2,
+        X: noop2,
+        S: noop2,
+        M: noop2
+      },
+      p: 0,
+      findDOMNode: null
+    }, REACT_PORTAL_TYPE = /* @__PURE__ */ Symbol.for("react.portal");
+    function createPortal$1(children, containerInfo, implementation) {
+      var key = 3 < arguments.length && void 0 !== arguments[3] ? arguments[3] : null;
+      return {
+        $$typeof: REACT_PORTAL_TYPE,
+        key: null == key ? null : "" + key,
+        children,
+        containerInfo,
+        implementation
+      };
+    }
+    var ReactSharedInternals = React2.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+    function getCrossOriginStringAs(as, input) {
+      if ("font" === as) return "";
+      if ("string" === typeof input)
+        return "use-credentials" === input ? input : "";
+    }
+    reactDom_production.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = Internals;
+    reactDom_production.createPortal = function(children, container) {
+      var key = 2 < arguments.length && void 0 !== arguments[2] ? arguments[2] : null;
+      if (!container || 1 !== container.nodeType && 9 !== container.nodeType && 11 !== container.nodeType)
+        throw Error(formatProdErrorMessage(299));
+      return createPortal$1(children, container, null, key);
+    };
+    reactDom_production.flushSync = function(fn) {
+      var previousTransition = ReactSharedInternals.T, previousUpdatePriority = Internals.p;
+      try {
+        if (ReactSharedInternals.T = null, Internals.p = 2, fn) return fn();
+      } finally {
+        ReactSharedInternals.T = previousTransition, Internals.p = previousUpdatePriority, Internals.d.f();
+      }
+    };
+    reactDom_production.preconnect = function(href, options) {
+      "string" === typeof href && (options ? (options = options.crossOrigin, options = "string" === typeof options ? "use-credentials" === options ? options : "" : void 0) : options = null, Internals.d.C(href, options));
+    };
+    reactDom_production.prefetchDNS = function(href) {
+      "string" === typeof href && Internals.d.D(href);
+    };
+    reactDom_production.preinit = function(href, options) {
+      if ("string" === typeof href && options && "string" === typeof options.as) {
+        var as = options.as, crossOrigin = getCrossOriginStringAs(as, options.crossOrigin), integrity = "string" === typeof options.integrity ? options.integrity : void 0, fetchPriority = "string" === typeof options.fetchPriority ? options.fetchPriority : void 0;
+        "style" === as ? Internals.d.S(
+          href,
+          "string" === typeof options.precedence ? options.precedence : void 0,
+          {
+            crossOrigin,
+            integrity,
+            fetchPriority
+          }
+        ) : "script" === as && Internals.d.X(href, {
+          crossOrigin,
+          integrity,
+          fetchPriority,
+          nonce: "string" === typeof options.nonce ? options.nonce : void 0
+        });
+      }
+    };
+    reactDom_production.preinitModule = function(href, options) {
+      if ("string" === typeof href)
+        if ("object" === typeof options && null !== options) {
+          if (null == options.as || "script" === options.as) {
+            var crossOrigin = getCrossOriginStringAs(
+              options.as,
+              options.crossOrigin
+            );
+            Internals.d.M(href, {
+              crossOrigin,
+              integrity: "string" === typeof options.integrity ? options.integrity : void 0,
+              nonce: "string" === typeof options.nonce ? options.nonce : void 0
+            });
+          }
+        } else null == options && Internals.d.M(href);
+    };
+    reactDom_production.preload = function(href, options) {
+      if ("string" === typeof href && "object" === typeof options && null !== options && "string" === typeof options.as) {
+        var as = options.as, crossOrigin = getCrossOriginStringAs(as, options.crossOrigin);
+        Internals.d.L(href, as, {
+          crossOrigin,
+          integrity: "string" === typeof options.integrity ? options.integrity : void 0,
+          nonce: "string" === typeof options.nonce ? options.nonce : void 0,
+          type: "string" === typeof options.type ? options.type : void 0,
+          fetchPriority: "string" === typeof options.fetchPriority ? options.fetchPriority : void 0,
+          referrerPolicy: "string" === typeof options.referrerPolicy ? options.referrerPolicy : void 0,
+          imageSrcSet: "string" === typeof options.imageSrcSet ? options.imageSrcSet : void 0,
+          imageSizes: "string" === typeof options.imageSizes ? options.imageSizes : void 0,
+          media: "string" === typeof options.media ? options.media : void 0
+        });
+      }
+    };
+    reactDom_production.preloadModule = function(href, options) {
+      if ("string" === typeof href)
+        if (options) {
+          var crossOrigin = getCrossOriginStringAs(options.as, options.crossOrigin);
+          Internals.d.m(href, {
+            as: "string" === typeof options.as && "script" !== options.as ? options.as : void 0,
+            crossOrigin,
+            integrity: "string" === typeof options.integrity ? options.integrity : void 0
+          });
+        } else Internals.d.m(href);
+    };
+    reactDom_production.requestFormReset = function(form) {
+      Internals.d.r(form);
+    };
+    reactDom_production.unstable_batchedUpdates = function(fn, a2) {
+      return fn(a2);
+    };
+    reactDom_production.useFormState = function(action, initialState, permalink) {
+      return ReactSharedInternals.H.useFormState(action, initialState, permalink);
+    };
+    reactDom_production.useFormStatus = function() {
+      return ReactSharedInternals.H.useHostTransitionStatus();
+    };
+    reactDom_production.version = "19.2.4";
+    return reactDom_production;
+  }
+  var reactDom_development = {};
+  var hasRequiredReactDom_development;
+  function requireReactDom_development() {
+    if (hasRequiredReactDom_development) return reactDom_development;
+    hasRequiredReactDom_development = 1;
+    "production" !== process.env.NODE_ENV && (function() {
+      function noop2() {
+      }
+      function testStringCoercion(value) {
+        return "" + value;
+      }
+      function createPortal$1(children, containerInfo, implementation) {
+        var key = 3 < arguments.length && void 0 !== arguments[3] ? arguments[3] : null;
+        try {
+          testStringCoercion(key);
+          var JSCompiler_inline_result = false;
+        } catch (e2) {
+          JSCompiler_inline_result = true;
+        }
+        JSCompiler_inline_result && (console.error(
+          "The provided key is an unsupported type %s. This value must be coerced to a string before using it here.",
+          "function" === typeof Symbol && Symbol.toStringTag && key[Symbol.toStringTag] || key.constructor.name || "Object"
+        ), testStringCoercion(key));
+        return {
+          $$typeof: REACT_PORTAL_TYPE,
+          key: null == key ? null : "" + key,
+          children,
+          containerInfo,
+          implementation
+        };
+      }
+      function getCrossOriginStringAs(as, input) {
+        if ("font" === as) return "";
+        if ("string" === typeof input)
+          return "use-credentials" === input ? input : "";
+      }
+      function getValueDescriptorExpectingObjectForWarning(thing) {
+        return null === thing ? "`null`" : void 0 === thing ? "`undefined`" : "" === thing ? "an empty string" : 'something with type "' + typeof thing + '"';
+      }
+      function getValueDescriptorExpectingEnumForWarning(thing) {
+        return null === thing ? "`null`" : void 0 === thing ? "`undefined`" : "" === thing ? "an empty string" : "string" === typeof thing ? JSON.stringify(thing) : "number" === typeof thing ? "`" + thing + "`" : 'something with type "' + typeof thing + '"';
+      }
+      function resolveDispatcher() {
+        var dispatcher = ReactSharedInternals.H;
+        null === dispatcher && console.error(
+          "Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:\n1. You might have mismatching versions of React and the renderer (such as React DOM)\n2. You might be breaking the Rules of Hooks\n3. You might have more than one copy of React in the same app\nSee https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem."
+        );
+        return dispatcher;
+      }
+      "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
+      var React2 = requireReact(), Internals = {
+        d: {
+          f: noop2,
+          r: function() {
+            throw Error(
+              "Invalid form element. requestFormReset must be passed a form that was rendered by React."
+            );
+          },
+          D: noop2,
+          C: noop2,
+          L: noop2,
+          m: noop2,
+          X: noop2,
+          S: noop2,
+          M: noop2
+        },
+        p: 0,
+        findDOMNode: null
+      }, REACT_PORTAL_TYPE = /* @__PURE__ */ Symbol.for("react.portal"), ReactSharedInternals = React2.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+      "function" === typeof Map && null != Map.prototype && "function" === typeof Map.prototype.forEach && "function" === typeof Set && null != Set.prototype && "function" === typeof Set.prototype.clear && "function" === typeof Set.prototype.forEach || console.error(
+        "React depends on Map and Set built-in types. Make sure that you load a polyfill in older browsers. https://reactjs.org/link/react-polyfills"
+      );
+      reactDom_development.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = Internals;
+      reactDom_development.createPortal = function(children, container) {
+        var key = 2 < arguments.length && void 0 !== arguments[2] ? arguments[2] : null;
+        if (!container || 1 !== container.nodeType && 9 !== container.nodeType && 11 !== container.nodeType)
+          throw Error("Target container is not a DOM element.");
+        return createPortal$1(children, container, null, key);
+      };
+      reactDom_development.flushSync = function(fn) {
+        var previousTransition = ReactSharedInternals.T, previousUpdatePriority = Internals.p;
+        try {
+          if (ReactSharedInternals.T = null, Internals.p = 2, fn)
+            return fn();
+        } finally {
+          ReactSharedInternals.T = previousTransition, Internals.p = previousUpdatePriority, Internals.d.f() && console.error(
+            "flushSync was called from inside a lifecycle method. React cannot flush when React is already rendering. Consider moving this call to a scheduler task or micro task."
+          );
+        }
+      };
+      reactDom_development.preconnect = function(href, options) {
+        "string" === typeof href && href ? null != options && "object" !== typeof options ? console.error(
+          "ReactDOM.preconnect(): Expected the `options` argument (second) to be an object but encountered %s instead. The only supported option at this time is `crossOrigin` which accepts a string.",
+          getValueDescriptorExpectingEnumForWarning(options)
+        ) : null != options && "string" !== typeof options.crossOrigin && console.error(
+          "ReactDOM.preconnect(): Expected the `crossOrigin` option (second argument) to be a string but encountered %s instead. Try removing this option or passing a string value instead.",
+          getValueDescriptorExpectingObjectForWarning(options.crossOrigin)
+        ) : console.error(
+          "ReactDOM.preconnect(): Expected the `href` argument (first) to be a non-empty string but encountered %s instead.",
+          getValueDescriptorExpectingObjectForWarning(href)
+        );
+        "string" === typeof href && (options ? (options = options.crossOrigin, options = "string" === typeof options ? "use-credentials" === options ? options : "" : void 0) : options = null, Internals.d.C(href, options));
+      };
+      reactDom_development.prefetchDNS = function(href) {
+        if ("string" !== typeof href || !href)
+          console.error(
+            "ReactDOM.prefetchDNS(): Expected the `href` argument (first) to be a non-empty string but encountered %s instead.",
+            getValueDescriptorExpectingObjectForWarning(href)
+          );
+        else if (1 < arguments.length) {
+          var options = arguments[1];
+          "object" === typeof options && options.hasOwnProperty("crossOrigin") ? console.error(
+            "ReactDOM.prefetchDNS(): Expected only one argument, `href`, but encountered %s as a second argument instead. This argument is reserved for future options and is currently disallowed. It looks like the you are attempting to set a crossOrigin property for this DNS lookup hint. Browsers do not perform DNS queries using CORS and setting this attribute on the resource hint has no effect. Try calling ReactDOM.prefetchDNS() with just a single string argument, `href`.",
+            getValueDescriptorExpectingEnumForWarning(options)
+          ) : console.error(
+            "ReactDOM.prefetchDNS(): Expected only one argument, `href`, but encountered %s as a second argument instead. This argument is reserved for future options and is currently disallowed. Try calling ReactDOM.prefetchDNS() with just a single string argument, `href`.",
+            getValueDescriptorExpectingEnumForWarning(options)
+          );
+        }
+        "string" === typeof href && Internals.d.D(href);
+      };
+      reactDom_development.preinit = function(href, options) {
+        "string" === typeof href && href ? null == options || "object" !== typeof options ? console.error(
+          "ReactDOM.preinit(): Expected the `options` argument (second) to be an object with an `as` property describing the type of resource to be preinitialized but encountered %s instead.",
+          getValueDescriptorExpectingEnumForWarning(options)
+        ) : "style" !== options.as && "script" !== options.as && console.error(
+          'ReactDOM.preinit(): Expected the `as` property in the `options` argument (second) to contain a valid value describing the type of resource to be preinitialized but encountered %s instead. Valid values for `as` are "style" and "script".',
+          getValueDescriptorExpectingEnumForWarning(options.as)
+        ) : console.error(
+          "ReactDOM.preinit(): Expected the `href` argument (first) to be a non-empty string but encountered %s instead.",
+          getValueDescriptorExpectingObjectForWarning(href)
+        );
+        if ("string" === typeof href && options && "string" === typeof options.as) {
+          var as = options.as, crossOrigin = getCrossOriginStringAs(as, options.crossOrigin), integrity = "string" === typeof options.integrity ? options.integrity : void 0, fetchPriority = "string" === typeof options.fetchPriority ? options.fetchPriority : void 0;
+          "style" === as ? Internals.d.S(
+            href,
+            "string" === typeof options.precedence ? options.precedence : void 0,
+            {
+              crossOrigin,
+              integrity,
+              fetchPriority
+            }
+          ) : "script" === as && Internals.d.X(href, {
+            crossOrigin,
+            integrity,
+            fetchPriority,
+            nonce: "string" === typeof options.nonce ? options.nonce : void 0
+          });
+        }
+      };
+      reactDom_development.preinitModule = function(href, options) {
+        var encountered = "";
+        "string" === typeof href && href || (encountered += " The `href` argument encountered was " + getValueDescriptorExpectingObjectForWarning(href) + ".");
+        void 0 !== options && "object" !== typeof options ? encountered += " The `options` argument encountered was " + getValueDescriptorExpectingObjectForWarning(options) + "." : options && "as" in options && "script" !== options.as && (encountered += " The `as` option encountered was " + getValueDescriptorExpectingEnumForWarning(options.as) + ".");
+        if (encountered)
+          console.error(
+            "ReactDOM.preinitModule(): Expected up to two arguments, a non-empty `href` string and, optionally, an `options` object with a valid `as` property.%s",
+            encountered
+          );
+        else
+          switch (encountered = options && "string" === typeof options.as ? options.as : "script", encountered) {
+            case "script":
+              break;
+            default:
+              encountered = getValueDescriptorExpectingEnumForWarning(encountered), console.error(
+                'ReactDOM.preinitModule(): Currently the only supported "as" type for this function is "script" but received "%s" instead. This warning was generated for `href` "%s". In the future other module types will be supported, aligning with the import-attributes proposal. Learn more here: (https://github.com/tc39/proposal-import-attributes)',
+                encountered,
+                href
+              );
+          }
+        if ("string" === typeof href)
+          if ("object" === typeof options && null !== options) {
+            if (null == options.as || "script" === options.as)
+              encountered = getCrossOriginStringAs(
+                options.as,
+                options.crossOrigin
+              ), Internals.d.M(href, {
+                crossOrigin: encountered,
+                integrity: "string" === typeof options.integrity ? options.integrity : void 0,
+                nonce: "string" === typeof options.nonce ? options.nonce : void 0
+              });
+          } else null == options && Internals.d.M(href);
+      };
+      reactDom_development.preload = function(href, options) {
+        var encountered = "";
+        "string" === typeof href && href || (encountered += " The `href` argument encountered was " + getValueDescriptorExpectingObjectForWarning(href) + ".");
+        null == options || "object" !== typeof options ? encountered += " The `options` argument encountered was " + getValueDescriptorExpectingObjectForWarning(options) + "." : "string" === typeof options.as && options.as || (encountered += " The `as` option encountered was " + getValueDescriptorExpectingObjectForWarning(options.as) + ".");
+        encountered && console.error(
+          'ReactDOM.preload(): Expected two arguments, a non-empty `href` string and an `options` object with an `as` property valid for a `<link rel="preload" as="..." />` tag.%s',
+          encountered
+        );
+        if ("string" === typeof href && "object" === typeof options && null !== options && "string" === typeof options.as) {
+          encountered = options.as;
+          var crossOrigin = getCrossOriginStringAs(
+            encountered,
+            options.crossOrigin
+          );
+          Internals.d.L(href, encountered, {
+            crossOrigin,
+            integrity: "string" === typeof options.integrity ? options.integrity : void 0,
+            nonce: "string" === typeof options.nonce ? options.nonce : void 0,
+            type: "string" === typeof options.type ? options.type : void 0,
+            fetchPriority: "string" === typeof options.fetchPriority ? options.fetchPriority : void 0,
+            referrerPolicy: "string" === typeof options.referrerPolicy ? options.referrerPolicy : void 0,
+            imageSrcSet: "string" === typeof options.imageSrcSet ? options.imageSrcSet : void 0,
+            imageSizes: "string" === typeof options.imageSizes ? options.imageSizes : void 0,
+            media: "string" === typeof options.media ? options.media : void 0
+          });
+        }
+      };
+      reactDom_development.preloadModule = function(href, options) {
+        var encountered = "";
+        "string" === typeof href && href || (encountered += " The `href` argument encountered was " + getValueDescriptorExpectingObjectForWarning(href) + ".");
+        void 0 !== options && "object" !== typeof options ? encountered += " The `options` argument encountered was " + getValueDescriptorExpectingObjectForWarning(options) + "." : options && "as" in options && "string" !== typeof options.as && (encountered += " The `as` option encountered was " + getValueDescriptorExpectingObjectForWarning(options.as) + ".");
+        encountered && console.error(
+          'ReactDOM.preloadModule(): Expected two arguments, a non-empty `href` string and, optionally, an `options` object with an `as` property valid for a `<link rel="modulepreload" as="..." />` tag.%s',
+          encountered
+        );
+        "string" === typeof href && (options ? (encountered = getCrossOriginStringAs(
+          options.as,
+          options.crossOrigin
+        ), Internals.d.m(href, {
+          as: "string" === typeof options.as && "script" !== options.as ? options.as : void 0,
+          crossOrigin: encountered,
+          integrity: "string" === typeof options.integrity ? options.integrity : void 0
+        })) : Internals.d.m(href));
+      };
+      reactDom_development.requestFormReset = function(form) {
+        Internals.d.r(form);
+      };
+      reactDom_development.unstable_batchedUpdates = function(fn, a2) {
+        return fn(a2);
+      };
+      reactDom_development.useFormState = function(action, initialState, permalink) {
+        return resolveDispatcher().useFormState(action, initialState, permalink);
+      };
+      reactDom_development.useFormStatus = function() {
+        return resolveDispatcher().useHostTransitionStatus();
+      };
+      reactDom_development.version = "19.2.4";
+      "undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ && "function" === typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
+    })();
+    return reactDom_development;
+  }
+  var hasRequiredReactDom;
+  function requireReactDom() {
+    if (hasRequiredReactDom) return reactDom.exports;
+    hasRequiredReactDom = 1;
+    function checkDCE() {
+      if (typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ === "undefined" || typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE !== "function") {
+        return;
+      }
+      if (process.env.NODE_ENV !== "production") {
+        throw new Error("^_^");
+      }
+      try {
+        __REACT_DEVTOOLS_GLOBAL_HOOK__.checkDCE(checkDCE);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    if (process.env.NODE_ENV === "production") {
+      checkDCE();
+      reactDom.exports = requireReactDom_production();
+    } else {
+      reactDom.exports = requireReactDom_development();
+    }
+    return reactDom.exports;
+  }
+  var reactDomExports = requireReactDom();
   const createStoreImpl = (createState) => {
     let state;
     const listeners = /* @__PURE__ */ new Set();
@@ -7584,12 +8003,43 @@ Ctrl+Click to open`,
     const [layoutNodes, setLayoutNodes] = reactExports.useState([]);
     const [editingNodeId, setEditingNodeId] = reactExports.useState(null);
     const [isFullscreen, setIsFullscreen] = reactExports.useState(false);
+    const [placeholderSize, setPlaceholderSize] = reactExports.useState(null);
     const previousSelectedNodeIdRef = reactExports.useRef(null);
     const newlyAddedNodeIdRef = reactExports.useRef(null);
     const containerRef = reactExports.useRef(null);
     const canvasRef = reactExports.useRef(null);
     const measureContainerRef = reactExports.useRef(null);
     const panStartRef = reactExports.useRef(null);
+    const savedScrollRef = reactExports.useRef(null);
+    const handleFullscreenToggle = reactExports.useCallback(() => {
+      if (!isFullscreen) {
+        const el = containerRef.current;
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            setPlaceholderSize({ width: rect.width, height: rect.height });
+          } else {
+            setPlaceholderSize(null);
+          }
+        }
+        savedScrollRef.current = { x: window.scrollX, y: window.scrollY };
+        setIsFullscreen(true);
+        return;
+      }
+      setIsFullscreen(false);
+    }, [isFullscreen]);
+    reactExports.useEffect(() => {
+      if (!isFullscreen || typeof document === "undefined") return;
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prevOverflow;
+        const saved = savedScrollRef.current;
+        if (saved) {
+          window.scrollTo(saved.x, saved.y);
+        }
+      };
+    }, [isFullscreen]);
     const SCROLL_INTO_VIEW_MARGIN = 24;
     const PAN_LIMIT_VISIBLE_PX = 20;
     const handleNodeMove = reactExports.useCallback((draggedNodeId, targetNodeId, position2) => {
@@ -8090,7 +8540,7 @@ Ctrl+Click to open`,
       }
       return null;
     }).filter((link) => link !== null);
-    const viewportStyle = {
+    const viewportStyle = isFullscreen ? {} : {
       width,
       height
     };
@@ -8104,7 +8554,11 @@ Ctrl+Click to open`,
       transformOrigin: "50% 50%"
     };
     const mapTitle = mapData?.root.text || "Mind Map";
-    return /* @__PURE__ */ jsxRuntimeExports.jsxs(
+    const hostStyle = isFullscreen ? {
+      width: placeholderSize?.width ?? width,
+      height: placeholderSize?.height ?? height
+    } : { display: "contents" };
+    const mapTree = /* @__PURE__ */ jsxRuntimeExports.jsxs(
       "div",
       {
         ref: containerRef,
@@ -8138,7 +8592,7 @@ Ctrl+Click to open`,
             MapToolbar,
             {
               isFullscreen,
-              onFullscreenToggle: () => setIsFullscreen((b2) => !b2),
+              onFullscreenToggle: handleFullscreenToggle,
               readOnly
             }
           ),
@@ -8213,6 +8667,18 @@ Ctrl+Click to open`,
         ]
       }
     );
+    return /* @__PURE__ */ jsxRuntimeExports.jsxs(jsxRuntimeExports.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntimeExports.jsx(
+        "div",
+        {
+          className: isFullscreen ? "htmm-map-placeholder" : "htmm-map-host",
+          style: hostStyle,
+          "aria-hidden": isFullscreen ? true : void 0,
+          children: !isFullscreen ? mapTree : null
+        }
+      ),
+      isFullscreen && typeof document !== "undefined" ? reactDomExports.createPortal(mapTree, document.body) : null
+    ] });
   };
   function createEmptyMapData() {
     return {

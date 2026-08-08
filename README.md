@@ -346,6 +346,10 @@ setNodeStyle(nodeId, 'bubble'); // 'fork' | 'bubble'
 
 ## 更新履歴
 
+### @tomk79/htmm v0.1.1 (リリース日未定)
+
+- 全画面表示のターゲットが常にビューポート全体になるようになった。
+
 ### @tomk79/htmm v0.1.0 (2026年8月5日)
 
 - ライセンスを GNU GPL v2 から MIT License に変更。

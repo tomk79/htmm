@@ -13,18 +13,32 @@
   flex-direction: column;
 }
 
-/* Pseudo fullscreen: cover viewport with position fixed */
+/* Host keeps layout space; map is portaled into it (or into document.body when fullscreen) */
+.htmm-map-host {
+  box-sizing: border-box;
+}
+
+.htmm-map-placeholder {
+  box-sizing: border-box;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Fullscreen: portaled to document.body so ancestor transform cannot clip/contain it */
 .htmm-map.htmm-map-fullscreen {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  min-width: 100%;
-  min-height: 100%;
+  width: auto;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
   box-sizing: border-box;
   z-index: 9999;
   padding: 12px;
+  margin: 0;
 }
 
 .htmm-map-body {

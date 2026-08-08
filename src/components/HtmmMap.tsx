@@ -4,6 +4,7 @@
  */
 
 import React, { useEffect, useState, useCallback, useRef, useContext, forwardRef, useImperativeHandle } from 'react';
+import { createPortal } from 'react-dom';
 import { useHtmmStore, HtmmStoreContext, createHtmmStore } from '../store/htmm-store';
 import { loadMindMapURL } from '../io/parser';
 import { calculateLayout } from '../layout/layout-engine';
@@ -101,12 +102,53 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   const [layoutNodes, setLayoutNodes] = useState<LayoutNode[]>([]);
   const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [placeholderSize, setPlaceholderSize] = useState<{ width: number; height: number } | null>(null);
   const previousSelectedNodeIdRef = useRef<string | null>(null);
   const newlyAddedNodeIdRef = useRef<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [containerEl, setContainerEl] = useState<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const measureContainerRef = useRef<HTMLDivElement>(null);
   const panStartRef = useRef<{ panX: number; panY: number; clientX: number; clientY: number } | null>(null);
+  const savedScrollRef = useRef<{ x: number; y: number } | null>(null);
+  const setContainerNode = useCallback((el: HTMLDivElement | null) => {
+    containerRef.current = el;
+    setContainerEl(el);
+  }, []);
+
+  const handleFullscreenToggle = useCallback(() => {
+    if (!isFullscreen) {
+      const el = containerRef.current;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.width > 0 && rect.height > 0) {
+          setPlaceholderSize({ width: rect.width, height: rect.height });
+        } else {
+          setPlaceholderSize(null);
+        }
+      }
+      savedScrollRef.current = { x: window.scrollX, y: window.scrollY };
+      setIsFullscreen(true);
+      return;
+    }
+    setIsFullscreen(false);
+  }, [isFullscreen]);
+
+  // Lock body scroll while fullscreen; restore overflow and scroll position on exit
+  useEffect(() => {
+    if (!isFullscreen || typeof document === 'undefined') return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      const saved = savedScrollRef.current;
+      if (saved) {
+        window.scrollTo(saved.x, saved.y);
+      }
+    };
+  }, [isFullscreen]);
 
   const SCROLL_INTO_VIEW_MARGIN = 24;
   const PAN_LIMIT_VISIBLE_PX = 20;
@@ -260,15 +302,14 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     setZoom(Math.max(zoom / 1.25, 0.25));
   }, [zoom, setZoom]);
 
-  // Wheel scroll (pan) — clamp to pan bounds; when at limit, do not preventDefault so browser can scroll
+  // Wheel scroll (pan) — clamp to pan bounds; when at limit, do not preventDefault so browser can scroll.
+  // Depends on containerEl so listeners re-bind when fullscreen portals remount the map node.
   useEffect(() => {
-    if (!mapData) return;
-    const el = containerRef.current;
-    if (!el) return;
+    if (!mapData || !containerEl) return;
     const onWheel = (e: WheelEvent) => {
       const state = store.getState();
-      const cw = el.clientWidth;
-      const ch = el.clientHeight;
+      const cw = containerEl.clientWidth;
+      const ch = containerEl.clientHeight;
       if (cw <= 0 || ch <= 0) return;
       const proposedX = state.panX - e.deltaX;
       const proposedY = state.panY - e.deltaY;
@@ -281,9 +322,9 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
       e.preventDefault();
       state.setPan(clamped.panX, clamped.panY);
     };
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, [mapData, clampPan, store]);
+    containerEl.addEventListener('wheel', onWheel, { passive: false });
+    return () => containerEl.removeEventListener('wheel', onWheel);
+  }, [mapData, clampPan, store, containerEl]);
 
   // Mouse drag to pan (when dragging on canvas background, not on a node)
   const handleCanvasMouseDown = useCallback((e: React.MouseEvent) => {
@@ -647,17 +688,14 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     }
   }, [editingNodeId, mapData, selectedNodeIds, selectNode, addChild, addSibling, deleteNode, moveNode, setNodePosition, toggleFolded, undo, redo, copyNode, cutNode, pasteNode, setFont, readOnly]);
   
-  // Setup keyboard event listener
+  // Setup keyboard event listener (re-bind when container remounts for fullscreen)
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    
-    container.addEventListener('keydown', handleKeyDown);
-    
+    if (!containerEl) return;
+    containerEl.addEventListener('keydown', handleKeyDown);
     return () => {
-      container.removeEventListener('keydown', handleKeyDown);
+      containerEl.removeEventListener('keydown', handleKeyDown);
     };
-  }, [handleKeyDown]);
+  }, [handleKeyDown, containerEl]);
   
   // Focus container on mount and when selection changes
   useEffect(() => {
@@ -706,16 +744,16 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
 
   // Attach touch move with passive: false so we can preventDefault (stops page scroll during pan/pinch).
   // Must be declared before any early return so hook order is consistent every render (React rules of hooks).
+  // Depends on containerEl so listeners re-bind when fullscreen portals remount the map node.
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
+    if (!containerEl) return;
     const onTouchMove = (e: TouchEvent) => {
       touchHandlers.onTouchMove(e as unknown as React.TouchEvent);
       if (e.touches.length === 1 || e.touches.length === 2) e.preventDefault();
     };
-    el.addEventListener('touchmove', onTouchMove, { passive: false });
-    return () => el.removeEventListener('touchmove', onTouchMove);
-  }, [touchHandlers.onTouchMove]);
+    containerEl.addEventListener('touchmove', onTouchMove, { passive: false });
+    return () => containerEl.removeEventListener('touchmove', onTouchMove);
+  }, [touchHandlers.onTouchMove, containerEl]);
   
   if (!mapData) {
     return (
@@ -754,10 +792,12 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     .filter((link): link is { sourceLayout: LayoutNode; targetLayout: LayoutNode; arrowLink: import('../types/mindmap').ArrowLinkInfo } => link !== null);
   
   // Calculate viewport bounds and zoom/pan transform
-  const viewportStyle: React.CSSProperties = {
-    width,
-    height,
-  };
+  const viewportStyle: React.CSSProperties = isFullscreen
+    ? {}
+    : {
+        width,
+        height,
+      };
 
   const mapClassName = [
     'htmm-map',
@@ -772,9 +812,16 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
   
   const mapTitle = mapData?.root.text || 'Mind Map';
 
-  return (
+  const hostStyle: React.CSSProperties = isFullscreen
+    ? {
+        width: placeholderSize?.width ?? width,
+        height: placeholderSize?.height ?? height,
+      }
+    : { display: 'contents' };
+
+  const mapTree = (
     <div 
-      ref={containerRef}
+      ref={setContainerNode}
       className={mapClassName}
       style={viewportStyle}
       role="tree"
@@ -800,7 +847,7 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
       />
       <MapToolbar
         isFullscreen={isFullscreen}
-        onFullscreenToggle={() => setIsFullscreen((b) => !b)}
+        onFullscreenToggle={handleFullscreenToggle}
         readOnly={readOnly}
       />
       <div className="htmm-map-body">
@@ -866,6 +913,21 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
         </div>
       </div>
     </div>
+  );
+
+  return (
+    <>
+      <div
+        className={isFullscreen ? 'htmm-map-placeholder' : 'htmm-map-host'}
+        style={hostStyle}
+        aria-hidden={isFullscreen ? true : undefined}
+      >
+        {!isFullscreen ? mapTree : null}
+      </div>
+      {isFullscreen && typeof document !== 'undefined'
+        ? createPortal(mapTree, document.body)
+        : null}
+    </>
   );
 };
 
