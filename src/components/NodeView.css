@@ -231,38 +231,13 @@
   background-color: rgba(0, 102, 204, 0.1);
 }
 
-/* Touch device optimizations */
+/* Touch device: avoid sticky hover styles (node size stays layout-accurate) */
 @media (hover: none) and (pointer: coarse) {
-  /* Larger touch targets for mobile */
-  .node-view {
-    min-height: 44px;
-    min-width: 44px;
-    padding: 8px 12px;
-  }
-  
-  .fold-symbol {
-    width: 24px;
-    height: 24px;
-    font-size: 14px;
-    right: -28px;
-  }
-
-  .fold-symbol.fold-symbol-left {
-    left: -28px;
-    right: auto;
-  }
-  
-  .node-icon {
-    width: 20px;
-    height: 20px;
-  }
-  
-  /* Remove hover effects on touch devices */
   .node-view:hover {
     border-color: #999;
     box-shadow: none;
   }
-  
+
   .node-view.selected {
     border-width: 3px;
     box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.3);

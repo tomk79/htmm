@@ -347,26 +347,11 @@
   box-sizing: border-box;
 }
 
-/* Mobile / touch-friendly: larger tap targets and zoom controls */
+/* Mobile / touch: pan/zoom handled by gesture hook */
 @media (max-width: 768px), (pointer: coarse) {
   .htmm-map {
     -webkit-tap-highlight-color: transparent;
-    touch-action: none; /* pan/zoom handled by gesture hook */
-  }
-
-  .htmm-map .node-view {
-    min-height: 44px;
-    padding: 10px 14px;
-    min-width: 44px;
-  }
-
-  .htmm-map .fold-symbol {
-    width: 28px;
-    height: 28px;
-    min-width: 28px;
-    min-height: 28px;
-    left: -32px;
-    font-size: 12px;
+    touch-action: none;
   }
 }
 
