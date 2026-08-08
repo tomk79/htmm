@@ -326,9 +326,19 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
     return () => containerEl.removeEventListener('wheel', onWheel);
   }, [mapData, clampPan, store, containerEl]);
 
-  // Mouse drag to pan (when dragging on canvas background, not on a node)
-  const handleCanvasMouseDown = useCallback((e: React.MouseEvent) => {
-    if (e.button !== 0 || e.target !== e.currentTarget) return;
+  // Mouse drag to pan on the fixed viewport (.htmm-map-body), not the transformed
+  // canvas. The canvas hit-area moves with pan/zoom, so at pan limits empty
+  // viewport space would otherwise become undraggable.
+  const handlePanMouseDown = useCallback((e: React.MouseEvent) => {
+    if (e.button !== 0) return;
+    const target = e.target as Element | null;
+    if (
+      target?.closest(
+        '.node-view, .htmm-map-zoom-controls, .arrow-link-view, button, a, input, textarea, select, [contenteditable="true"]'
+      )
+    ) {
+      return;
+    }
     const state = store.getState();
     panStartRef.current = {
       panX: state.panX,
@@ -850,14 +860,13 @@ const HtmmMapInner: React.FC<HtmmMapInnerProps> = ({
         onFullscreenToggle={handleFullscreenToggle}
         readOnly={readOnly}
       />
-      <div className="htmm-map-body">
+      <div className="htmm-map-body" onMouseDown={handlePanMouseDown}>
         <div
           ref={canvasRef}
           className="htmm-canvas"
         style={canvasStyle}
         aria-live="polite"
         aria-atomic="false"
-        onMouseDown={handleCanvasMouseDown}
       >
         {/* SVG layer for edges and arrow links */}
         <svg className="edges-layer" aria-hidden="true">

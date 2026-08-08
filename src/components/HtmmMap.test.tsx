@@ -182,4 +182,53 @@ describe('HtmmMap', () => {
       expect(readTransform()).not.toBe(afterExit);
     });
   });
+
+  describe('drag pan', () => {
+    it('starts pan from map body even when canvas is translated away', async () => {
+      render(<HtmmMap initialMapData={makeMapData('Drag Pan Map')} width={400} height={300} />);
+
+      const tree = screen.getByRole('tree', { name: /Mind map: Drag Pan Map/i });
+      Object.defineProperty(tree, 'clientWidth', { configurable: true, value: 400 });
+      Object.defineProperty(tree, 'clientHeight', { configurable: true, value: 300 });
+
+      const body = tree.querySelector('.htmm-map-body') as HTMLElement;
+      const canvas = tree.querySelector('.htmm-canvas') as HTMLElement;
+      expect(body).toBeTruthy();
+      expect(canvas).toBeTruthy();
+
+      // Simulate being at a pan limit: canvas translated far, so empty body is the hit target
+      await act(async () => {
+        fireEvent.wheel(tree, { deltaX: 0, deltaY: 5000 });
+      });
+      const before = canvas.style.transform;
+
+      await act(async () => {
+        fireEvent.mouseDown(body, { button: 0, clientX: 200, clientY: 150 });
+        fireEvent.mouseMove(window, { clientX: 200, clientY: 100 });
+        fireEvent.mouseUp(window);
+      });
+
+      expect(canvas.style.transform).not.toBe(before);
+    });
+
+    it('does not start pan when mousedown is on a node', async () => {
+      render(<HtmmMap initialMapData={makeMapData('Node Drag Map')} width={400} height={300} />);
+
+      const tree = screen.getByRole('tree', { name: /Mind map: Node Drag Map/i });
+      Object.defineProperty(tree, 'clientWidth', { configurable: true, value: 400 });
+      Object.defineProperty(tree, 'clientHeight', { configurable: true, value: 300 });
+
+      const canvas = tree.querySelector('.htmm-canvas') as HTMLElement;
+      const node = screen.getByText('Node Drag Map');
+      const before = canvas.style.transform;
+
+      await act(async () => {
+        fireEvent.mouseDown(node, { button: 0, clientX: 200, clientY: 150 });
+        fireEvent.mouseMove(window, { clientX: 200, clientY: 50 });
+        fireEvent.mouseUp(window);
+      });
+
+      expect(canvas.style.transform).toBe(before);
+    });
+  });
 });
